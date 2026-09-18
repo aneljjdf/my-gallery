@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>访谈预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.9;
+      padding: 40px 20px 80px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* 顶部黑色圆角标题条（带外描边） */
+    .header-bar {
+      background: #000000;
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 18px 40px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 40px;
+      border: 2px solid #000;
+      outline: 1px solid #000;
+      outline-offset: 1px;
+    }
+
+    /* 内容区：浅灰底纹 */
+    .content {
+      background: #f7f7f7;
+      padding: 40px 36px;
+      border-radius: 4px;
+    }
+
+    /* 上一位嘉宾：左图右文 */
+    .guest-top {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .guest-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1.2;
+      background: #d9d9d9;
+      object-fit: cover;
+    }
+
+    .qa-block {
+      margin-bottom: 32px;
+    }
+
+    .qa-question {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .qa-answer {
+      font-size: 15px;
+    }
+
+    /* 个人简介黑框 */
+    .profile-box {
+      background: #000000;
+      color: #ffffff;
+      padding: 32px 36px;
+      border-radius: 4px;
+      margin: 40px 0;
+    }
+
+    .profile-box p {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .profile-btn {
+      display: block;
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      text-align: center;
+      padding: 16px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .profile-btn:hover { opacity: 0.8; }
+
+    /* 下一位嘉宾标题条 */
+    .header-bar.second {
+      margin-top: 50px;
+    }
+
+    /* 纯文字段落 */
+    .text-block p {
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 700px) {
+      .guest-top {
+        grid-template-columns: 1fr;
+      }
+      .guest-photo {
+        max-width: 220px;
+        margin: 0 auto;
+      }
+      .header-bar { font-size: 18px; padding: 14px 24px; }
+      .content { padding: 28px 20px; }
+      .profile-box { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 上一位嘉宾 -->
+    <div class="header-bar">コメント／ヒサノ 氏</div>
+
+    <div class="content">
+
+      <div class="guest-top">
+        < img src="" alt="" class="guest-photo">
+
+        <div>
+          <div class="qa-block">
+            <div class="qa-question">Q1　楽曲制作の際に留意した点やイメージした点がございましたらお聞かせください。</div>
+            <div class="qa-answer">
+              ヒサノです。<br>
+              「白と黒のアリス」の作詞とボーカルを担当させていただきました。<br>
+              歌唱に関してですが三拍子でレコーディングをする機会が今までなかったのでとても難しかったですが逆に良い機会となり良い経験になりました。<br>
+              自己的感觉是稍微有点重量感、带有忧郁色彩的氛围，<br>
+              そして少し切なく歌うことがこの楽曲と世界観に合うと感じたので<br>
+              聴いていただいた方々にその辺を感じ取ってもらえたら嬉しいです。
+            </div>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">Q2　制作の際に苦労したことがございましたらお聞かせください。</div>
+            <div class="qa-answer">
+              アリス作品ということで世界観が非常に重要でしたので事前に資料を熟読させていただいた上で<br>
+              イメージを膨らませて作詞に挑みました。攻略キャラクターではなく主人公が二人ということで<br>
+              どういうった背景で表現をどのように詩に変換していくのかを非常に悩みました。
+            </div>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">Q3　最後にユーザーの皆様へメッセージをお願いします。</div>
+            <div class="qa-answer">
+              絵も音楽もとても素敵なのでぜひ本編をお楽しみください。<br>
+              プレイする皆さんの耳に残る、心に残る、思い出せる作品になると嬉しいです。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 个人简介黑框 -->
+      <div class="profile-box">
+        <p>
+          「ハートの国のアリス」「魔法使いとご主人様」シリーズ他、多数作品にてボーカルを担当。<br>
+          現在は活動の集大成である1stアルバム「ONE」が日本と台湾にて発売中。
+        </p >
+        <a href=" " class="profile-btn">Official Website</a >
+      </div>
+
+    </div>
+
+    <!-- 下一位嘉宾 -->
+    <div class="header-bar second">コメント／鞠 氏</div>
+
+    <div class="content">
+      <div class="text-block">
+        <p>鞠です。</p >
+        <p>「白と黒のアリス」主題歌など、ボーカル曲の制作を担当しました。</p >
+        <p>今回一番苦労したところはリズムがワルツというところです。</p >
+        <p>これまで直線的な曲作りを中心としてきたので、三拍子はなかなか難しかったです。</p >
+
+        <p>アリス×ダークゴシックという世界観を意識しながら、</p >
+        <p>明るすぎず、暗すぎず、できるだけ綺麗で繊細な表現を心がけました。</p >
+        <p>作品とうまくマッチしていればいいなと思っています。</p >
+
+        <p>最後に、</p >
+        <p>本編中でのボーカル曲はすべて短いバージョンですが、</p >
+        <p>フルバージョンの方にも興味を持っていただければ嬉しいです。</p >
+        <p>まずはぜひプレイしてみてください。</p >
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏官网预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    /* 整体容器 */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* 顶部导航 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000;
+      padding: 16px 0;
+      margin-bottom: 0;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-logo {
+      background: #000;
+      color: #fff;
+      padding: 6px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 15px;
+    }
+
+    .nav-links a {
+      color: #222;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #888; }
+
+    .nav-right {
+      font-size: 13px;
+      color: #999;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* 大 Banner */
+    .banner {
+      width: 100%;
+      aspect-ratio: 16 / 8;
+      background: linear-gradient(135deg, #d9e4f0 0%, #c5d5e8 100%);
+      margin-bottom: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .banner-placeholder {
+      font-size: 14px;
+      color: #8a9bb0;
+      letter-spacing: 0.1em;
+    }
+
+    /* 下方两栏 */
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 50px;
+      padding-top: 40px;
+      border-top: 2px solid #000;
+    }
+
+    /* 小标题 */
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .section-title .en {
+      color: #000;
+    }
+
+    .section-title .jp {
+      font-size: 13px;
+      color: #999;
+      font-weight: 400;
+    }
+
+    /* 左侧 News */
+    .news-list {
+      list-style: none;
+    }
+
+    .news-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #e6e6e6;
+      font-size: 14px;
+    }
+
+    .news-item:last-child { border-bottom: none; }
+
+    .news-date {
+      color: #999;
+      font-size: 13px;
+      margin-right: 10px;
+    }
+
+    /* 右侧 Product Info */
+    .product-info {
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .product-info .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .product-info .label {
+      color: #999;
+      white-space: nowrap;
+    }
+
+    /* 右侧三按钮 */
+    .bonus-btns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .bonus-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #ccc;
+      padding: 12px;
+      font-size: 13px;
+      text-decoration: none;
+      color: #222;
+      transition: background 0.2s;
+    }
+
+    .bonus-btn:hover { background: #f5f5f5; }
+
+    .bonus-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #dcdcdc;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .bonus-icon::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      background: #bbb;
+      border-radius: 50%;
+    }
+
+    /* 底部 */
+    .footer {
+      border-top: 1px solid #ccc;
+      margin-top: 50px;
+      padding-top: 20px;
+      font-size: 12px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .nav-links { display: none; }
+      .bonus-btns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部导航 -->
+    <header class="navbar">
+      <div class="nav-left">
+        <div class="nav-logo">Top</div>
+        <nav class="nav-links">
+          <a href=" ">Introduction</a >
+          <a href="#">Story</a >
+          <a href="#">Characters</a >
+          <a href="#">System</a >
+          <a href="#">Gallery</a >
+          <a href="#">Sound</a >
+          <a href="#">Special</a >
+        </nav>
+      </div>
+      <div class="nav-right">
+        ★<br>
+        ★
+      </div>
+    </header>
+
+    <!-- 大 Banner 占位 -->
+    <div class="banner">
+      <div class="banner-placeholder">BANNER 图片位置</div>
+    </div>
+
+    <!-- 下方两栏 -->
+    <div class="content">
+
+      <!-- 左：News -->
+      <section>
+        <h2 class="section-title">
+          <span class="en">NEWS</span>
+          <span class="jp">｜ 更新情報</span>
+        </h2>
+        <ul class="news-list">
+          <li class="news-item"><span class="news-date">2014/11/17</span>サンプルボイスの公開を終了いたしました。</li>
+          <li class="news-item"><span class="news-date">2014/11/04</span>【スペシャル】更新 ・カウントダウンパックナンバー</li>
+          <li class="news-item"><span class="news-date">2014/10/30</span>本日発売！ 発売記念イラスト公開</li>
+          <li class="news-item"><span class="news-date">2014/10/16</span>発売カウントダウン 公開</li>
+          <li class="news-item"><span class="news-date">2014/10/03</span></li>
+        </ul>
+      </section>
+
+      <!-- 右：Product Info -->
+      <section>
+        <h2 class="section-title">
+          <span class="en">PRODUCT INFO</span>
+          <span class="jp">｜ 製品情報</span>
+        </h2>
+
+        <div class="product-info">
+          <div class="row"><span class="label">対応機種：</span><span>PlayStation®Portable</span></div>
+          <div class="row"><span class="label">ジャンル：</span><span>女性向け恋愛アドベンチャー</span></div>
+          <div class="row"><span class="label">発売日：</span><span>2014年10月30日発売</span></div>
+          <div class="row"><span class="label">価格：</span><span>通常版 6,380円（税込）<br>限定版 8,580円（税込）</span></div>
+          <div class="row"><span class="label">CERO：</span><span>B（12才以上対象）</span></div>
+        </div>
+
+        <!-- 右下三按钮 -->
+        <div class="bonus-btns">
+          <a href="#" class="bonus-btn">
+            <div class="bonus-icon"></div>
+            <div>
+              <div>Pre-Order Bonus</div>
+              <div style="font-size:12px;color:#999;">予約特典</div>
+            </div>
+          </a >
+          <a href="#" class="bonus-btn">
+            <div class="bonus-icon"></div>
+            <div>
+              <div>Limited Edition Bonus</div>
+              <div style="font-size:12px;color:#999;">限定版特典</div>
+            </div>
+          </a >
+          <a href="#" class="bonus-btn">
+            <div class="bonus-icon"></div>
+            <div>
+              <div>Shop List</div>
+              <div style="font-size:12px;color:#999;">店舗特典</div>
+            </div>
+          </a >
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 底部 -->
+    <footer class="footer">
+      <div>©GoRA・GoHands/k-project ©2014 IDEA FACTORY/ichicolumn inc.</div>
+      <div>LINEで送る ポスト</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

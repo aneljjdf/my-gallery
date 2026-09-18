@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 预存 2</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.8;
+      padding-bottom: 80px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .topbar-left {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+    }
+
+    .topbar-nav a {
+      color: #222;
+      text-decoration: none;
+    }
+
+    .topbar-nav a.active {
+      color: #fff;
+      background: #000;
+      padding: 6px 14px;
+      border-radius: 2px;
+    }
+
+    /* 页面主标题 */
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      padding: 30px 0 20px;
+      border-bottom: 2px solid #000;
+      margin-bottom: 30px;
+    }
+
+    /* 介绍信息框 */
+    .intro-box {
+      border: 1px solid #ccc;
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      background: #fafafa;
+    }
+
+    .intro-box h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .intro-box p {
+      font-size: 14px;
+      line-height: 1.9;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .intro-box .note {
+      font-size: 13px;
+      color: #888;
+      margin-top: 14px;
+    }
+
+    /* 分节标题 */
+    .section-heading {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 0 14px;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .section-heading .icon {
+      font-size: 18px;
+    }
+
+    /* 故事卡片 */
+    .story-card {
+      position: relative;
+      border: 1px dashed #bbb;
+      padding: 32px 28px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      background: #ffffff;
+      /* 关键：让图片和文字在卡片内 */
+    }
+
+    /* 右侧图片层 */
+    .story-card .bg-image {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60%;
+      height: 100%;
+      background-size: cover;
+      background-position: center right;
+      /* 关键：从左侧透明到右侧不透明，形成雾化过渡 */
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 40%, #000 100%);
+      mask-image: linear-gradient(to right, transparent 0%, #000 40%, #000 100%);
+      z-index: 1;
+    }
+
+    /* 左侧文字层 */
+    .story-card .content {
+      position: relative;
+      z-index: 2;
+      max-width: 60%;
+    }
+
+    /* 背景大字 */
+    .story-card .watermark {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      font-size: 48px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.06);
+      letter-spacing: 0.1em;
+      z-index: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .story-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .story-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 18px 0 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .story-card p {
+      font-size: 14px;
+      line-height: 1.95;
+      color: #333;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 底部版权 */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      line-height: 2;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .topbar { flex-direction: column; gap: 14px; align-items: flex-start; }
+      .topbar-nav { flex-wrap: wrap; gap: 12px; font-size: 13px; }
+      .story-card .bg-image {
+        width: 100%;
+        opacity: 0.4;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+        mask-image: linear-gradient(to bottom, transparent 0%, #000 60%);
+      }
+      .story-card .content { max-width: 100%; }
+      .story-card .watermark { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部导航 -->
+    <header class="topbar">
+      <div class="topbar-left">AMNESIA SERIES</div>
+      <nav class="topbar-nav">
+        <a href=" ">トップ</a >
+        <a href="#" class="active">「AMNESIA SERIES」とは</a >
+        <a href="#">キャラクター</a >
+        <a href="#">システム</a >
+        <a href="#">ヘルプ</a >
+      </nav>
+    </header>
+
+    <!-- 页面主标题 -->
+    <h1 class="page-title">「AMNESIA SERIES」とは</h1>
+
+    <!-- 介绍信息框 -->
+    <div class="intro-box">
+      <h2>「AMNESIA」シリーズ3作品の全ストーリーを無料配信</h2>
+      <p>「AMNESIA」「AMNESIA LATER」「AMNESIA CROWD」の3タイトルを<br>1サービスとしてauスマートパスにて提供致します。</p >
+      <p>iOS、Androidで配信中の有料版アプリの全ストーリーを追加課金なしで楽しめます。</p >
+      <p class="note">※「AMNESIA SERIES」では、ボイス及びOP・ED・挿入歌は提供されません</p >
+    </div>
+
+    <!-- STORY 分节 -->
+    <h2 class="section-heading"><span class="icon">📖</span> STORY</h2>
+
+    <!-- 第一张卡片 -->
+    <div class="story-card">
+      <div class="bg-image" style="background-image: url('');"></div>
+      <div class="watermark">AMNESIA</div>
+      <div class="content">
+        <p>とある架空世界の、とある架空の国の、とある架空の街での物語。</p >
+        <p>それは8月1日のこと。</p >
+        <p>朝、目覚めた主人公は、突如として8月1日以前の記憶を『全て』失ってしまった……。</p >
+        <p>そんな彼女の目の前に現れたのは、自身を『精霊』と名乗るオリオンという少年だった。</p >
+        <p>オリオンの導きにより、記憶を取り戻すために奮闘する事となる……。</p >
+      </div>
+    </div>
+
+    <!-- 第二张卡片 -->
+    <div class="story-card">
+      <div class="bg-image" style="background-image: url('');"></div>
+      <div class="watermark">AMNESIA LATER</div>
+      <div class="content">
+        <h4>＜NEW WORLD＞</h4>
+        <p>とある架空世界の、とある架空の国の、とある架空の街での物語。</p >
+        <p>8月1日に突然記憶を失ってしまった主人公は、精霊のパートナー「オリオン」と共に自らの記憶探しをすることになる。</p >
+        <p>そして8月の半ば、決まった恋人がいない主人公に、誰にこの事実を打ち明けるか悩んでいたオリオン。そこに蛍の異常発生のニュースが飛び込んでくる。</p >
+        <p>そして、そのニュース映像を見た主人公の記憶の一部が蘇る。「蛍」は、主人公の記憶を取り戻すためのトリガーではないかと察知するオリオン。</p >
+        <p>——と、そこに、近所でも蛍が異常発生していることから、冥土の羊従業員と、場所を知っているウキョウとリカを加えた全員で「蛍狩り」をしようという話になる——</p >
+
+        <h4>＜AFTER STORY＞</h4>
+        <p>記憶を取り戻し、晴れて『彼』と恋人同士になった主人公。</p >
+        <p>大好きな人と幸せで甘い生活を送りながらも、日常の中では小さな悩みが尽きない。</p >
+        <p>時にはすれ違いもしながら、主人公と『彼』は幸せな未来へと歩んでいく——。</p >
+      </div>
+    </div>
+
+    <!-- 第三张卡片 -->
+    <div class="story-card">
+      <div class="bg-image" style="background-image: url('');"></div>
+      <div class="watermark">AMNESIA CROWD</div>
+      <div class="content">
+        <h4>＜Suspense＞</h4>
+        <p>—— 8月某日 彼女は消えてしまった ——</p >
+        <p>失った記憶を取り戻すため、『精霊』オリオンとともに行動していた8月のある日。主人公は運命によって事件に巻き込まれてしまう——</p >
+        <p>『彼』と離れられなくなった主人公は、どうにか連絡をとろうと試みる。『彼』は主人公を助け出すため街を駆け巡る。</p >
+        <p>主人公と『彼』それぞれの視点で描かれるサスペンスストーリー。</p >
+
+        <h4>＜Working＞</h4>
+        <p>「お帰りなさいませ、ご主人様」執事とメイドが給仕を行うコンセプトカフェ『冥土の羊』。</p >
+        <p>記憶を失ってしまった主人公は、何も分からないまま仕事に挑戦していくことに……。</p >
+        <p>頼れるのはバイト仲間たちの助言と、心強い（？）相棒オリオンだけ！仕事をテーマにしたミニゲームと、賑やかな冥土の羊の日常が楽しめるコミカルストーリー。</p >
+
+        <h4>＜Working＞</h4>
+        <p>『彼』と迎える、新しい季節——。</p >
+        <p>『レイター』のエンディング後の物語。記憶を取り戻し、『彼』と心から結ばれた主人公。季節は流れ、幸せな日々を送る2人に新たな変化が訪れる。</p >
+        <p>新しい衣装をまとったキャラクター達との、甘く切ない恋愛が描かれるラブストーリー。</p >
+      </div>
+    </div>
+
+    <!-- 底部版权 -->
+    <footer class="footer">
+      ©2017 IDEA FACTORY/DESIGN FACTORY<br>
+      ©2017 Digital Quest<br>
+      オトメイト ｜ アイディアファクトリー ｜ デザインファクトリー
+    </footer>
+
+  </div>
+
+</body>
+</html>

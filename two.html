@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>版式预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a5c8a;
+      padding: 60px 40px;
+      line-height: 1.8;
+    }
+
+    /* 两栏布局 */
+    .layout {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    /* 标题 */
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 0.3em;
+      margin-bottom: 16px;
+    }
+
+    /* 蓝色横线 */
+    .divider {
+      height: 4px;
+      background: #1a5c8a;
+      margin-bottom: 40px;
+    }
+
+    /* 左栏：新着情报列表 */
+    .news-item {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #1a5c8a;
+      font-size: 15px;
+    }
+
+    .news-item:last-child {
+      border-bottom: none;
+    }
+
+    /* 右栏：Twitter */
+    .twitter-label {
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .twitter-block {
+      border-top: 4px solid #1a5c8a;
+      margin-top: 40px;
+    }
+
+    /* 底部联系信息 */
+    .footer {
+      max-width: 1080px;
+      margin: 80px auto 0;
+      text-align: center;
+      font-size: 15px;
+      line-height: 2.2;
+    }
+
+    .footer .mail {
+      margin: 8px 0 24px;
+    }
+
+    .footer .note {
+      font-size: 14px;
+    }
+
+    .credits {
+      margin-top: 60px;
+      font-size: 13px;
+      line-height: 2;
+      color: #1a5c8a;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+      body { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- 左栏 -->
+    <section>
+      <h2 class="section-title">What's New</h2>
+      <div class="section-sub">新 着 情 報</div>
+      <div class="divider"></div>
+
+      <div class="news-item">
+        2018.10.01　ストーリー、グッズ情報公開されました。アフターティベントの開催も決定致しました！
+      </div>
+      <div class="news-item">
+        2018.09.10　PV、キャストコメントが届きました。
+      </div>
+      <div class="news-item">
+        2018.08.24　第二弾ビジュアル解禁・アンサンブル情報解禁致しました。<br>
+        CASTページがリニューアル。
+      </div>
+      <div class="news-item">
+        2018.08.14　キービジュアル、第一弾キャラクター写真公開
+      </div>
+    </section>
+
+    <!-- 右栏 -->
+    <section>
+      <h2 class="section-title">Twitter</h2>
+      <div class="section-sub">ツ イ ッ タ ー</div>
+      <div class="divider"></div>
+
+      <div class="twitter-label">Tweets by norn9_stage</div>
+
+      <div class="twitter-block"></div>
+    </section>
+
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    <div>［お問い合わせ］</div>
+    <div>舞台「NORN9 ノルン＋ノネット」制作部</div>
+    <div class="mail">MAIL：norn9.stage.net@gmail.com</div>
+    <div class="note">※お問い合わせ内容によってはお応えできない場合もございます。あらかじめご了承ください。</div>
+
+    <div class="credits">
+      <div>企画・制作プロダクション：Enthena</div>
+      <div>主催：舞台「NORN9 ノルン＋ノネット」製作委員会（虎屋／原宿PICNIC／Enthena／劇団バルスキッチン）</div>
+      <div>©IDEA FACTORY</div>
+      <div>©舞台「NORN9 ノルン＋ノネット」製作委員会</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>欢迎</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/fangzheng.otf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .cover-title {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .cover-sub {
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 48px;
+    }
+
+    .enter-btn {
+      display: inline-block;
+      padding: 14px 40px;
+      border: 1px solid #dcdcdc;
+      border-radius: 999px;
+      font-size: 15px;
+      color: #222;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .enter-btn:hover {
+      border-color: #222;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cover-title">X</div>
+  <div class="cover-sub">这是一个标准。</div>
+
+  <a href="index.html" class="enter-btn">进入 →</a >
+
+</body>
+</html>
