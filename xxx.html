@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NORN9 预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a5c8a;
+      line-height: 1.8;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      border-bottom: 1px solid #e6e6e6;
+      background: #fff;
+    }
+
+    .topbar .logo {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #1a5c8a;
+      font-style: italic;
+    }
+
+    .topbar .menu {
+      font-size: 26px;
+      color: #1a5c8a;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* ===== 大 Banner 占位 ===== */
+    .banner {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #2a3a4a 0%, #6a8a9a 50%, #4a6a7a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::after {
+      content: "BANNER 图片位置";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.1em;
+    }
+
+    .banner .catchphrase {
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      line-height: 2;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== 下方双栏内容 ===== */
+    .main-content {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 60px 32px 40px;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    /* 栏目标题 */
+    .section-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 30px;
+      font-weight: 700;
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      color: #1a5c8a;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      color: #4a7ca8;
+      margin-bottom: 12px;
+    }
+
+    .section-divider {
+      height: 3px;
+      background: #1a5c8a;
+    }
+
+    /* News 列表 */
+    .news-list {
+      margin-top: 30px;
+    }
+
+    .news-item {
+      padding: 18px 0;
+      border-bottom: 1px solid #1a5c8a;
+      font-size: 14px;
+      line-height: 1.9;
+      color: #1a5c8a;
+    }
+
+    .news-item:last-child {
+      border-bottom: 3px solid #1a5c8a;
+    }
+
+    /* Twitter 栏 */
+    .twitter-label {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #1a5c8a;
+      text-align: center;
+    }
+
+    .twitter-block {
+      margin-top: 30px;
+      border-top: 3px solid #1a5c8a;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    /* ===== 底部联系信息 ===== */
+    .footer-contact {
+      text-align: center;
+      padding: 60px 32px 40px;
+      font-size: 15px;
+      line-height: 2.2;
+      color: #1a5c8a;
+    }
+
+    .footer-contact .mail {
+      margin: 8px 0 20px;
+    }
+
+    .footer-contact .note {
+      font-size: 14px;
+    }
+
+    /* ===== 底部版权 ===== */
+    .footer-credits {
+      text-align: center;
+      font-size: 12px;
+      line-height: 2;
+      color: #1a5c8a;
+      padding: 20px 32px 60px;
+      position: relative;
+    }
+
+    /* 右下角浅色几何装饰 */
+    .footer-credits::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 200px;
+      height: 150px;
+      background:
+        linear-gradient(45deg, transparent 40%, #d0e4f0 40%, #d0e4f0 60%, transparent 60%),
+        linear-gradient(-45deg, transparent 40%, #e0eef8 40%, #e0eef8 60%, transparent 60%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* ===== 手机适配 ===== */
+    @media (max-width: 768px) {
+      .two-columns {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+      .banner .catchphrase { font-size: 15px; }
+      .section-title { font-size: 24px; }
+      .main-content { padding: 40px 20px 20px; }
+      .footer-contact { padding: 40px 20px 30px; font-size: 13px; }
+      .footer-credits { font-size: 11px; padding: 20px 20px 40px; }
+      .footer-credits::after { width: 120px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="topbar">
+    <div class="logo">STAGE NORN9</div>
+    <div class="menu">☰</div>
+  </header>
+
+  <!-- 大 Banner -->
+  <div class="banner">
+    <div class="catchphrase">
+      この世界は、生きる価値があるか。<br>
+      この世界は、生かす価値があるか。
+    </div>
+  </div>
+
+  <!-- 下方双栏 -->
+  <div class="main-content">
+    <div class="two-columns">
+
+      <!-- 左：What's New -->
+      <section>
+        <div class="section-header">
+          <div class="section-title">What's New</div>
+          <div class="section-sub">新 着 情 報</div>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="news-list">
+          <div class="news-item">
+            2018.10.01　ストーリー、グッズ情報公開されました。アフターティベントの開催も決定致しました！
+          </div>
+          <div class="news-item">
+            2018.09.10　PV、キャストコメントが届きました。
+          </div>
+          <div class="news-item">
+            2018.08.24　第二弾ビジュアル解禁・アンサンブル情報解禁致しました。<br>
+            CASTページがリニューアル。
+          </div>
+          <div class="news-item">
+            2018.08.14　キービジュアル、第一弾キャラクター写真公開
+          </div>
+        </div>
+      </section>
+
+      <!-- 右：Twitter -->
+      <section>
+        <div class="section-header">
+          <div class="section-title">Twitter</div>
+          <div class="section-sub">ツ イ ッ タ ー</div>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="twitter-label">Tweets by norn9_stage</div>
+
+        <div class="twitter-block">Twitter 嵌入区域</div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- 底部联系信息 -->
+  <div class="footer-contact">
+    <div>［お問い合わせ］</div>
+    <div>舞台「NORN9 ノルン＋ノネット」制作部</div>
+    <div class="mail">MAIL：norn9.stage.net@gmail.com</div>
+    <div class="note">※お問い合わせ内容によってはお応えできない場合もございます。あらかじめご了承ください。</div>
+  </div>
+
+  <!-- 底部版权 -->
+  <div class="footer-credits">
+    <div>企画・制作プロダクション：Enthena</div>
+    <div>主催：舞台「NORN9 ノルン＋ノネット」製作委員会（虎屋／原宿PICNIC／Enthena／劇団バルスキッチン）</div>
+    <div>©IDEA FACTORY</div>
+    <div>©舞台「NORN9 ノルン＋ノネット」製作委員会</div>
+  </div>
+
+</body>
+</html>

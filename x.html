@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top 预存 3</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    /* 顶部斜纹条 */
+    .top-stripe {
+      height: 10px;
+      background: repeating-linear-gradient(
+        45deg,
+        #e34a4a 0px,
+        #e34a4a 10px,
+        #fff 10px,
+        #fff 20px
+      );
+      margin-bottom: 0;
+    }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    .topbar-left {
+      font-size: 22px;
+      font-weight: 700;
+      color: #c83a3a;
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 26px;
+      font-size: 14px;
+      align-items: center;
+    }
+
+    .topbar-nav a {
+      color: #222;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    .topbar-nav a:hover { color: #c83a3a; }
+
+    .topbar-nav a.new {
+      color: #e34a4a;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .topbar-nav a.new::before {
+      content: "NEW";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e34a4a;
+      color: #fff;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 2px;
+      letter-spacing: 0;
+    }
+
+    /* 大 Banner 占位 */
+    .banner {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #f4d8d8 0%, #fae8e8 50%, #f0c8c8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      border: 1px solid #eee;
+    }
+
+    .banner-placeholder {
+      font-size: 14px;
+      color: #c88;
+      letter-spacing: 0.1em;
+    }
+
+    /* 宣传语 */
+    .catchphrase {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .catchphrase .jp {
+      font-size: 22px;
+      color: #c83a3a;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .catchphrase .en {
+      font-size: 14px;
+      color: #e88;
+      font-style: italic;
+      letter-spacing: 0.03em;
+    }
+
+    /* 双栏布局：News + Spec */
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 26px;
+      margin-bottom: 30px;
+    }
+
+    /* 左边 News */
+    .news-panel {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    /* 左侧竖排标签 */
+    .side-tag {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 30px;
+      height: 90px;
+      background: #e86a6a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      writing-mode: vertical-rl;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+    }
+
+    .news-list {
+      list-style: none;
+    }
+
+    .news-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+
+    .news-item:last-child { border-bottom: none; }
+
+    .news-date {
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 4px;
+    }
+
+    .news-text {
+      color: #555;
+      font-size: 13px;
+    }
+
+    .news-text .diamond {
+      color: #e34a4a;
+      margin-right: 4px;
+    }
+
+    /* 右边 Spec */
+    .spec-panel {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .spec-content {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+    }
+
+    /* 游戏封面占位 */
+    .game-cover {
+      width: 120px;
+      aspect-ratio: 3 / 4;
+      background: #f0e0e0;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #c88;
+      text-align: center;
+      padding: 8px;
+    }
+
+    /* 信息表 */
+    .spec-table {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .spec-row {
+      display: flex;
+      font-size: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .spec-label {
+      background: #e86a6a;
+      color: #fff;
+      width: 90px;
+      flex-shrink: 0;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .spec-value {
+      padding: 8px 10px;
+      flex: 1;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 底部说明文字 */
+    .spec-note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.9;
+    }
+
+    /* 蓝底按钮 */
+    .blue-btn {
+      display: block;
+      background: #5a9bd4;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      text-decoration: none;
+      border-radius: 2px;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+
+    .blue-btn:hover { background: #4a8bc4; }
+
+    /* 底部两个大横幅 */
+    .bottom-banners {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .bottom-banner {
+      height: 100px;
+      border: 2px solid #f0c0c0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    .bottom-banner.red {
+      background: linear-gradient(90deg, #fef0f0 0%, #fde0e0 100%);
+      color: #c83a3a;
+    }
+
+    .bottom-banner.blue {
+      background: linear-gradient(90deg, #f0f4ff 0%, #e0e8ff 100%);
+      color: #4a6ab0;
+    }
+
+    /* 社交图标 */
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .social-icon.tw { background: #1da1f2; }
+    .social-icon.fb { background: #3b5998; }
+    .social-icon.line { background: #06c755; }
+
+    /* 底部 Logo 区 */
+    .footer-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      padding: 20px 0;
+      border-top: 1px solid #eee;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-logo.red { color: #c83a3a; font-style: italic; }
+
+    /* 底部版权 */
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      line-height: 2;
+      padding-top: 20px;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .topbar { flex-direction: column; gap: 14px; align-items: flex-start; }
+      .topbar-nav { flex-wrap: wrap; gap: 12px; font-size: 12px; }
+      .topbar-left { font-size: 18px; }
+      .catchphrase .jp { font-size: 17px; }
+      .two-columns { grid-template-columns: 1fr; }
+      .spec-content { grid-template-columns: 1fr; }
+      .game-cover { width: 100%; aspect-ratio: 3 / 2; }
+      .bottom-banners { grid-template-columns: 1fr; }
+      .bottom-banner { font-size: 16px; height: 70px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部斜纹 -->
+    <div class="top-stripe"></div>
+
+    <!-- 顶部导航 -->
+    <header class="topbar">
+      <div class="topbar-left">フォルティッシモ</div>
+      <nav class="topbar-nav">
+        <a href=" ">TOP</a >
+        <a href="#">STORY</a >
+        <a href="#">CHARACTER</a >
+        <a href="#">GALLERY</a >
+        <a href="#">SYSTEM</a >
+        <a href="#">SOUND</a >
+        <a href="#">SPECIAL</a >
+        <a href="#" class="new">INFORMATION</a >
+      </nav>
+    </header>
+
+    <!-- 大 Banner -->
+    <div class="banner">
+      <div class="banner-placeholder">BANNER 图片位置</div>
+    </div>
+
+    <!-- 宣传语 -->
+    <div class="catchphrase">
+      <div class="jp">かなわないし、報われない。それでも恋に落ちた。</div>
+      <div class="en">The course of true love never did run smooth. But... I proceed the course.</div>
+    </div>
+
+    <!-- 双栏 -->
+    <div class="two-columns">
+
+      <!-- 左：News -->
+      <section class="news-panel">
+        <div class="side-tag">NEWS</div>
+        <ul class="news-list">
+          <li class="news-item">
+            <div class="news-date">2018.5.24</div>
+            <div class="news-text"><span class="diamond">◆</span>「バージョンアップパッチ情報」公開</div>
+          </li>
+          <li class="news-item">
+            <div class="news-date">2018.5.18</div>
+            <div class="news-text">サンプルボイスの公開を終了しました</div>
+          </li>
+          <li class="news-item">
+            <div class="news-date">2018.3.8</div>
+            <div class="news-text">本日発売！</div>
+          </li>
+          <li class="news-item">
+            <div class="news-date">2018.3.2</div>
+            <div class="news-text"><span class="diamond">◆</span>スペシャル「プレイムービー 月城奏汰」公開</div>
+          </li>
+          <li class="news-item">
+            <div class="news-date">2018.2.23</div>
+            <div class="news-text"><span class="diamond">◆</span>スペシャル「プレイムービー 森嶋永遠」公開</div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 右：Spec -->
+      <section class="spec-panel">
+        <div class="side-tag">SPEC</div>
+
+        <div class="spec-content">
+          <div class="game-cover">游戏封面<br>占位</div>
+
+          <div class="spec-table">
+            <div class="spec-row">
+              <div class="spec-label">タイトル</div>
+              <div class="spec-value">フォルティッシモ</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">対応機種</div>
+              <div class="spec-value">PlayStation®Vita<br>※PlayStation®Vita TV対応</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">ジャンル</div>
+              <div class="spec-value">恋愛アドベンチャー</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">CERO</div>
+              <div class="spec-value">「D」（17才以上対象）</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">発売日</div>
+              <div class="spec-value">2018年3月8日</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-label">価格</div>
+              <div class="spec-value">通常版：6,930円(税込)<br>限定版：9,130円(税込)<br>D L版：6,380円(税込)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec-note">
+          企画・開発：KADOKAWA アスキー・メディアワークス<br>
+          原作：ウダジョ/藤谷燈子/叶瀬あつこ<br>
+          キャラクターデザイン：ウダジョ
+        </div>
+
+        <a href="#" class="blue-btn">バージョンアップパッチ情報</a >
+      </section>
+
+    </div>
+
+    <!-- 底部两个大横幅 -->
+    <div class="bottom-banners">
+      <div class="bottom-banner red">発売記念抽選会</div>
+      <div class="bottom-banner blue">特典情報</div>
+    </div>
+
+    <!-- 社交图标 -->
+    <div class="social-icons">
+      <a href="#" class="social-icon tw">𝕏</a >
+      <a href="#" class="social-icon fb">f</a >
+      <a href="#" class="social-icon line">L</a >
+    </div>
+
+    <!-- 底部 Logo 区 -->
+    <div class="footer-logos">
+      <div class="footer-logo">PS VITA</div>
+      <div class="footer-logo red">シルフ</div>
+      <div class="footer-logo red">オトメイト</div>
+      <div class="footer-logo">IDEA FACTORY</div>
+    </div>
+
+    <!-- 底部版权 -->
+    <div class="footer">
+      ©2017 ウダジョ/藤谷燈子/KADOKAWA<br>
+      ©2017 IDEA FACTORY<br>
+      "PlayStation"および"PS VITA"は株式会社ソニー・インタラクティブエンタテインメントの登録商標または商標です。
+    </div>
+
+  </div>
+
+</body>
+</html>

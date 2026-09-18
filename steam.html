@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏菜单预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", "Georgia", "Times New Roman", serif;
+      background: #0a0c10;
+      color: #e8e8e8;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 背景雾气 + 粒子 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(180, 170, 160, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 30% 70%, rgba(120, 130, 150, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(100, 110, 130, 0.1) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 零星粒子 */
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.4;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* ===== 通用标题 ===== */
+    .menu-title {
+      text-align: center;
+      font-size: 26px;
+      letter-spacing: 0.25em;
+      margin-bottom: 16px;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: #f0ece4;
+    }
+
+    /* 标题下方花纹 */
+    .title-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 50px;
+      color: #e8e4dc;
+    }
+
+    .title-ornament::before,
+    .title-ornament::after {
+      content: "";
+      width: 180px;
+      height: 1px;
+      background: #888;
+    }
+
+    .title-ornament .symbol {
+      font-size: 18px;
+      letter-spacing: 4px;
+    }
+
+    /* ===== Select Profile 区 ===== */
+    .profile-list {
+      margin-bottom: 100px;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .profile-row:hover {
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* 选中行高亮（第一条） */
+    .profile-row.active {
+      background: linear-gradient(90deg, rgba(40,60,100,0.5) 0%, rgba(30,50,90,0.7) 50%, rgba(20,30,60,0.4) 100%);
+      border-top: 1px solid rgba(255,255,255,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .profile-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .profile-num {
+      font-size: 28px;
+      font-weight: 400;
+      color: #f0ece4;
+      width: 40px;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* 装饰花纹 */
+    .ornament-left {
+      color: #e8e4dc;
+      font-size: 20px;
+      opacity: 0.8;
+    }
+
+    /* 头像占位 */
+    .avatar-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #d8d4cc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 20px;
+    }
+
+    /* 小图标组 */
+    .mini-icons {
+      display: flex;
+      gap: 6px;
+      margin-left: 10px;
+    }
+
+    .mini-icon {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    /* 右上：名称 + 存档容量 */
+    .profile-right {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      color: #f0ece4;
+    }
+
+    .profile-name {
+      text-transform: uppercase;
+    }
+
+    .profile-size {
+      color: #ccc;
+      font-size: 13px;
+    }
+
+    .clear-save {
+      color: #f0ece4;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* 普通行的 New Game 文字 */
+    .new-game-text {
+      font-size: 16px;
+      letter-spacing: 0.2em;
+      color: #f0ece4;
+      text-transform: uppercase;
+      margin-left: 20px;
+    }
+
+    /* ===== Audio 区 ===== */
+    .audio-section {
+      margin-top: 60px;
+    }
+
+    .audio-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .audio-label {
+      font-size: 16px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #f0ece4;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* 选中行的箭头装饰 */
+    .audio-label.active::before {
+      content: "➤";
+      color: #e8e4dc;
+      font-size: 14px;
+    }
+
+    .audio-control {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* 上下小箭头 */
+    .arrow-updown {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      color: #f0ece4;
+      font-size: 8px;
+    }
+
+    /* 滑杆 */
+    .slider-line {
+      width: 160px;
+      height: 2px;
+      background: #888;
+      position: relative;
+    }
+
+    .slider-line::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -3px;
+      width: 8px;
+      height: 8px;
+      background: #f0ece4;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .audio-value {
+      font-size: 14px;
+      color: #f0ece4;
+      width: 30px;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    /* 右侧箭头 */
+    .audio-arrow {
+      color: #e8e4dc;
+      font-size: 14px;
+      opacity: 0.8;
+      margin-left: 10px;
+    }
+
+    /* ===== 底部按钮 ===== */
+    .menu-footer {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .menu-btn {
+      display: block;
+      text-align: center;
+      font-size: 16px;
+      letter-spacing: 0.2em;
+      color: #f0ece4;
+      text-decoration: none;
+      text-transform: uppercase;
+      padding: 16px;
+      transition: opacity 0.2s;
+    }
+
+    .menu-btn:hover {
+      opacity: 0.6;
+    }
+
+    /* ===== 手机适配 ===== */
+    @media (max-width: 768px) {
+      .container { padding: 40px 16px 80px; }
+      .menu-title { font-size: 20px; letter-spacing: 0.15em; }
+      .title-ornament::before,
+      .title-ornament::after { width: 60px; }
+
+      .profile-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px 12px;
+      }
+      .profile-left { gap: 14px; }
+      .profile-right { gap: 16px; font-size: 12px; }
+      .profile-num { font-size: 22px; width: 28px; }
+
+      .audio-row {
+        padding: 16px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .audio-label { font-size: 14px; }
+      .slider-line { width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景粒子 -->
+  <div class="particles">
+    <div class="particle" style="top: 10%; left: 20%;"></div>
+    <div class="particle" style="top: 30%; left: 80%;"></div>
+    <div class="particle" style="top: 50%; left: 10%;"></div>
+    <div class="particle" style="top: 70%; left: 60%;"></div>
+    <div class="particle" style="top: 85%; left: 30%;"></div>
+    <div class="particle" style="top: 15%; left: 65%;"></div>
+    <div class="particle" style="top: 45%; left: 90%;"></div>
+    <div class="particle" style="top: 75%; left: 15%;"></div>
+  </div>
+
+  <div class="container">
+
+    <!-- ===== 第一部分：Select Profile ===== -->
+    <div class="profile-list">
+
+      <div class="menu-title">Select Profile</div>
+      <div class="title-ornament">
+        <span class="symbol">✦ ❦ ✦</span>
+      </div>
+
+      <!-- 第 1 行：已选中的存档 -->
+      <div class="profile-row active">
+        <div class="profile-left">
+          <span class="ornament-left">❧</span>
+          <span class="profile-num">1.</span>
+          <div class="avatar-icon">☺</div>
+          <div class="mini-icons">
+            <div class="mini-icon"></div>
+            <div class="mini-icon"></div>
+            <div class="mini-icon"></div>
+            <div class="mini-icon"></div>
+            <div class="mini-icon"></div>
+          </div>
+        </div>
+        <div class="profile-right">
+          <span class="profile-name">Dirtmouth</span>
+          <span class="profile-size">55M</span>
+          <span class="clear-save">Clear Save</span>
+        </div>
+      </div>
+
+      <!-- 第 2 行：New Game -->
+      <div class="profile-row">
+        <div class="profile-left">
+          <span class="ornament-left">❧</span>
+          <span class="profile-num">2.</span>
+          <span class="new-game-text">New Game</span>
+        </div>
+      </div>
+
+      <!-- 第 3 行 -->
+      <div class="profile-row">
+        <div class="profile-left">
+          <span class="ornament-left">❧</span>
+          <span class="profile-num">3.</span>
+          <span class="new-game-text">New Game</span>
+        </div>
+      </div>
+
+      <!-- 第 4 行 -->
+      <div class="profile-row">
+        <div class="profile-left">
+          <span class="ornament-left">❧</span>
+          <span class="profile-num">4.</span>
+          <span class="new-game-text">New Game</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== 第二部分：Audio ===== -->
+    <div class="audio-section">
+
+      <div class="menu-title">Audio</div>
+      <div class="title-ornament">
+        <span class="symbol">✦ ❦ ✦</span>
+      </div>
+
+      <!-- Master Volume -->
+      <div class="audio-row">
+        <div class="audio-label">Master Volume:</div>
+        <div class="audio-control">
+          <div class="arrow-updown">
+            <span>▲</span>
+            <span>▼</span>
+          </div>
+          <div class="slider-line"></div>
+          <div class="audio-value">10</div>
+        </div>
+      </div>
+
+      <!-- Sound Volume（选中行） -->
+      <div class="audio-row">
+        <div class="audio-label active">Sound Volume:</div>
+        <div class="audio-control">
+          <div class="arrow-updown">
+            <span>▲</span>
+            <span>▼</span>
+          </div>
+          <div class="slider-line"></div>
+          <div class="audio-value">10</div>
+          <span class="audio-arrow">➤</span>
+        </div>
+      </div>
+
+      <!-- Music Volume -->
+      <div class="audio-row">
+        <div class="audio-label">Music Volume:</div>
+        <div class="audio-control">
+          <div class="arrow-updown">
+            <span>▲</span>
+            <span>▼</span>
+          </div>
+          <div class="slider-line"></div>
+          <div class="audio-value">10</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== 底部按钮 ===== -->
+    <div class="menu-footer">
+      <a href=" " class="menu-btn">Reset Defaults</a >
+      <a href="#" class="menu-btn">Back</a >
+    </div>
+
+  </div>
+
+</body>
+</html>

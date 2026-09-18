@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>我的作品集</title>
   <style>
-    /* 自定义字体：在 fonts 子文件夹里 */
     @font-face {
       font-family: "My Font";
-      src: url("./fonts/newfont.ttf") format("truetype");
+      src: url("./fonts/myfont.ttf") format("truetype");
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -155,6 +154,30 @@
       gap: 12px;
     }
 
+    /* 新增跳转按钮区 */
+    .jump-btns {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .jump-btn {
+      display: inline-block;
+      padding: 18px 48px;
+      margin: 0 10px;
+      border: 1px solid #dcdcdc;
+      border-radius: 999px;
+      font-size: 15px;
+      color: #222;
+      text-decoration: none;
+      background: #fff;
+      transition: all 0.25s ease;
+    }
+
+    .jump-btn:hover {
+      border-color: #222;
+      background: #fafafa;
+    }
+
     /* 手机 / 平板适配 */
     @media (max-width: 900px) {
       .card {
@@ -182,13 +205,14 @@
       .brand { font-size: 32px; }
       .card { grid-template-columns: 1fr; }
       .cat { border-right: none !important; }
+      .jump-btn { display: block; margin: 10px auto; width: 80%; }
     }
   </style>
 </head>
 <body>
 
   <header class="header">
-    <div class="brand">X</div>
+    <div class="brand">你的品牌名</div>
   </header>
   <p class="subtitle">这里放一行副标题，比如：记录我的判断与证明</p >
 
@@ -237,6 +261,12 @@
     </a >
 
   </main>
+
+  <!-- 新增：跳转按钮 -->
+  <div class="jump-btns">
+    <a href="story.html" class="jump-btn">STORY 故事页</a >
+    <a href="sound.html" class="jump-btn">SOUND 音乐页</a >
+  </div>
 
 </body>
 </html>

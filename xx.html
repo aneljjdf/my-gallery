@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Info 预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000000;      /* 纯黑，比深灰更干净 */
+      color: #e8e8e8;           /* 浅灰白，不刺眼 */
+      font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", "MS Mincho", serif;
+      line-height: 1.9;
+      padding: 60px 20px 80px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* 段落通用 */
+    p {
+      font-size: 14px;
+      margin-bottom: 14px;
+      color: #d8d8d8;
+    }
+
+    /* 区块标题：■xxx■ */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+
+    /* 小标题：【xxx】 */
+    .sub-title {
+      font-size: 15px;
+      margin: 30px 0 10px;
+      color: #f0f0f0;
+      font-weight: 400;
+    }
+
+    /* 网址链接 */
+    a {
+      color: #e0e0e0;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    a:hover { color: #ffffff; }
+
+    /* 列表项（※开头） */
+    .note {
+      font-size: 14px;
+      color: #d0d0d0;
+      margin-bottom: 6px;
+      padding-left: 1em;
+      text-indent: -1em;
+    }
+
+    /* 底部版权 */
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+      font-size: 14px;
+      color: #d8d8d8;
+      letter-spacing: 0.02em;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 600px) {
+      body { padding: 40px 16px 60px; }
+      p, .note { font-size: 13px; }
+      .section-title { font-size: 15px; }
+      .footer { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 大标题 -->
+    <h1 class="section-title">■通信販売・店頭販売のお知らせ■</h1>
+
+    <!-- 第一块：通信販売 -->
+    <p class="sub-title">【シザーブリッツ・ショップ　通信販売】</p >
+    <p><a href=" ">https://833.theshop.jp/</a ></p >
+
+    <p class="note">※商品によっては、残数が大変少なくなっております。予めご了承ください。</p >
+    <p class="note">※ランダムブロマイドは５枚単位での販売です。</p >
+    <p class="note">※舞台キャスト・キャラクタービジュアル版ランダム缶バッジは２個単位での販売です。</p >
+
+    <!-- 第二块：店頭販売 -->
+    <p class="sub-title">【ステラワース　店頭販売】</p >
+    <p>ガールズゲームショップ・ステラワース</p >
+    <p>（〒170-0013 東京都豊島区東池袋1-23-9　近代ビル10号館　3F）</p >
+    <p><a href="#">https://www.stellaworth.co.jp/</a ></p >
+
+    <p class="note">※商品によっては、残数が大変少なくなっております。予めご了承ください。</p >
+    <p class="note">※ランダムブロマイドは１枚単位でご購入いただけます。</p >
+    <p class="note">※舞台キャスト・キャラクタービジュアル版ランダム缶バッジは１個単位でご購入いただけます。</p >
+    <p class="note">※２０１９年６月１日（月）からの販売です。</p >
+
+    <!-- 第三块：联系方式 -->
+    <p class="sub-title">［通信販売に関するお問い合わせ］</p >
+    <p>合同会社シザーブリッツ・制作部</p >
+    <p>MAIL：info@scissors-blitz.com</p >
+
+    <p class="sub-title">［店頭販売に関するお問い合わせ］</p >
+    <p>ステラワース・問い合わせページ</p >
+    <p><a href="#">https://www.stellaworth.co.jp/shop/inquire.php</a ></p >
+
+    <!-- 底部版权 -->
+    <div class="footer">
+      ©舞台『Collar×Malice』製作委員会　©IDEA FACTORY/DESIGN FACTORY
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading 预存 2</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", Georgia, "Times New Roman", serif;
+      background: #f7f8f9;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 背景浅色菱形网格（渐变） */
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(45deg, #eef0f2 25%, transparent 25%),
+        linear-gradient(-45deg, #eef0f2 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eef0f2 75%),
+        linear-gradient(-45deg, transparent 75%, #eef0f2 75%);
+      background-size: 80px 80px;
+      background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
+      opacity: 0.6;
+      /* 四周渐隐：中间实、边缘淡 */
+      -webkit-mask-image: radial-gradient(circle at center, #000 30%, transparent 85%);
+      mask-image: radial-gradient(circle at center, #000 30%, transparent 85%);
+    }
+
+    /* 中间的 Loading 文字 */
+    .loading-text {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      letter-spacing: 0.05em;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景网格 -->
+  <div class="bg-pattern"></div>
+
+  <!-- 文字 -->
+  <div class="loading-text">Now Loading...</div>
+
+</body>
+</html>

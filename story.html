@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STORY</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.9;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* 顶部导航 */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      padding: 20px 0;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+
+    .navbar a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .navbar a.active { color: #5bc8e8; font-weight: 600; }
+
+    /* 分隔线 */
+    .divider {
+      border-top: 1px solid #ddd;
+      margin-bottom: 40px;
+    }
+
+    /* 大标题 */
+    .page-title {
+      font-size: 56px;
+      font-family: Georgia, serif;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      padding: 30px 0 30px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 40px;
+    }
+
+    /* 灰条纹标题条 */
+    .section-bar {
+      background: #4a4a4a;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .section-bar .jp {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    /* 正文 */
+    .story-text p {
+      font-size: 14px;
+      margin-bottom: 16px;
+      line-height: 2;
+    }
+
+    .story-text .quote {
+      color: #e86a8a;
+      font-weight: 600;
+    }
+
+    /* ===== 第二块：LAST ERA ===== */
+    .era-section {
+      margin-top: 50px;
+    }
+
+    /* 三栏卡片 */
+    .era-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .era-card {
+      background: #f0f4f8;
+      border: 1px solid #d8e0e8;
+      padding: 24px 20px;
+      font-size: 13px;
+      line-height: 1.9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 卡片顶部标题条 */
+    .era-card .card-title {
+      background: #fff;
+      border: 1px solid #d8e0e8;
+      padding: 8px 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .era-card .sub-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 6px;
+    }
+
+    .era-card p {
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      text-align: center;
+      padding: 40px 20px 60px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .footer-logos {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      border: 1px solid #ddd;
+      padding: 8px 20px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .footer-copy {
+      line-height: 2;
+    }
+
+    /* 返回按钮 */
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 36px;
+      border: 1px solid #333;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #333;
+      color: #fff;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .navbar { flex-wrap: wrap; gap: 14px; font-size: 12px; }
+      .page-title { font-size: 36px; }
+      .era-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+      <a href=" ">TOP</a >
+      <a href="story.html" class="active">STORY</a >
+      <a href="#">CHARACTER</a >
+      <a href="#">GALLERY</a >
+      <a href="#">SYSTEM</a >
+      <a href="sound.html">SOUND</a >
+      <a href="#">MOVIE</a >
+      <a href="#">INFO</a >
+    </nav>
+
+    <div class="divider"></div>
+
+    <!-- 大标题 -->
+    <h1 class="page-title">STORY</h1>
+
+    <!-- VAR COMMONS 部分 -->
+    <div class="section-bar">
+      VAR COMMONS <span class="jp">ヴァールコモンズ</span>
+    </div>
+
+    <div class="story-text">
+      <p>ある一つの歌が、少年を違う時空に連れ去る。</p >
+      <p>気がつくと、少年は見知らぬ場所に立っていた。<br>
+      古めかしい街並み。景色はセピア色に見える。<br>
+      まさに、教科書で見た明治や大正そのものの風景だったのだ。</p >
+      <p>タイムスリップした世界で少年が出会った、3人の少女と9人の若者。<br>
+      少年は彼らとともに、空の旅に赴く。</p >
+      <p class="quote">『続きのない友情、終わりの見える恋。それでも人は、独りではいられない』</p >
+      <p>彼らが旅をする理由は？<br>
+      目的地とはどこなのか？<br>
+      そして、この世界は一体何なのか？</p >
+      <p>多くの謎を抱えながら、船は進む。<br>
+      物語の結末に向かって。<br>
+      絆の紡ぐ未来が、今始まる——。</p >
+    </div>
+
+    <!-- LAST ERA 部分 -->
+    <div class="era-section">
+      <div class="section-bar">
+        LAST ERA <span class="jp">ラストイーラ</span>
+      </div>
+
+      <div class="era-grid">
+
+        <div class="era-card">
+          <div class="card-title">コンチェルト —協奏曲—</div>
+          <div class="sub-title">◆日輪のConcerto</div>
+          <p>記念日でもないのに、彼と迎える朝は何よりの幸せ。<br>何物にも代えがたい特別。<br>愛しい彼との甘い日常を描いた物語。</p >
+
+          <div class="sub-title">◆月影のConcerto</div>
+          <p>恋人になった二人に新たに訪れる困難。<br>それは彼の過去に関わることで……。<br>現在から過去へ、そして未来へと繋ぐ軌跡の物語。</p >
+        </div>
+
+        <div class="era-card">
+          <div class="card-title">フーガ —遁走曲—</div>
+          <p>「愛しさは、とてもあたたかくて、幸せなものなのに、……氷のように冷たい刃にもなる」</p >
+          <p>あの日の口づけ、抱擁の意味。<br>彼が心の奥底に隠してきた想いが露わになる。</p >
+          <p>攻略キャラクター視点で描かれる本編の物語。</p >
+        </div>
+
+        <div class="era-card">
+          <div class="card-title">ファンタジア —幻想曲—</div>
+          <p>もしもヒロインたちの恋が成立しなかったら？<br>IFの設定で描かれる、旅のある日の一幕。</p >
+          <p>現実と夢の世界で起こるとある事件が、ノルン船内に混乱をもたらす。<br>夢の中では小さくなってしまったノルンメンバー。<br>一月の仕事かと思えばどうやら違うらしい。</p >
+          <p>「小さくなっても、夢の中だけなら問題ない」</p >
+          <p>そう思っていた面々だが、徐々に現実世界にも問題が生じ始める。</p >
+          <p>とうとう我慢ならなくなったメンバーは、平士と一月の能力を使って夢の中に集まることに。</p >
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 返回按钮 + 去 SOUND -->
+    <div style="text-align:center;">
+      <a href="sound.html" class="back-btn">前往 SOUND 页面 →</"></a >
+    </div>
+
+    <!-- 底部 -->
+    <divfooter class="footer">
+     >
+
+ <div class="footer-logos">
+           <div class="footer-logo">IDEA FACTORY</div>
+        <div class="footer-logo">オトメイト</div>
+      </div>
+      <div class="footer-copy">
+        ©2018 IDEA FACTORY<br>
+        Nintendo Switchのロゴ・Nintendo Switchは任天堂の商標です。
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

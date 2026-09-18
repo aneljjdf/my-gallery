@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News 预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #000000;
+      color: #ffffff;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      background: #000;
+      border-bottom: 1px solid #222;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #fff;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .logo .sub {
+      display: block;
+      font-size: 8px;
+      font-family: sans-serif;
+      font-style: normal;
+      letter-spacing: 0.1em;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.2s;
+      padding-bottom: 3px;
+    }
+
+    .nav-links a:hover { color: #aaa; }
+
+    .nav-links a.active {
+      border-bottom: 2px solid #e60012;
+    }
+
+    /* 二级导航行 */
+    .nav-second {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      padding: 0 0 8px;
+      justify-content: center;
+      margin-top: -10px;
+      margin-bottom: 6px;
+    }
+
+    .nav-second a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* 右侧按钮 */
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .buy-btn {
+      background: #e60012;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.2;
+      letter-spacing: 0.05em;
+    }
+
+    .buy-btn .icon {
+      font-size: 14px;
+    }
+
+    .social-icon {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    /* ===== 大标题 ===== */
+    .page-title {
+      text-align: center;
+      padding: 60px 20px 50px;
+      position: relative;
+    }
+
+    /* 标题左右白色短横线 */
+    .page-title::before,
+    .page-title::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 140px;
+      height: 2px;
+      background: #444;
+    }
+
+    .page-title::before { left: calc(50% - 240px); }
+    .page-title::after { right: calc(50% - 240px); }
+
+    .page-title h1 {
+      font-size: 48px;
+      font-weight: 400;
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: 0.15em;
+      color: #fff;
+    }
+
+    /* ===== 新闻列表 ===== */
+    .news-list {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .news-item {
+      display: flex;
+      align-items: baseline;
+      border: 1px solid #fff;
+      padding: 18px 24px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      background: #000;
+      transition: background 0.2s;
+    }
+
+    .news-item:hover {
+      background: #111;
+    }
+
+    .news-date {
+      width: 110px;
+      flex-shrink: 0;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    .news-content {
+      flex: 1;
+      color: #fff;
+    }
+
+    .news-content a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* ===== 底部区域 ===== */
+    .footer {
+      background: #0a0a0a;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+      line-height: 2;
+    }
+
+    .footer-note {
+      margin-bottom: 30px;
+      font-size: 12px;
+    }
+
+    /* Switch 标志 */
+    .switch-logo {
+      display: inline-block;
+      font-family: sans-serif;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: 0.1em;
+    }
+
+    .switch-sub {
+      font-size: 11px;
+      color: #999;
+      margin-bottom: 30px;
+    }
+
+    /* 合作方 Logo 行 */
+    .partner-logos {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .partner-logo {
+      font-size: 13px;
+      color: #ccc;
+      letter-spacing: 0.05em;
+    }
+
+    /* 底部三个小按钮 */
+    .footer-btns {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .footer-btn {
+      border: 1px solid #fff;
+      padding: 8px 28px;
+      font-size: 12px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+
+    .footer-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .topbar {
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px 20px;
+      }
+      .topbar-left {
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+      }
+      .nav-links { flex-wrap: wrap; justify-content: center; gap: 14px; font-size: 12px; }
+      .nav-second { flex-wrap: wrap; gap: 14px; font-size: 12px; }
+      .page-title h1 { font-size: 32px; letter-spacing: 0.1em; }
+      .page-title::before,
+      .page-title::after { width: 60px; }
+      .page-title::before { left: calc(50% - 130px); }
+      .page-title::after { right: calc(50% - 130px); }
+      .news-item {
+        flex-direction: column;
+        gap: 6px;
+        padding: 14px 16px;
+      }
+      .news-date { width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header>
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="logo">
+          Sully land
+          <span class="sub">Nursery Rhyme</span>
+        </div>
+        <nav class="nav-links">
+          <a href=" ">TOP</a >
+          <a href="#" class="active">NEWS</a >
+          <a href="#">STORY</a >
+          <a href="#">CHARACTER</a >
+          <a href="#">SYSTEM</a >
+          <a href="#">GALLERY</a >
+          <a href="#">MOVIE</a >
+          <a href="#">SOUND</a >
+          <a href="#">PRODUCT</a >
+        </nav>
+      </div>
+
+      <div class="topbar-right">
+        <a href="#" class="buy-btn">
+          <span class="icon">🛒</span>
+          BUY NOW
+        </a >
+        <a href="#" class="social-icon">◎</a >
+        <a href="#" class="social-icon">✕</a >
+      </div>
+    </div>
+
+    <!-- 二级导航 -->
+    <nav class="nav-second">
+      <a href="#">ITEM</a >
+      <a href="#">SPECIAL</a >
+    </nav>
+  </header>
+
+  <!-- 大标题 -->
+  <div class="page-title">
+    <h1>NEWS</h1>
+  </div>
+
+  <!-- 新闻列表 -->
+  <div class="news-list">
+
+    <div class="news-item">
+      <div class="news-date">2026/9/14</div>
+      <div class="news-content"><a href="#">SPECIAL</a >：キャストコメント 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/8/31</div>
+      <div class="news-content"><a href="#">GALLERY</a >：CG2枚 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/8/17</div>
+      <div class="news-content"><a href="#">MOVIE</a >：CGムービー / <a href="#">ITEM</a >：キャラクターアイコン、SNS用ヘッダー 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/8/5</div>
+      <div class="news-content"><a href="#">発売記念プレゼントキャンペーンのお知らせ</a > 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/8/3</div>
+      <div class="news-content"><a href="#">GALLERY</a >：CG2枚 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/7/13</div>
+      <div class="news-content"><a href="#">SOUND</a >：BGM試聴 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/7/6</div>
+      <div class="news-content"><a href="#">GALLERY</a >：CG1枚 / <a href="#">MOVIE</a >：キャラクターPV / <a href="#">SOUND</a >：BGM / <a href="#">ITEM</a >：キャラクターアイコン、SNS用ヘッダー 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/6/22</div>
+      <div class="news-content"><a href="#">CHARACTER</a >：サンプルボイス 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/6/15</div>
+      <div class="news-content"><a href="#">MOVIE</a >：プロモーションムービー 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/6/8</div>
+      <div class="news-content"><a href="#">CHARACTER</a >：サンプルボイス / <a href="#">GALLERY</a >：CG9枚 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/6/1</div>
+      <div class="news-content"><a href="#">CHARACTER</a > 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/5/25</div>
+      <div class="news-content"><a href="#">CHARACTER</a >：サンプルボイス 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/5/18</div>
+      <div class="news-content"><a href="#">CHARACTER</a >：サンプルボイス / <a href="#">GALLERY</a >：CG5枚 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/5/7</div>
+      <div class="news-content"><a href="#">PRODUCT</a >：店舗特典 更新</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/5/6</div>
+      <div class="news-content">公式サイト 公開</div>
+    </div>
+
+    <div class="news-item">
+      <div class="news-date">2026/2/16</div>
+      <div class="news-content">ティザーサイト 公開</div>
+    </div>
+
+  </div>
+
+  <!-- 底部 -->
+  <footer class="footer">
+    <div class="footer-note">※掲載されている画像および映像は開発中のものです</div>
+
+    <div class="switch-logo">NINTENDO SWITCH</div>
+    <div class="switch-sub">Nintendo Switchは任天堂の商標です。</div>
+
+    <div class="partner-logos">
+      <span class="partner-logo">オトメイト</span>
+      <span class="partner-logo">アイディアファクトリー株式会社</span>
+      <span class="partner-logo">デザインファクトリー株式会社</span>
+    </div>
+
+    <div class="footer-btns">
+      <a href="#" class="footer-btn">著作権について</a >
+      <a href="#" class="footer-btn">プライバシーポリシー</a >
+      <a href="#" class="footer-btn">ユーザーサポート</a >
+    </div>
+
+    <div class="footer-copy">©IDEA FACTORY/DESIGN FACTORY</div>
+  </footer>
+
+</body>
+</html>

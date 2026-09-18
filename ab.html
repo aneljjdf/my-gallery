@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading 预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f7f7f7;
+      color: #1a1a1a;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      padding: 22px 0;
+      background: #fff;
+      border-bottom: 1px solid #e6e6e6;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+    }
+
+    .topbar a {
+      color: #2a7f8f;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .topbar a:hover { opacity: 0.6; }
+
+    /* 主体区域 */
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 70px);
+      position: relative;
+      padding: 40px 20px;
+    }
+
+    /* 倾斜的视觉卡片 */
+    .visual-card {
+      width: 360px;
+      height: 360px;
+      transform: rotate(-8deg);
+      background: #eaf4f7;
+      border: 1px solid #cfe3e8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 卡片的背景条纹（模拟窗户） */
+    .visual-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to right,
+        rgba(120, 190, 210, 0.25) 0px,
+        rgba(120, 190, 210, 0.25) 20px,
+        transparent 20px,
+        transparent 40px
+      );
+      z-index: 1;
+    }
+
+    /* 黑色底座（柜子） */
+    .tv-stand {
+      width: 200px;
+      height: 60px;
+      background: #111;
+      border-radius: 4px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .tv-stand::before,
+    .tv-stand::after {
+      content: "";
+      width: 30px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+    }
+
+    /* 屏幕 */
+    .tv-screen {
+      width: 180px;
+      height: 90px;
+      background: #fff;
+      border: 6px solid #111;
+      border-radius: 4px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: -4px;
+    }
+
+    .tv-screen .percent {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #333;
+    }
+
+    /* 右侧装饰卡片（模拟原图右边的浅色方块） */
+    .deco-card {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background-image:
+        linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+      background-size: 12px 12px;
+      background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+    }
+
+    .deco-card.one {
+      top: 12%;
+      right: 6%;
+      width: 100px;
+      height: 100px;
+      transform: rotate(12deg);
+    }
+
+    .deco-card.two {
+      bottom: 22%;
+      right: 3%;
+      width: 120px;
+      height: 120px;
+      transform: rotate(-6deg);
+    }
+
+    .deco-card.three {
+      bottom: 8%;
+      right: 12%;
+      width: 70px;
+      height: 70px;
+      transform: rotate(18deg);
+    }
+
+    /* 手机适配 */
+    @media (max-width: 768px) {
+      .topbar {
+        gap: 16px;
+        font-size: 11px;
+        flex-wrap: wrap;
+        padding: 14px 12px;
+      }
+      .visual-card {
+        width: 260px;
+        height: 260px;
+        padding-bottom: 40px;
+      }
+      .tv-stand { width: 150px; height: 45px; }
+      .tv-screen { width: 130px; height: 65px; }
+      .tv-screen .percent { font-size: 18px; }
+      .deco-card.one { width: 60px; height: 60px; }
+      .deco-card.two { width: 80px; height: 80px; }
+      .deco-card.three { width: 50px; height: 50px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="topbar">
+    <a href=" ">TOP</a >
+    <a href="#">STORY</a >
+    <a href="#">CHARACTERS</a >
+    <a href="#">SYSTEM</a >
+    <a href="#">GALLERY</a >
+    <a href="#">SOUND</a >
+    <a href="#">SPECIAL</a >
+  </nav>
+
+  <!-- 主体 -->
+  <main class="main">
+
+    <!-- 中间倾斜卡片 -->
+    <div class="visual-card">
+      <div class="tv-screen">
+        <span class="percent">0%</span>
+      </div>
+      <div class="tv-stand"></div>
+    </div>
+
+    <!-- 右侧装饰卡片 -->
+    <div class="deco-card one"></div>
+    <div class="deco-card two"></div>
+    <div class="deco-card three"></div>
+
+  </main>
+
+</body>
+</html>
