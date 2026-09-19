@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的作品集</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 0 24px 60px;
+    }
+
+    /* 顶部品牌 */
+    .header {
+      text-align: center;
+      padding: 56px 0 16px;
+    }
+
+    .brand {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: #8a8a8a;
+      margin-bottom: 40px;
+    }
+
+    /* 大卡片：左1 + 右2×2 */
+    .card {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e6e6e6;
+      border-radius: 22px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    /* 左栏：自我介绍，跨两行 */
+    .intro {
+      grid-row: 1 / 3;
+      padding: 40px 28px;
+      border-right: 1px solid #e6e6e6;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #d9d9d9;
+      margin-bottom: 22px;
+    }
+
+    .intro .name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .intro .text {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+
+    .intro .contact {
+      font-size: 13px;
+      color: #444;
+      text-decoration: underline;
+      margin-top: auto;
+    }
+
+    /* 右侧四个分类 */
+    .cat {
+      padding: 36px 26px;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid #e6e6e6;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.2s ease;
+    }
+
+    .cat:nth-child(2),
+    .cat:nth-child(3) {
+      border-right: 1px solid #e6e6e6;
+    }
+
+    .cat:nth-child(4),
+    .cat:nth-child(5) {
+      border-bottom: none;
+    }
+
+    .cat:hover { background: #fafafa; }
+
+    .cat .label {
+      font-size: 12px;
+      color: #b0b0b0;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .cat .title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .cat .desc {
+      font-size: 13px;
+      color: #777;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .details {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border: 1px solid #dcdcdc;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #222;
+      background: #fff;
+      width: fit-content;
+      transition: all 0.2s ease;
+    }
+
+    .cat:hover .details {
+      border-color: #222;
+      gap: 12px;
+    }
+
+    /* 新增跳转按钮区 */
+    .jump-btns {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .jump-btn {
+      display: inline-block;
+      padding: 18px 48px;
+      margin: 0 10px;
+      border: 1px solid #dcdcdc;
+      border-radius: 999px;
+      font-size: 15px;
+      color: #222;
+      text-decoration: none;
+      background: #fff;
+      transition: all 0.25s ease;
+    }
+
+    .jump-btn:hover {
+      border-color: #222;
+      background: #fafafa;
+    }
+
+    /* 手机 / 平板适配 */
+    @media (max-width: 900px) {
+      .card {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .intro {
+        grid-row: auto;
+        grid-column: 1 / 3;
+        border-right: none;
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .cat:nth-child(2),
+      .cat:nth-child(3) {
+        border-right: none;
+      }
+      .cat:nth-child(4),
+      .cat:nth-child(5) {
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .cat:nth-child(4) { border-right: 1px solid #e6e6e6; }
+    }
+
+    @media (max-width: 600px) {
+      .brand { font-size: 32px; }
+      .card { grid-template-columns: 1fr; }
+      .cat { border-right: none !important; }
+      .jump-btn { display: block; margin: 10px auto; width: 80%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="brand">你的品牌名</div>
+  </header>
+  <p class="subtitle">这里放一行副标题，比如：记录我的判断与证明</p >
+
+  <main class="card">
+
+    <!-- 左：自我介绍（跨两行） -->
+    <section class="intro">
+      <div class="avatar"></div>
+      <div class="name">你的名字</div>
+      <p class="text">
+        这里写一段自我介绍。比如：我是谁，我在做什么，这些图片想证明什么。
+      </p >
+      <a href=" " class="contact">user@domain.ext</a >
+    </section>
+
+    <!-- 右上1 -->
+    <a href="category1.html" class="cat">
+      <div class="label">01</div>
+      <div class="title">分类一</div>
+      <p class="desc">这里放这个分类的简短说明。</p >
+      <span class="details">详情 →</span>
+    </a >
+
+    <!-- 右上2 -->
+    <a href="category2.html" class="cat">
+      <div class="label">02</div>
+      <div class="title">分类二</div>
+      <p class="desc">这里放这个分类的简短说明。</p >
+      <span class="details">详情 →</span>
+    </a >
+
+    <!-- 右下1 -->
+    <a href="category3.html" class="cat">
+      <div class="label">03</div>
+      <div class="title">分类三</div>
+      <p class="desc">这里放这个分类的简短说明。</p >
+      <span class="details">详情 →</span>
+    </a >
+
+    <!-- 右下2 -->
+    <a href="category4.html" class="cat">
+      <div class="label">04</div>
+      <div class="title">分类四</div>
+      <p class="desc">这里放这个分类的简短说明。</p >
+      <span class="details">详情 →</span>
+    </a >
+
+  </main>
+
+  <!-- 新增：跳转按钮 -->
+  <div class="jump-btns">
+    <a href="story.html" class="jump-btn">STORY 故事页</a >
+    <a href="sound.html" class="jump-btn">SOUND 音乐页</a >
+  </div>
+
+</body>
+</html>

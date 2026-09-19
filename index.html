@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的作品集</title>
+  <title>Archive 档案</title>
   <style>
     @font-face {
       font-family: "My Font";
@@ -14,259 +14,455 @@
 
     body {
       font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #ffffff;
-      color: #1a1a1a;
-      min-height: 100vh;
-      padding: 0 24px 60px;
+      background: #fafafa;
+      color: #222;
+      line-height: 1.9;
+      padding: 60px 24px 120px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* 顶部品牌 */
-    .header {
-      text-align: center;
-      padding: 56px 0 16px;
-    }
-
-    .brand {
-      font-size: 48px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 15px;
-      color: #8a8a8a;
-      margin-bottom: 40px;
-    }
-
-    /* 大卡片：左1 + 右2×2 */
-    .card {
-      max-width: 1080px;
+    .container {
+      max-width: 1100px;
       margin: 0 auto;
-      background: #ffffff;
-      border: 1px solid #e6e6e6;
-      border-radius: 22px;
-      overflow: hidden;
+    }
+
+    /* 页面大标题 */
+    .page-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      color: #333;
+      margin-bottom: 18px;
+    }
+
+    .page-header .sub {
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      color: #999;
+    }
+
+    /* 品牌区块 */
+    .brand-block {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      grid-template-rows: auto auto;
-    }
-
-    /* 左栏：自我介绍，跨两行 */
-    .intro {
-      grid-row: 1 / 3;
-      padding: 40px 28px;
-      border-right: 1px solid #e6e6e6;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: #d9d9d9;
-      margin-bottom: 22px;
-    }
-
-    .intro .name {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .intro .text {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.75;
-      margin-bottom: 16px;
-    }
-
-    .intro .contact {
-      font-size: 13px;
-      color: #444;
-      text-decoration: underline;
-      margin-top: auto;
-    }
-
-    /* 右侧四个分类 */
-    .cat {
-      padding: 36px 26px;
-      text-decoration: none;
-      color: inherit;
+      grid-template-columns: 240px 1fr;
+      gap: 60px;
+      padding: 50px 0;
       border-bottom: 1px solid #e6e6e6;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.2s ease;
     }
 
-    .cat:nth-child(2),
-    .cat:nth-child(3) {
-      border-right: 1px solid #e6e6e6;
-    }
-
-    .cat:nth-child(4),
-    .cat:nth-child(5) {
+    .brand-block:last-child {
       border-bottom: none;
     }
 
-    .cat:hover { background: #fafafa; }
+    /* 左侧品牌信息 */
+    .brand-info {
+      position: sticky;
+      top: 40px;
+      align-self: start;
+    }
 
-    .cat .label {
+    .brand-name {
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: #222;
+      margin-bottom: 14px;
+    }
+
+    /* 品牌名下的细线 */
+    .brand-info .line {
+      width: 40px;
+      height: 1px;
+      background: #bbb;
+      margin-bottom: 16px;
+    }
+
+    .brand-range {
       font-size: 12px;
-      color: #b0b0b0;
-      letter-spacing: 0.08em;
-      margin-bottom: 14px;
+      color: #888;
+      letter-spacing: 0.1em;
+      line-height: 2;
     }
 
-    .cat .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      line-height: 1.3;
+    .brand-count {
+      font-size: 12px;
+      color: #aaa;
+      letter-spacing: 0.1em;
+      margin-top: 18px;
     }
 
-    .cat .desc {
-      font-size: 13px;
-      color: #777;
-      line-height: 1.7;
-      margin-bottom: 24px;
-      flex-grow: 1;
+    /* 右侧图片区 */
+    .brand-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
 
-    .details {
-      display: inline-flex;
+    .thumb {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      background: #ececec;
+      overflow: hidden;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .thumb:hover {
+      opacity: 0.7;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 缩略图下方的季节标签 */
+    .thumb-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6));
+      color: #fff;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== 大图预览层 ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 20, 0.96);
+      display: none;
       align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      border: 1px solid #dcdcdc;
-      border-radius: 999px;
-      font-size: 13px;
-      color: #222;
-      background: #fff;
-      width: fit-content;
-      transition: all 0.2s ease;
+      justify-content: center;
+      z-index: 999;
     }
 
-    .cat:hover .details {
-      border-color: #222;
-      gap: 12px;
+    .lightbox.active {
+      display: flex;
     }
 
-    /* 新增跳转按钮区 */
-    .jump-btns {
+    .lightbox-img {
+      max-width: 80vw;
+      max-height: 80vh;
+      object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    /* 预览图上的说明 */
+    .lightbox-caption {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
       text-align: center;
-      margin-top: 40px;
+      color: #e8e8e8;
+      font-size: 13px;
+      letter-spacing: 0.2em;
     }
 
-    .jump-btn {
-      display: inline-block;
-      padding: 18px 48px;
-      margin: 0 10px;
-      border: 1px solid #dcdcdc;
-      border-radius: 999px;
-      font-size: 15px;
-      color: #222;
-      text-decoration: none;
-      background: #fff;
-      transition: all 0.25s ease;
+    .lightbox-caption .brand {
+      font-size: 14px;
+      margin-bottom: 6px;
     }
 
-    .jump-btn:hover {
-      border-color: #222;
-      background: #fafafa;
+    .lightbox-caption .season {
+      font-size: 11px;
+      color: #999;
+      letter-spacing: 0.15em;
     }
 
-    /* 手机 / 平板适配 */
-    @media (max-width: 900px) {
-      .card {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto;
-      }
-      .intro {
-        grid-row: auto;
-        grid-column: 1 / 3;
-        border-right: none;
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .cat:nth-child(2),
-      .cat:nth-child(3) {
-        border-right: none;
-      }
-      .cat:nth-child(4),
-      .cat:nth-child(5) {
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .cat:nth-child(4) { border-right: 1px solid #e6e6e6; }
+    /* 左右箭头 */
+    .lightbox-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 56px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
     }
 
-    @media (max-width: 600px) {
-      .brand { font-size: 32px; }
-      .card { grid-template-columns: 1fr; }
-      .cat { border-right: none !important; }
-      .jump-btn { display: block; margin: 10px auto; width: 80%; }
+    .lightbox-arrow:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: #fff;
+    }
+
+    .lightbox-arrow.prev { left: 40px; }
+    .lightbox-arrow.next { right: 40px; }
+
+    /* 关闭按钮 */
+    .lightbox-close {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      color: #fff;
+      font-size: 30px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+      line-height: 1;
+    }
+
+    .lightbox-close:hover { opacity: 1; }
+
+    /* 计数器 */
+    .lightbox-counter {
+      position: absolute;
+      top: 34px;
+      left: 40px;
+      color: #999;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+    }
+
+    /* ===== 手机适配 ===== */
+    @media (max-width: 768px) {
+      body { padding: 40px 16px 80px; }
+      .page-header { margin-bottom: 50px; }
+      .page-header h1 { font-size: 22px; letter-spacing: 0.3em; }
+
+      .brand-block {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 36px 0;
+      }
+
+      .brand-info {
+        position: static;
+      }
+
+      .brand-images {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .lightbox-img { max-width: 92vw; max-height: 70vh; }
+      .lightbox-arrow { width: 44px; height: 44px; font-size: 18px; }
+      .lightbox-arrow.prev { left: 12px; }
+      .lightbox-arrow.next { right: 12px; }
+      .lightbox-close { top: 16px; right: 20px; font-size: 24px; }
+      .lightbox-counter { top: 20px; left: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <header class="header">
-    <div class="brand">你的品牌名</div>
-  </header>
-  <p class="subtitle">这里放一行副标题，比如：记录我的判断与证明</p >
+  <div class="container">
 
-  <main class="card">
+    <!-- 页面标题 -->
+    <header class="page-header">
+      <h1>ARCHIVE</h1>
+      <div class="sub">留下值得的</div>
+    </header>
 
-    <!-- 左：自我介绍（跨两行） -->
-    <section class="intro">
-      <div class="avatar"></div>
-      <div class="name">你的名字</div>
-      <p class="text">
-        这里写一段自我介绍。比如：我是谁，我在做什么，这些图片想证明什么。
-      </p >
-      <a href=" " class="contact">user@domain.ext</a >
+    <!-- 品牌 1 -->
+    <section class="brand-block">
+      <div class="brand-info">
+        <div class="brand-name">BRAND A</div>
+        <div class="line"></div>
+        <div class="brand-range">
+          Spring 2027 Ready-to-Wear<br>
+          —<br>
+          Spring 2029 Ready-to-Wear
+        </div>
+        <div class="brand-count">留下 3 张</div>
+      </div>
+
+      <div class="brand-images">
+        <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
+          <img src="QHBY0092.JPG" alt="" loading="lazy">>
+          <div class="thumb-label">Spring 2027 RTW</div>
+        </div>
+        <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
+          <img src="ASCS1531.JPG" alt="" loading="lazy">>
+          <div class="thumb-label">Fall 2028 RTW</div>
+        </div>
+        <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
+          <img src="BBIQ4566.JPG" alt="" loading="lazy">>
+          <div class="thumb-label">Spring 2029 RTW</div>
+        </div>
+      </div>
     </section>
 
-    <!-- 右上1 -->
-    <a href="category1.html" class="cat">
-      <div class="label">01</div>
-      <div class="title">分类一</div>
-      <p class="desc">这里放这个分类的简短说明。</p >
-      <span class="details">详情 →</span>
-    </a >
+    <!-- 品牌 2 -->
+    <section class="brand-block">
+      <div class="brand-info">
+        <div class="brand-name">BRAND B</div>
+        <div class="line"></div>
+        <div class="brand-range">
+          Fall 2027 Couture<br>
+          —<br>
+          Spring 2028 Ready-to-Wear
+        </div>
+        <div class="brand-count">留下 2 张</div>
+      </div>
 
-    <!-- 右上2 -->
-    <a href="category2.html" class="cat">
-      <div class="label">02</div>
-      <div class="title">分类二</div>
-      <p class="desc">这里放这个分类的简短说明。</p >
-      <span class="details">详情 →</span>
-    </a >
+      <div class="brand-images">
+        <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">>
+          <div class="thumb-label">Fall 2027 Couture</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW">
+          <img src="" alt="" loading="lazy">>
+          <div class="thumb-label">Spring 2028 RTW</div>
+        </div>
+      </div>
+    </section>
 
-    <!-- 右下1 -->
-    <a href="category3.html" class="cat">
-      <div class="label">03</div>
-      <div class="title">分类三</div>
-      <p class="desc">这里放这个分类的简短说明。</p >
-      <span class="details">详情 →</span>
-    </a >
+    <!-- 品牌 3 -->
+    <section class="brand-block">
+      <div class="brand-info">
+        <div class="brand-name">BRAND C</div>
+        <div class="line"></div>
+        <div class="brand-range">
+          Resort 2028<br>
+          —<br>
+          Spring 2029 Ready-to-Wear
+        </div>
+        <div class="brand-count">留下 1 张</div>
+      </div>
 
-    <!-- 右下2 -->
-    <a href="category4.html" class="cat">
-      <div class="label">04</div>
-      <div class="title">分类四</div>
-      <p class="desc">这里放这个分类的简短说明。</p >
-      <span class="details">详情 →</span>
-    </a >
+      <div class="brand-images">
+        <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
+          <img src="CBNS5837.JPG" alt="" loading="lazy">>
+          <div class="thumb-label">Resort 2028</div>
+        </div>
+      </div>
+    </section>
 
-  </main>
+    <!-- 品牌 4 -->
+    <section class="brand-block">
+      <div class="brand-info">
+        <div class="brand-name">BRAND D</div>
+        <div class="line"></div>
+        <div class="brand-range">
+          Spring 2029 Ready-to-Wear
+        </div>
+        <div class="brand-count">留下 1 张</div>
+      </div>
 
-  <!-- 新增：跳转按钮 -->
-  <div class="jump-btns">
-    <a href="story.html" class="jump-btn">STORY 故事页</a >
-    <a href="sound.html" class="jump-btn">SOUND 音乐页</a >
+      <div class="brand-images">
+        <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW">
+          <img src="" alt="" loading="lazy">>
+          <div class="thumb-label">Spring 2029 RTW</div>
+        </div>
+      </div>
+    </section>
+
   </div>
+
+  <!-- ===== 大图预览层 ===== -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-counter" id="counter">1 / 1</div>
+    <div class="lightbox-close" id="close">✕</div>
+    <div class="lightbox-arrow prev" id="prev">‹</div>
+    <img src="" alt="" loading="lazy"> class="lightbox-img" id="lightboxImg">
+    <div class="lightbox-arrow next" id="next">›</div>
+    <div class="lightbox-caption">
+      <div class="brand" id="captionBrand">品牌</div>
+      <div class="season" id="captionSeason">季节</div>
+    </div>
+  </div>
+
+  <!-- ===== JavaScript ===== -->
+  <script>
+    // 收集所有缩略图，按顺序组成一个列表
+    const thumbs = Array.from(document.querySelectorAll('.thumb'));
+
+    // 构建图片数据
+    const images = thumbs.map(t => ({
+      src: t.querySelector('img').src,
+      brand: t.dataset.brand || '',
+      season: t.dataset.season || ''
+    }));
+
+    let currentIndex = 0;
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const captionBrand = document.getElementById('captionBrand');
+    const captionSeason = document.getElementById('captionSeason');
+    const counter = document.getElementById('counter');
+    const btnPrev = document.getElementById('prev');
+    const btnNext = document.getElementById('next');
+    const btnClose = document.getElementById('close');
+
+    // 打开预览
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightbox();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 关闭预览
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // 更新预览内容
+    function updateLightbox() {
+      const img = images[currentIndex];
+      lightboxImg.src = img.src;
+      captionBrand.textContent = img.brand;
+      captionSeason.textContent = img.season;
+      counter.textContent = (currentIndex + 1) + ' / ' + images.length;
+    }
+
+    // 上一张
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      updateLightbox();
+    }
+
+    // 下一张（到末尾自动跳回第一张，也就是下一个品牌的第一张）
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+      updateLightbox();
+    }
+
+    // 绑定缩略图点击
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => openLightbox(i));
+    });
+
+    // 绑定按钮
+    btnPrev.addEventListener('click', prevImage);
+    btnNext.addEventListener('click', nextImage);
+    btnClose.addEventListener('click', closeLightbox);
+
+    // 点击背景关闭
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // 键盘控制
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
 
 </body>
 </html>
