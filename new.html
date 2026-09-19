@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound 主题歌预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      background: #eef1f5;
+      color: #4a5560;
+      line-height: 1.9;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 背景：淡灰蓝柔光 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(160, 180, 200, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(160, 180, 200, 0.12) 0%, transparent 45%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ===== 顶部导航（毛玻璃） ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 18px 40px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      color: #4a5560;
+
+      /* 毛玻璃效果 */
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .navbar a {
+      color: #4a5560;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .navbar a:hover { opacity: 0.6; }
+
+    .navbar a.active {
+      color: #8a95a0;
+      font-weight: 600;
+      border-bottom: 1px solid #a0b0c0;
+      padding-bottom: 2px;
+    }
+
+    /* 虚线分隔 */
+    .navbar-divider {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      border-top: 1px dashed rgba(160, 180, 200, 0.5);
+    }
+
+    /* ===== 左侧竖排大字 ===== */
+    .side-title {
+      position: fixed;
+      left: 20px;
+      top: 120px;
+      font-size: 60px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      color: rgba(140, 160, 180, 0.35);
+      letter-spacing: 0.05em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      z-index: 1;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    /* ===== 中央卡片（毛玻璃） ===== */
+    .main {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      padding: 20px 40px 100px 120px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      padding: 60px 50px;
+      text-align: center;
+
+      /* 毛玻璃效果 */
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 32px rgba(120, 140, 160, 0.12);
+    }
+
+    /* 大标题 OPENING */
+    .card-title {
+      font-size: 52px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      color: rgba(140, 160, 180, 0.5);
+      letter-spacing: 0.05em;
+      margin-bottom: 60px;
+      line-height: 1;
+    }
+
+    /* 歌名 */
+    .song-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #4a5560;
+      margin-bottom: 24px;
+      letter-spacing: 0.1em;
+    }
+
+    /* 制作信息 */
+    .song-info {
+      font-size: 13px;
+      color: #7a8590;
+      line-height: 2.2;
+      margin-bottom: 50px;
+      letter-spacing: 0.05em;
+    }
+
+    /* 底部三条横线 */
+    .card-lines {
+      border-top: 1px solid rgba(160, 180, 200, 0.5);
+      padding-top: 12px;
+    }
+
+    .card-lines::before,
+    .card-lines::after {
+      content: "";
+      display: block;
+      height: 1px;
+      background: rgba(160, 180, 200, 0.5);
+      margin-top: 8px;
+    }
+
+    /* ===== 手机适配 ===== */
+    @media (max-width: 768px) {
+      .side-title {
+        position: static;
+        writing-mode: horizontal-tb;
+        font-size: 28px;
+        text-align: center;
+        padding: 20px 0 10px;
+        color: rgba(140, 160, 180, 0.4);
+      }
+      .navbar {
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 14px 16px;
+        font-size: 12px;
+      }
+      .main {
+        padding: 20px 20px 60px;
+      }
+      .card {
+        padding: 36px 24px;
+      }
+      .card-title {
+        font-size: 34px;
+        margin-bottom: 40px;
+      }
+      .song-name { font-size: 18px; }
+      .song-info { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="navbar">
+    <a href=" ">Top</a >
+    <a href="story.html">Story</a >
+    <a href="#">Characters</a >
+    <a href="#">System</a >
+    <a href="#">Gallery</a >
+    <a href="#" class="active">Sound</a >
+    <a href="#">Special</a >
+    <a href="#">Info.</a >
+  </nav>
+  <div class="navbar-divider"></div>
+
+  <!-- 左侧竖排大字 -->
+  <div class="side-title">THEME SONG</div>
+
+  <!-- 中央卡片 -->
+  <div class="main">
+    <div class="card">
+      <div class="card-title">OPENING</div>
+
+      <div class="song-name">パンドラ</div>
+
+      <div class="song-info">
+        アーティスト：緒方恵美<br>
+        作詞：em:óu<br>
+        作曲：黒須克彦<br>
+        編曲：黒須克彦
+      </div>
+
+      <div class="card-lines"></div>
+    </div>
+  </div>
+
+</body>
+</html>
