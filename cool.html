@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>版式预存</title>
+  <style>
+    @font-face {
+      font-family: "My Font";
+      src: url("./fonts/myfont.ttf") format("truetype");
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      background: #eef1f5;
+      color: #4a5560;
+      padding: 60px 40px 100px;
+      line-height: 1.9;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 背景柔光 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(160, 180, 200, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(160, 180, 200, 0.12) 0%, transparent 45%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 两栏布局 */
+    .layout {
+      position: relative;
+      z-index: 1;
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    /* 标题 */
+    .section-title {
+      font-size: 32px;
+      font-weight: 400;
+      font-family: Georgia, "Times New Roman", serif;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #4a5560;
+      letter-spacing: 0.05em;
+    }
+
+    .section-sub {
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 0.3em;
+      margin-bottom: 16px;
+      color: #8a95a0;
+    }
+
+    /* 细线（原来 4px 太粗，改成 1px 更雅） */
+    .divider {
+      height: 1px;
+      background: rgba(140, 160, 180, 0.5);
+      margin-bottom: 40px;
+    }
+
+    /* 左栏：新着情报列表 */
+    .news-item {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(140, 160, 180, 0.3);
+      font-size: 14px;
+      color: #5a6570;
+      letter-spacing: 0.02em;
+    }
+
+    .news-item:last-child {
+      border-bottom: none;
+    }
+
+    /* 右栏：Twitter */
+    .twitter-label {
+      font-size: 13px;
+      margin-bottom: 24px;
+      color: #7a8590;
+      letter-spacing: 0.08em;
+    }
+
+    .twitter-block {
+      border-top: 1px solid rgba(140, 160, 180, 0.5);
+      margin-top: 40px;
+      padding-top: 20px;
+      min-height: 200px;
+      /* 毛玻璃 */
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 4px;
+    }
+
+    /* 底部联系信息（毛玻璃卡片） */
+    .footer {
+      position: relative;
+      z-index: 1;
+      max-width: 1080px;
+      margin: 80px auto 0;
+      text-align: center;
+      font-size: 14px;
+      line-height: 2.2;
+      color: #5a6570;
+      padding: 40px 30px;
+      /* 毛玻璃 */
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 4px;
+      box-shadow: 0 8px 32px rgba(120, 140, 160, 0.1);
+    }
+
+    .footer .mail {
+      margin: 8px 0 24px;
+      color: #4a5560;
+    }
+
+    .footer .note {
+      font-size: 13px;
+      color: #8a95a0;
+    }
+
+    .credits {
+      margin-top: 50px;
+      font-size: 12px;
+      line-height: 2;
+      color: #8a95a0;
+      letter-spacing: 0.03em;
+    }
+
+    /* 手机适配 */
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 60px;
+      }
+      body { padding: 40px 20px 60px; }
+      .section-title { font-size: 24px; }
+      .footer { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- 左栏 -->
+    <section>
+      <h2 class="section-title">What's New</h2>
+      <div class="section-sub">新 着 情 報</div>
+      <div class="divider"></div>
+
+      <div class="news-item">
+        2018.10.01　ストーリー、グッズ情報公開されました。アフターティベントの開催も決定致しました！
+      </div>
+      <div class="news-item">
+        2018.09.10　PV、キャストコメントが届きました。
+      </div>
+      <div class="news-item">
+        2018.08.24　第二弾ビジュアル解禁・アンサンブル情報解禁致しました。<br>
+        CASTページがリニューアル。
+      </div>
+      <div class="news-item">
+        2018.08.14　キービジュアル、第一弾キャラクター写真公開
+      </div>
+    </section>
+
+    <!-- 右栏 -->
+    <section>
+      <h2 class="section-title">Twitter</h2>
+      <div class="section-sub">ツ イ ッ タ ー</div>
+      <div class="divider"></div>
+
+      <div class="twitter-label">Tweets by norn9_stage</div>
+
+      <div class="twitter-block"></div>
+    </section>
+
+  </div>
+
+  <!-- 底部（毛玻璃卡片） -->
+  <div class="footer">
+    <div>［お問い合わせ］</div>
+    <div>舞台「NORN9 ノルン＋ノネット」制作部</div>
+    <div class="mail">MAIL：norn9.stage.net@gmail.com</div>
+    <div class="note">※お問い合わせ内容によってはお応えできない場合もございます。あらかじめご了承ください。</div>
+
+    <div class="credits">
+      <div>企画・制作プロダクション：Enthena</div>
+      <div>主催：舞台「NORN9 ノルン＋ノネット」製作委員会（虎屋／原宿PICNIC／Enthena／劇団バルスキッチン）</div>
+      <div>©IDEA FACTORY</div>
+      <div>©舞台「NORN9 ノルン＋ノネット」製作委員会</div>
+    </div>
+  </div>
+
+</body>
+</html>
