@@ -148,11 +148,12 @@ body {
 
 .expand-close:hover { color: #333; }
 
-/* ===== 图片区：自适应 + 单张限宽 ===== */
+/* ===== 图片区：关键改动 ===== */
 .expand-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
   gap: 20px;
+  justify-content: start;
 }
 
 .expand-images .thumb {
@@ -162,7 +163,6 @@ body {
   overflow: hidden;
   cursor: pointer;
   transition: opacity 0.3s;
-  max-width: 240px;   /* 单张图最大 240px */
 }
 
 .expand-images .thumb:hover { opacity: 0.7; }
@@ -280,10 +280,7 @@ body {
   .expand-images {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-  }
-
-  .expand-images .thumb {
-    max-width: none;   /* 手机上填满格子 */
+    justify-content: stretch;
   }
 
   .lightbox-img { max-width: 92vw; max-height: 70vh; }
