@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Archive 档案</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+
 <style>
 @font-face {
   font-family: "My Font";
@@ -21,7 +24,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== 开屏 ===== */
+/* ===== 开屏：文字先走，背景后走 ===== */
 .splash {
   position: fixed;
   inset: 0;
@@ -30,24 +33,37 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  animation: splashFade 0.5s ease 1s forwards;
+  animation: bgOut 0.6s ease 2.6s forwards;
 }
 
 .splash span {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
   font-style: italic;
-  font-size: 32px;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  font-size: 46px;
+  letter-spacing: 0.02em;
   color: #c8c8c8;
   opacity: 0;
-  animation: textFade 0.5s ease forwards;
+  filter: blur(8px);
+  animation: blurIn 1s ease forwards,
+             textOut 0.6s ease 2s forwards;
 }
 
-@keyframes textFade {
-  to { opacity: 1; }
+@keyframes blurIn {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
-@keyframes splashFade {
+@keyframes textOut {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes bgOut {
   to {
     opacity: 0;
     visibility: hidden;
