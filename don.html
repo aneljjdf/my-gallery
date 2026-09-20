@@ -24,6 +24,88 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ===== 开屏：蒲公英 ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: bgOut 0.7s ease 2.4s forwards;
+}
+
+.splash .dandelion {
+  width: 160px;
+  height: 160px;
+  opacity: 0;
+  animation: dandelionIn 1.2s ease forwards;
+}
+
+.splash .dandelion svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 蒲公英呼吸（缓慢） */
+@keyframes dandelionIn {
+  0% { opacity: 0; transform: scale(0.96); filter: blur(6px); }
+  100% { opacity: 0.65; transform: scale(1); filter: blur(0); }
+}
+
+/* 背景淡出 */
+@keyframes bgOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 开屏：蒲公英 -->
+<div class="splash">
+  <div class="dandelion">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#9a9a9a" stroke-width="0.6">
+      <!-- 花心 -->
+      <circle cx="50" cy="42" r="3" />
+      <!-- 绒毛 -->
+      <g opacity="0.9">
+        <line x1="50" y1="42" x2="50" y2="8" />
+        <line x1="50" y1="42" x2="50" y2="76" />
+        <line x1="50" y1="42" x2="16" y2="42" />
+        <line x1="50" y1="42" x2="84" y2="42" />
+        <line x1="50" y1="42" x2="26" y2="18" />
+        <line x1="50" y1="42" x2="74" y2="18" />
+        <line x1="50" y1="42" x2="26" y2="66" />
+        <line x1="50" y1="42" x2="74" y2="66" />
+        <line x1="50" y1="42" x2="36" y2="10" />
+        <line x1="50" y1="42" x2="64" y2="10" />
+        <line x1="50" y1="42" x2="13" y2="32" />
+        <line x1="50" y1="42" x2="13" y2="52" />
+        <line x1="50" y1="42" x2="87" y2="32" />
+        <line x1="50" y1="42" x2="87" y2="52" />
+      </g>
+      <!-- 小绒球 -->
+      <g opacity="0.6">
+        <circle cx="50" cy="8" r="2" />
+        <circle cx="50" cy="76" r="2" />
+        <circle cx="16" cy="42" r="2" />
+        <circle cx="84" cy="42" r="2" />
+        <circle cx="26" cy="18" r="2" />
+        <circle cx="74" cy="18" r="2" />
+        <circle cx="26" cy="66" r="2" />
+        <circle cx="74" cy="66" r="2" />
+      </g>
+      <!-- 花茎 -->
+      <line x1="50" y1="45" x2="50" y2="88" />
+    </svg>
+  </div>
+</div>
+
+<style>
 /* ===== 吸顶状态栏 ===== */
 .topbar {
   position: sticky;
@@ -36,7 +118,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 -24px 60px;
+  margin: 0 -24px 40px;
   padding: 14px 24px;
 }
 
@@ -60,168 +142,23 @@ body {
   margin: 0 auto;
 }
 
-/* ===== 顶部展示区 ===== */
-.hero {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto 90px;
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
 }
 
-/* 辅助线：贴着结构走，一端渐渐消失 */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -40px -60px;
-  z-index: -1;
-  pointer-events: none;
-
-  background-image:
-    /* 3 条竖线：左边缘、25%、右边缘 */
-    linear-gradient(to bottom, rgba(120,120,120,0.35), rgba(120,120,120,0.05) 80%),
-    linear-gradient(to bottom, rgba(120,120,120,0.30), rgba(120,120,120,0.05) 80%),
-    linear-gradient(to bottom, rgba(120,120,120,0.25), rgba(120,120,120,0.05) 80%),
-
-    /* 4 条横线：顶边、33%、66%、底边 */
-    linear-gradient(to left, rgba(120,120,120,0.35), rgba(120,120,120,0.05) 80%),
-    linear-gradient(to left, rgba(120,120,120,0.28), rgba(120,120,120,0.05) 80%),
-    linear-gradient(to left, rgba(120,120,120,0.22), rgba(120,120,120,0.05) 80%),
-    linear-gradient(to left, rgba(120,120,120,0.18), rgba(120,120,120,0.05) 80%);
-
-  background-repeat: no-repeat;
-
-  background-size:
-    1px 100%, 1px 100%, 1px 100%,
-    100% 1px, 100% 1px, 100% 1px, 100% 1px;
-
-  background-position:
-    0 0,
-    25% 0,
-    100% 0,
-    0 0,
-    0 33%,
-    0 66%,
-    0 100%;
-
-  -webkit-mask-image: radial-gradient(circle at center, #000 75%, transparent 100%);
-  mask-image: radial-gradient(circle at center, #000 75%, transparent 100%);
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  color: #333;
+  margin-bottom: 16px;
 }
 
-/* 线框本体 */
-.hero-frame {
-  position: relative;
-  background: rgba(255, 255, 255, 0.45);
-  font-family: "Courier New", "My Font", monospace;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  color: #6a6a6a;
-  line-height: 2.2;
-}
-
-/* 用 SVG 画框：一笔一笔描出来 */
-.hero-border-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hero-border-svg rect {
-  fill: none;
-  stroke: rgba(120, 120, 120, 0.5);
-  stroke-width: 1;
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
-  animation: drawFrame 1.6s ease-out 0.2s forwards;
-}
-
-@keyframes drawFrame {
-  to { stroke-dashoffset: 0; }
-}
-
-/* 顶部行 */
-.hero-top {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: 22px 28px;
-  border-bottom: 1px dashed rgba(120, 120, 120, 0.35);
-  opacity: 0;
-  animation: fadeIn 0.6s ease 1.2s forwards;
-}
-
-.hero-top .left { letter-spacing: 0.15em; }
-.hero-top .right { color: #b8b8b8; font-size: 12px; }
-
-/* 中间行 */
-.hero-mid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
-  padding: 22px 28px;
-  border-bottom: 1px dashed rgba(120, 120, 120, 0.35);
-  opacity: 0;
-  animation: fadeIn 0.6s ease 1.5s forwards;
-}
-
-.hero-mid .label { letter-spacing: 0.2em; }
-.hero-mid .input {
-  display: flex;
-  justify-content: space-between;
-  color: #b8b8b8;
-}
-
-/* 底部 */
-.hero-bot {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
-  padding: 28px;
-  gap: 28px;
-  opacity: 0;
-  animation: fadeIn 0.6s ease 1.8s forwards;
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-/* 蒲公英 */
-.hero-dandelion {
-  width: 100%;
-  max-width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  opacity: 0.55;
-  animation: dandelionBreathe 4s ease-in-out infinite;
-}
-
-@keyframes dandelionBreathe {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.05); opacity: 0.75; }
-}
-
-.hero-dandelion svg { width: 100%; height: 100%; }
-
-/* 说明文字 */
-.hero-desc {
-  font-size: 13px;
-  line-height: 2.2;
-  letter-spacing: 0.1em;
-  color: #5a5a5a;
-}
-
-/* 右下角浅色英文 */
-.hero-note {
-  position: absolute;
-  right: 0;
-  bottom: -46px;
-  font-family: "Playfair Display", Georgia, serif;
-  font-style: italic;
-  font-size: 20px;
-  color: #c8c8c8;
-  letter-spacing: 0.02em;
+.page-header .sub {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: #aaa;
 }
 
 /* ===== 品牌网格 ===== */
@@ -417,7 +354,7 @@ body {
   body { padding: 0 16px 80px; }
 
   .topbar {
-    margin: 0 -16px 40px;
+    margin: 0 -16px 30px;
     padding: 12px 16px;
   }
 
@@ -430,21 +367,8 @@ body {
     letter-spacing: 0.05em;
   }
 
-  .hero { margin-bottom: 60px; }
-  .hero-frame { font-size: 11px; }
-
-  .hero-top,
-  .hero-mid,
-  .hero-bot { padding: 16px 18px; }
-
-  .hero-mid { grid-template-columns: 1fr; gap: 8px; }
-  .hero-bot { grid-template-columns: 1fr; gap: 20px; text-align: center; }
-
-  .hero-dandelion { max-width: 90px; height: 90px; }
-
-  .hero-note { font-size: 16px; bottom: -32px; }
-
-  .hero::before { inset: -20px -24px; }
+  .page-header { margin-bottom: 40px; }
+  .page-header h1 { font-size: 18px; letter-spacing: 0.3em; }
 
   .brand-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -468,10 +392,10 @@ body {
   .lightbox-arrow { font-size: 24px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
+
+  .splash .dandelion { width: 120px; height: 120px; }
 }
 </style>
-</head>
-<body>
 
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
@@ -484,78 +408,11 @@ body {
 
 <div class="container">
 
-  <!-- ===== 顶部展示区 ===== -->
-  <section class="hero">
-    <div class="hero-frame">
+  <header class="page-header">
+    <h1>ARCHIVE</h1>
+    <div class="sub">留下值得的</div>
+  </header>
 
-      <!-- SVG 画框：一笔一笔描出来 -->
-      <svg class="hero-border-svg" preserveAspectRatio="none">
-        <rect x="0.5" y="0.5" width="calc(100% - 1px)" height="calc(100% - 1px)" />
-      </svg>
-
-      <div class="hero-top">
-        <div class="left">ORBIT (BY LINEAR). SAN FRANCISCO. 09 DEC 2026.</div>
-        <div class="right">0006860849</div>
-      </div>
-
-      <div class="hero-mid">
-        <div class="label">YOUR EMAIL</div>
-        <div class="input">
-          <span>HELLO@COMPANY.COM</span>
-          <span>SUBMIT</span>
-        </div>
-      </div>
-
-      <div class="hero-bot">
-
-        <div class="hero-dandelion">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#888" stroke-width="0.6">
-            <circle cx="50" cy="45" r="3" />
-            <g opacity="0.9">
-              <line x1="50" y1="45" x2="50" y2="10" />
-              <line x1="50" y1="45" x2="50" y2="80" />
-              <line x1="50" y1="45" x2="15" y2="45" />
-              <line x1="50" y1="45" x2="85" y2="45" />
-              <line x1="50" y1="45" x2="25" y2="20" />
-              <line x1="50" y1="45" x2="75" y2="20" />
-              <line x1="50" y1="45" x2="25" y2="70" />
-              <line x1="50" y1="45" x2="75" y2="70" />
-              <line x1="50" y1="45" x2="35" y2="12" />
-              <line x1="50" y1="45" x2="65" y2="12" />
-              <line x1="50" y1="45" x2="12" y2="35" />
-              <line x1="50" y1="45" x2="12" y2="55" />
-              <line x1="50" y1="45" x2="88" y2="35" />
-              <line x1="50" y1="45" x2="88" y2="55" />
-            </g>
-            <g opacity="0.6">
-              <circle cx="50" cy="10" r="2" />
-              <circle cx="50" cy="80" r="2" />
-              <circle cx="15" cy="45" r="2" />
-              <circle cx="85" cy="45" r="2" />
-              <circle cx="25" cy="20" r="2" />
-              <circle cx="75" cy="20" r="2" />
-              <circle cx="25" cy="70" r="2" />
-              <circle cx="75" cy="70" r="2" />
-            </g>
-            <line x1="50" y1="48" x2="50" y2="88" />
-          </svg>
-        </div>
-
-        <div class="hero-desc">
-          SOFTWARE DEVELOPMENT IS ENTERING A NEW ERA.<br>
-          ORBIT IS A ONE DAY LOOK INSIDE THE SYSTEMS,<br>
-          DECISIONS, AND METHODS OF TODAY'S MOST<br>
-          ADVANCED PRODUCT TEAMS. SAVE THE DATE.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="hero-note">save the date</div>
-  </section>
-
-  <!-- ===== 品牌网格 ===== -->
   <div class="brand-grid">
 
     <div class="brand-card" onclick="openExpand('expand-a')">
