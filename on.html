@@ -46,7 +46,7 @@ body {
   color: #aaa;
 }
 
-/* ===== 品牌区块 ===== */
+/* 品牌区块 */
 .brand-block {
   border-top: 1px solid #e6e6e6;
   padding: 50px 0;
@@ -95,25 +95,18 @@ body {
   user-select: none;
 }
 
-.brand-toggle:hover {
-  color: #333;
-}
+.brand-toggle:hover { color: #333; }
 
-/* 图片区（默认显示前 3 张） */
+/* 图片区：桌面自适应 */
 .brand-images {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 
-/* 展开后：多出的图默认隐藏 */
-.thumb.extra {
-  display: none;
-}
-
-.brand-block.expanded .thumb.extra {
-  display: block;
-}
+/* 超过 3 张的默认隐藏 */
+.thumb.extra { display: none; }
+.brand-block.expanded .thumb.extra { display: block; }
 
 /* 单张图 */
 .thumb {
@@ -221,7 +214,7 @@ body {
   letter-spacing: 0.2em;
 }
 
-/* ===== 手机适配 ===== */
+/* ===== 手机适配：一排 3 张 ===== */
 @media (max-width: 768px) {
   body { padding: 40px 16px 80px; }
   .page-header { margin-bottom: 50px; }
@@ -241,8 +234,8 @@ body {
   }
 
   .brand-images {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
 
   .lightbox-img { max-width: 92vw; max-height: 70vh; }
@@ -261,7 +254,7 @@ body {
     <div class="sub">留下值得的</div>
   </header>
 
-  <!-- 品牌 1：3 张，不显示展开按钮 -->
+  <!-- 品牌 A：3 张 -->
   <section class="brand-block">
     <div class="brand-header">
       <div class="brand-header-left">
@@ -286,7 +279,7 @@ body {
     </div>
   </section>
 
-  <!-- 品牌 2：6 张，只显示前 3 张 -->
+  <!-- 品牌 B：6 张，只显示前 3 张，+3 looks -->
   <section class="brand-block" id="block-b">
     <div class="brand-header">
       <div class="brand-header-left">
@@ -309,7 +302,8 @@ body {
         <img src="RLHF3163.JPG" alt="" loading="lazy">
         <div class="thumb-label">Spring 2028 RTW 1</div>
       </div>
-      <!-- 以下是展开后才显示的 -->
+
+      <!-- 第 4 张起：加 extra -->
       <div class="thumb extra" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
         <img src="RLHF3163.JPG" alt="" loading="lazy">
         <div class="thumb-label">Spring 2028 RTW 2</div>
@@ -325,7 +319,7 @@ body {
     </div>
   </section>
 
-  <!-- 品牌 3：1 张 -->
+  <!-- 品牌 C：1 张 -->
   <section class="brand-block">
     <div class="brand-header">
       <div class="brand-header-left">
@@ -358,7 +352,7 @@ body {
 </div>
 
 <script>
-// ===== 展开 / 收起 =====
+// 展开 / 收起
 function toggleBrand(blockId, toggleEl) {
   const block = document.getElementById(blockId);
   block.classList.toggle('expanded');
@@ -371,7 +365,7 @@ function toggleBrand(blockId, toggleEl) {
   }
 }
 
-// ===== 大图预览 =====
+// 大图预览
 const thumbs = Array.from(document.querySelectorAll('.thumb'));
 const images = thumbs.map(t => ({
   src: t.querySelector('img').src,
