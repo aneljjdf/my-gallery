@@ -174,15 +174,17 @@ body {
   letter-spacing: 0.12em;
 }
 
-/* 图片区：限制最大宽度，防止单张撑满 */
+/* 图片区：每张最大 240px，防止单张撑满 */
 .expand-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
+  grid-template-columns: repeat(auto-fill, 240px);
   gap: 20px;
+  justify-content: start;
 }
 
 .expand-images .thumb {
   position: relative;
+  width: 240px;
   aspect-ratio: 4 / 5;
   background: #ececec;
   overflow: hidden;
@@ -211,13 +213,11 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 大图预览：默认（方向 B 毛玻璃） ===== */
+/* ===== 大图预览：方向 D（背光聚光灯） ===== */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(40, 40, 45, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: radial-gradient(circle at center, #555 0%, #222 60%, #111 100%);
   display: none;
   align-items: center;
   justify-content: center;
@@ -232,57 +232,24 @@ body {
   max-height: 80vh;
   object-fit: contain;
   cursor: default;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-/* ===== 方向 C：浅色背景 + 图外深色柔光 ===== */
-.lightbox.dir-c {
-  background: rgba(250, 250, 250, 0.98);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.lightbox.dir-c .lightbox-img {
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.04),
-              0 30px 100px rgba(0, 0, 0, 0.35),
-              0 0 200px rgba(0, 0, 0, 0.25);
-}
-
-.lightbox.dir-c .lightbox-caption { color: #555; }
-.lightbox.dir-c .lightbox-caption .season { color: #999; }
-.lightbox.dir-c .lightbox-arrow { color: #333; }
-.lightbox.dir-c .lightbox-counter { color: #999; }
-
-/* ===== 方向 D：灰色背景 + 聚光灯 ===== */
-.lightbox.dir-d {
-  background: radial-gradient(circle at center, #555 0%, #222 60%, #111 100%);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.lightbox.dir-d .lightbox-img {
   box-shadow: 0 0 80px rgba(255, 255, 255, 0.15),
               0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-.lightbox.dir-d .lightbox-caption { color: #ddd; }
-.lightbox.dir-d .lightbox-caption .season { color: #999; }
-
-/* ===== 通用预览 UI ===== */
 .lightbox-caption {
   position: absolute;
   bottom: 20px;
   left: 0;
   right: 0;
   text-align: center;
-  color: #e8e8e8;
+  color: #ddd;
   font-size: 12px;
   letter-spacing: 0.2em;
   cursor: default;
 }
 
 .lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
-.lightbox-caption .season { font-size: 11px; color: #aaa; }
+.lightbox-caption .season { font-size: 11px; color: #999; }
 
 .lightbox-arrow {
   position: absolute;
@@ -342,9 +309,15 @@ body {
   .expand-content { padding: 50px 16px 100px; }
   .expand-title { font-size: 18px; }
 
+  /* 手机上：一行 2 张，尺寸统一，单张不撑满 */
   .expand-images {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+    justify-content: stretch;
+  }
+
+  .expand-images .thumb {
+    width: 100%;
   }
 
   .lightbox-img { max-width: 92vw; max-height: 70vh; }
@@ -479,7 +452,7 @@ body {
   </div>
 </div>
 
-<!-- ===== 展开层：品牌 C（方向 C） ===== -->
+<!-- ===== 展开层：品牌 C ===== -->
 <div class="expand-layer" id="expand-c">
   <div class="expand-content" onclick="closeIfBlank(event, 'expand-c')">
     <div class="expand-inner">
@@ -497,7 +470,7 @@ body {
   </div>
 </div>
 
-<!-- ===== 展开层：品牌 D（方向 D） ===== -->
+<!-- ===== 展开层：品牌 D ===== -->
 <div class="expand-layer" id="expand-d">
   <div class="expand-content" onclick="closeIfBlank(event, 'expand-d')">
     <div class="expand-inner">
@@ -557,13 +530,9 @@ const captionBrand = document.getElementById('captionBrand');
 const captionSeason = document.getElementById('captionSeason');
 const counter = document.getElementById('counter');
 
-function openLightbox(imgList, index, dirClass) {
+function openLightbox(imgList, index) {
   currentImages = imgList;
   currentIndex = index;
-  // 清掉之前的 dir 类
-  lightbox.classList.remove('dir-c', 'dir-d');
-  // 加上新的
-  if (dirClass) lightbox.classList.add(dirClass);
   updateLightbox();
   lightbox.classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -592,14 +561,7 @@ function nextImage() {
   updateLightbox();
 }
 
-// 每个展开层单独绑定
 document.querySelectorAll('.expand-layer').forEach(layer => {
-  const layerId = layer.id;
-  // 判断这个层用哪个方向
-  let dirClass = null;
-  if (layerId === 'expand-c') dirClass = 'dir-c';
-  if (layerId === 'expand-d') dirClass = 'dir-d';
-
   const thumbs = Array.from(layer.querySelectorAll('.thumb'));
   const imgList = thumbs.map(t => ({
     src: t.querySelector('img').src,
@@ -610,7 +572,7 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
   thumbs.forEach((thumb, i) => {
     thumb.addEventListener('click', (e) => {
       e.stopPropagation();
-      openLightbox(imgList, i, dirClass);
+      openLightbox(imgList, i);
     });
   });
 });
