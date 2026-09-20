@@ -85,6 +85,7 @@ body {
 
 .brand-card {
   position: relative;
+  cursor: pointer;
 }
 
 .brand-cover {
@@ -93,7 +94,6 @@ body {
   background: #ececec;
   overflow: hidden;
   margin-bottom: 16px;
-  cursor: pointer;
 }
 
 .brand-cover img {
@@ -106,30 +106,6 @@ body {
 
 .brand-card:hover .brand-cover img {
   transform: scale(1.03);
-}
-
-.cover-jump {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 20px;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: all 0.25s ease;
-  z-index: 2;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  pointer-events: none;
-}
-
-.brand-card:hover .cover-jump {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .brand-name {
@@ -160,6 +136,7 @@ body {
   z-index: 100;
   display: none;
   overflow-y: auto;
+  background: rgba(250, 250, 250, 0.98);
 }
 
 .expand-layer.active {
@@ -167,9 +144,9 @@ body {
 }
 
 .expand-content {
-  background: rgba(250, 250, 250, 0.98);
   min-height: 100vh;
   padding: 70px 40px 120px;
+  cursor: pointer;
 }
 
 .expand-inner {
@@ -182,6 +159,7 @@ body {
   padding-bottom: 24px;
   border-bottom: 1px solid #e6e6e6;
   text-align: center;
+  cursor: default;
 }
 
 .expand-title {
@@ -234,7 +212,7 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 大图预览 ===== */
+/* ===== 大图预览：去掉 ✕，点空白关 ===== */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -243,6 +221,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 999;
+  cursor: pointer;
 }
 
 .lightbox.active { display: flex; }
@@ -251,6 +230,7 @@ body {
   max-width: 80vw;
   max-height: 80vh;
   object-fit: contain;
+  cursor: default;
 }
 
 .lightbox-caption {
@@ -262,6 +242,7 @@ body {
   color: #ddd;
   font-size: 12px;
   letter-spacing: 0.2em;
+  cursor: default;
 }
 
 .lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
@@ -288,19 +269,6 @@ body {
 .lightbox-arrow.prev { left: 30px; }
 .lightbox-arrow.next { right: 30px; }
 
-.lightbox-close {
-  position: absolute;
-  top: 30px;
-  right: 40px;
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  opacity: 0.6;
-  line-height: 1;
-}
-
-.lightbox-close:hover { opacity: 1; }
-
 .lightbox-counter {
   position: absolute;
   top: 34px;
@@ -308,6 +276,7 @@ body {
   color: #888;
   font-size: 12px;
   letter-spacing: 0.2em;
+  cursor: default;
 }
 
 /* ===== 手机适配 ===== */
@@ -374,7 +343,6 @@ body {
     <div class="brand-card" onclick="openExpand('expand-a')">
       <div class="brand-cover">
         <img src="QHBY0092.JPG" alt="" loading="lazy">
-        <span class="cover-jump">↗</span>
       </div>
       <div class="brand-name">BRAND A</div>
       <div class="brand-range">Spring 2027 — Spring 2029 RTW</div>
@@ -384,7 +352,6 @@ body {
     <div class="brand-card" onclick="openExpand('expand-b')">
       <div class="brand-cover">
         <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <span class="cover-jump">↗</span>
       </div>
       <div class="brand-name">BRAND B</div>
       <div class="brand-range">Fall 2027 Couture — Spring 2028 RTW</div>
@@ -394,7 +361,6 @@ body {
     <div class="brand-card" onclick="openExpand('expand-c')">
       <div class="brand-cover">
         <img src="CBNS5837.JPG" alt="" loading="lazy">
-        <span class="cover-jump">↗</span>
       </div>
       <div class="brand-name">BRAND C</div>
       <div class="brand-range">Resort 2028 — Spring 2029 RTW</div>
@@ -403,7 +369,6 @@ body {
     <div class="brand-card" onclick="openExpand('expand-d')">
       <div class="brand-cover">
         <img src="ASCS1531.JPG" alt="" loading="lazy">
-        <span class="cover-jump">↗</span>
       </div>
       <div class="brand-name">BRAND D</div>
       <div class="brand-range">Spring 2029 RTW</div>
@@ -416,7 +381,7 @@ body {
 
 <!-- ===== 展开层：品牌 A ===== -->
 <div class="expand-layer" id="expand-a">
-  <div class="expand-content">
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-a')">
     <div class="expand-inner">
       <div class="expand-header">
         <div class="expand-title">BRAND A</div>
@@ -442,7 +407,7 @@ body {
 
 <!-- ===== 展开层：品牌 B ===== -->
 <div class="expand-layer" id="expand-b">
-  <div class="expand-content">
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-b')">
     <div class="expand-inner">
       <div class="expand-header">
         <div class="expand-title">BRAND B</div>
@@ -480,7 +445,7 @@ body {
 
 <!-- ===== 展开层：品牌 C ===== -->
 <div class="expand-layer" id="expand-c">
-  <div class="expand-content">
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-c')">
     <div class="expand-inner">
       <div class="expand-header">
         <div class="expand-title">BRAND C</div>
@@ -498,7 +463,7 @@ body {
 
 <!-- ===== 展开层：品牌 D ===== -->
 <div class="expand-layer" id="expand-d">
-  <div class="expand-content">
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-d')">
     <div class="expand-inner">
       <div class="expand-header">
         <div class="expand-title">BRAND D</div>
@@ -518,10 +483,9 @@ body {
   </div>
 </div>
 
-<!-- ===== 大图预览 ===== -->
+<!-- ===== 大图预览：无 ✕，点空白关 ===== -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-counter" id="counter">1 / 1</div>
-  <div class="lightbox-close" id="close">✕</div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg">
   <div class="lightbox-arrow next" id="next">›</div>
@@ -540,6 +504,15 @@ function openExpand(id) {
 function closeExpand(id) {
   document.getElementById(id).classList.remove('active');
   document.body.style.overflow = '';
+}
+
+/* 点空白处关（点到图片、文字、箭头、链接时不关） */
+function closeIfBlank(e, id) {
+  // 如果点到的是可交互元素，就不关
+  if (e.target.closest('.thumb')) return;
+  if (e.target.closest('.expand-header')) return;
+  // 其他情况关掉
+  closeExpand(id);
 }
 
 let currentImages = [];
@@ -596,24 +569,27 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
       openLightbox(imgList, i);
     });
   });
-
-  // 点空白处关闭（点内容里的元素不关）
-  layer.addEventListener('click', (e) => {
-    // 只有点到 expand-content 本身才算“空白”
-    if (e.target.classList.contains('expand-content') ||
-        e.target.classList.contains('expand-inner') ||
-        e.target.classList.contains('expand-header')) {
-      closeExpand(layer.id);
-    }
-  });
 });
 
-document.getElementById('prev').addEventListener('click', prevImage);
-document.getElementById('next').addEventListener('click', nextImage);
-document.getElementById('close').addEventListener('click', closeLightbox);
-
+// 大图预览：点空白处关
 lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox) closeLightbox();
+  // 只有点到背景、caption、counter 才关
+  if (e.target === lightbox || 
+      e.target.classList.contains('lightbox-caption') ||
+      e.target.classList.contains('brand') ||
+      e.target.classList.contains('season') ||
+      e.target.classList.contains('lightbox-counter')) {
+    closeLightbox();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  prevImage();
+});
+document.getElementById('next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  nextImage();
 });
 
 document.addEventListener('keydown', (e) => {
