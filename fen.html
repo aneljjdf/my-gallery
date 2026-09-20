@@ -17,8 +17,39 @@ body {
   background: #fafafa;
   color: #333;
   line-height: 1.7;
-  padding: 40px 24px 120px;
+  padding: 0 24px 120px;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ===== 吸顶状态栏 ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 250, 250, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -24px 40px;
+  padding: 14px 24px;
+}
+
+.topbar .logo {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #111;
+}
+
+.topbar .menu {
+  display: flex;
+  gap: 22px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #666;
 }
 
 .container {
@@ -122,6 +153,7 @@ body {
   margin-bottom: 40px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e6e6e6;
+  cursor: default;
 }
 
 .expand-title {
@@ -138,17 +170,9 @@ body {
   margin-top: 8px;
 }
 
-.expand-close {
-  font-size: 24px;
-  color: #888;
-  cursor: pointer;
-  line-height: 1;
-  padding: 4px 10px;
-}
+/* 注意：这里没有 expand-close 了 */
 
-.expand-close:hover { color: #333; }
-
-/* ===== 图片区：关键改动 ===== */
+/* ===== 图片区：自适应 + 单张限宽 ===== */
 .expand-images {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
@@ -186,7 +210,7 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 大图预览 ===== */
+/* ===== 大图预览：无 ✕ ===== */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -195,6 +219,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 999;
+  cursor: pointer;
 }
 
 .lightbox.active { display: flex; }
@@ -203,6 +228,7 @@ body {
   max-width: 80vw;
   max-height: 80vh;
   object-fit: contain;
+  cursor: default;
 }
 
 .lightbox-caption {
@@ -214,6 +240,7 @@ body {
   color: #ddd;
   font-size: 12px;
   letter-spacing: 0.2em;
+  cursor: default;
 }
 
 .lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
@@ -223,32 +250,22 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
   user-select: none;
-}
-
-.lightbox-arrow.prev { left: 40px; }
-.lightbox-arrow.next { right: 40px; }
-
-.lightbox-close {
-  position: absolute;
-  top: 30px;
-  right: 40px;
-  color: #fff;
-  font-size: 28px;
-  cursor: pointer;
   opacity: 0.6;
-  line-height: 1;
+  transition: opacity 0.2s;
 }
+
+.lightbox-arrow:hover { opacity: 1; }
+.lightbox-arrow.prev { left: 30px; }
+.lightbox-arrow.next { right: 30px; }
 
 .lightbox-counter {
   position: absolute;
@@ -257,11 +274,21 @@ body {
   color: #888;
   font-size: 12px;
   letter-spacing: 0.2em;
+  cursor: default;
 }
 
 /* ===== 手机适配 ===== */
 @media (max-width: 768px) {
-  body { padding: 24px 16px 80px; }
+  body { padding: 0 16px 80px; }
+
+  .topbar {
+    margin: 0 -16px 30px;
+    padding: 12px 16px;
+  }
+
+  .topbar .logo { font-size: 14px; }
+  .topbar .menu { display: none; }
+
   .page-header { margin-bottom: 40px; }
   .page-header h1 { font-size: 18px; letter-spacing: 0.3em; }
 
@@ -284,13 +311,23 @@ body {
   }
 
   .lightbox-img { max-width: 92vw; max-height: 70vh; }
-  .lightbox-arrow { width: 40px; height: 40px; font-size: 16px; }
+  .lightbox-arrow { font-size: 24px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
 }
 </style>
 </head>
 <body>
+
+<!-- 吸顶状态栏 -->
+<header class="topbar">
+  <div class="logo">ARCHIVE</div>
+  <div class="menu">
+    <span>BRANDS</span>
+    <span>SEASONS</span>
+    <span>ABOUT</span>
+  </div>
+</header>
 
 <div class="container">
 
@@ -342,26 +379,27 @@ body {
 
 <!-- ===== 展开层：品牌 A ===== -->
 <div class="expand-layer" id="expand-a">
-  <div class="expand-inner">
-    <div class="expand-header">
-      <div>
-        <div class="expand-title">BRAND A</div>
-        <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-a')">
+    <div class="expand-inner">
+      <div class="expand-header">
+        <div>
+          <div class="expand-title">BRAND A</div>
+          <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
+        </div>
       </div>
-      <div class="expand-close" onclick="closeExpand('expand-a')">✕</div>
-    </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
-        <img src="QHBY0092.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2027 RTW</div>
-      </div>
-      <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
-        <img src="ASCS1531.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Fall 2028 RTW</div>
-      </div>
-      <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2029 RTW</div>
+      <div class="expand-images">
+        <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
+          <img src="QHBY0092.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2027 RTW</div>
+        </div>
+        <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
+          <img src="ASCS1531.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Fall 2028 RTW</div>
+        </div>
+        <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
+          <img src="BBIQ4566.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2029 RTW</div>
+        </div>
       </div>
     </div>
   </div>
@@ -369,38 +407,39 @@ body {
 
 <!-- ===== 展开层：品牌 B ===== -->
 <div class="expand-layer" id="expand-b">
-  <div class="expand-inner">
-    <div class="expand-header">
-      <div>
-        <div class="expand-title">BRAND B</div>
-        <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-b')">
+    <div class="expand-inner">
+      <div class="expand-header">
+        <div>
+          <div class="expand-title">BRAND B</div>
+          <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
+        </div>
       </div>
-      <div class="expand-close" onclick="closeExpand('expand-b')">✕</div>
-    </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Fall 2027 Couture 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Fall 2027 Couture 2</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2028 RTW 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2028 RTW 2</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 3">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2028 RTW 3</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 4">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2028 RTW 4</div>
+      <div class="expand-images">
+        <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 1">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Fall 2027 Couture 1</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 2">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Fall 2027 Couture 2</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 1">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2028 RTW 1</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2028 RTW 2</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 3">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2028 RTW 3</div>
+        </div>
+        <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 4">
+          <img src="RLHF3163.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2028 RTW 4</div>
+        </div>
       </div>
     </div>
   </div>
@@ -408,18 +447,19 @@ body {
 
 <!-- ===== 展开层：品牌 C ===== -->
 <div class="expand-layer" id="expand-c">
-  <div class="expand-inner">
-    <div class="expand-header">
-      <div>
-        <div class="expand-title">BRAND C</div>
-        <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-c')">
+    <div class="expand-inner">
+      <div class="expand-header">
+        <div>
+          <div class="expand-title">BRAND C</div>
+          <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
+        </div>
       </div>
-      <div class="expand-close" onclick="closeExpand('expand-c')">✕</div>
-    </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
-        <img src="CBNS5837.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Resort 2028</div>
+      <div class="expand-images">
+        <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
+          <img src="CBNS5837.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Resort 2028</div>
+        </div>
       </div>
     </div>
   </div>
@@ -427,31 +467,31 @@ body {
 
 <!-- ===== 展开层：品牌 D ===== -->
 <div class="expand-layer" id="expand-d">
-  <div class="expand-inner">
-    <div class="expand-header">
-      <div>
-        <div class="expand-title">BRAND D</div>
-        <div class="expand-range">Spring 2029 RTW</div>
+  <div class="expand-content" onclick="closeIfBlank(event, 'expand-d')">
+    <div class="expand-inner">
+      <div class="expand-header">
+        <div>
+          <div class="expand-title">BRAND D</div>
+          <div class="expand-range">Spring 2029 RTW</div>
+        </div>
       </div>
-      <div class="expand-close" onclick="closeExpand('expand-d')">✕</div>
-    </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 1">
-        <img src="ASCS1531.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2029 RTW 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 2">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy">
-        <div class="thumb-label">Spring 2029 RTW 2</div>
+      <div class="expand-images">
+        <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 1">
+          <img src="ASCS1531.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2029 RTW 1</div>
+        </div>
+        <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 2">
+          <img src="BBIQ4566.JPG" alt="" loading="lazy">
+          <div class="thumb-label">Spring 2029 RTW 2</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 大图预览 -->
+<!-- ===== 大图预览：无 ✕ ===== -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-counter" id="counter">1 / 1</div>
-  <div class="lightbox-close" id="close">✕</div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg">
   <div class="lightbox-arrow next" id="next">›</div>
@@ -470,6 +510,13 @@ function openExpand(id) {
 function closeExpand(id) {
   document.getElementById(id).classList.remove('active');
   document.body.style.overflow = '';
+}
+
+/* 点空白处关（点到图片、品牌名区域时不关） */
+function closeIfBlank(e, id) {
+  if (e.target.closest('.thumb')) return;
+  if (e.target.closest('.expand-header')) return;
+  closeExpand(id);
 }
 
 let currentImages = [];
@@ -528,19 +575,37 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
   });
 });
 
-document.getElementById('prev').addEventListener('click', prevImage);
-document.getElementById('next').addEventListener('click', nextImage);
-document.getElementById('close').addEventListener('click', closeLightbox);
-
+/* 大图预览：点空白处关 */
 lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox) closeLightbox();
+  if (e.target === lightbox ||
+      e.target.classList.contains('lightbox-caption') ||
+      e.target.classList.contains('brand') ||
+      e.target.classList.contains('season') ||
+      e.target.classList.contains('lightbox-counter')) {
+    closeLightbox();
+  }
+});
+
+document.getElementById('prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  prevImage();
+});
+document.getElementById('next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  nextImage();
 });
 
 document.addEventListener('keydown', (e) => {
-  if (!lightbox.classList.contains('active')) return;
-  if (e.key === 'ArrowLeft') prevImage();
-  if (e.key === 'ArrowRight') nextImage();
-  if (e.key === 'Escape') closeLightbox();
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  } else if (document.querySelector('.expand-layer.active')) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.expand-layer.active').forEach(l => l.classList.remove('active'));
+      document.body.style.overflow = '';
+    }
+  }
 });
 </script>
 
