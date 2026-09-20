@@ -129,7 +129,7 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 展开层：全屏，纸感直角，左对齐 ===== */
+/* ===== 展开层 ===== */
 .expand-layer {
   position: fixed;
   inset: 0;
@@ -139,9 +139,7 @@ body {
   background: rgba(250, 250, 250, 0.98);
 }
 
-.expand-layer.active {
-  display: block;
-}
+.expand-layer.active { display: block; }
 
 .expand-content {
   min-height: 100vh;
@@ -154,7 +152,6 @@ body {
   margin: 0 auto;
 }
 
-/* 品牌名：左对齐 */
 .expand-header {
   margin-bottom: 50px;
   padding-bottom: 24px;
@@ -177,9 +174,10 @@ body {
   letter-spacing: 0.12em;
 }
 
+/* 图片区：限制最大宽度，防止单张撑满 */
 .expand-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
   gap: 20px;
 }
 
@@ -213,7 +211,7 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 大图预览：深灰 + 毛玻璃 ===== */
+/* ===== 大图预览：默认（方向 B 毛玻璃） ===== */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -237,6 +235,40 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
+/* ===== 方向 C：浅色背景 + 图外深色柔光 ===== */
+.lightbox.dir-c {
+  background: rgba(250, 250, 250, 0.98);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.lightbox.dir-c .lightbox-img {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.04),
+              0 30px 100px rgba(0, 0, 0, 0.35),
+              0 0 200px rgba(0, 0, 0, 0.25);
+}
+
+.lightbox.dir-c .lightbox-caption { color: #555; }
+.lightbox.dir-c .lightbox-caption .season { color: #999; }
+.lightbox.dir-c .lightbox-arrow { color: #333; }
+.lightbox.dir-c .lightbox-counter { color: #999; }
+
+/* ===== 方向 D：灰色背景 + 聚光灯 ===== */
+.lightbox.dir-d {
+  background: radial-gradient(circle at center, #555 0%, #222 60%, #111 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.lightbox.dir-d .lightbox-img {
+  box-shadow: 0 0 80px rgba(255, 255, 255, 0.15),
+              0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox.dir-d .lightbox-caption { color: #ddd; }
+.lightbox.dir-d .lightbox-caption .season { color: #999; }
+
+/* ===== 通用预览 UI ===== */
 .lightbox-caption {
   position: absolute;
   bottom: 20px;
@@ -447,7 +479,7 @@ body {
   </div>
 </div>
 
-<!-- ===== 展开层：品牌 C ===== -->
+<!-- ===== 展开层：品牌 C（方向 C） ===== -->
 <div class="expand-layer" id="expand-c">
   <div class="expand-content" onclick="closeIfBlank(event, 'expand-c')">
     <div class="expand-inner">
@@ -465,7 +497,7 @@ body {
   </div>
 </div>
 
-<!-- ===== 展开层：品牌 D ===== -->
+<!-- ===== 展开层：品牌 D（方向 D） ===== -->
 <div class="expand-layer" id="expand-d">
   <div class="expand-content" onclick="closeIfBlank(event, 'expand-d')">
     <div class="expand-inner">
@@ -525,9 +557,13 @@ const captionBrand = document.getElementById('captionBrand');
 const captionSeason = document.getElementById('captionSeason');
 const counter = document.getElementById('counter');
 
-function openLightbox(imgList, index) {
+function openLightbox(imgList, index, dirClass) {
   currentImages = imgList;
   currentIndex = index;
+  // 清掉之前的 dir 类
+  lightbox.classList.remove('dir-c', 'dir-d');
+  // 加上新的
+  if (dirClass) lightbox.classList.add(dirClass);
   updateLightbox();
   lightbox.classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -556,7 +592,14 @@ function nextImage() {
   updateLightbox();
 }
 
+// 每个展开层单独绑定
 document.querySelectorAll('.expand-layer').forEach(layer => {
+  const layerId = layer.id;
+  // 判断这个层用哪个方向
+  let dirClass = null;
+  if (layerId === 'expand-c') dirClass = 'dir-c';
+  if (layerId === 'expand-d') dirClass = 'dir-d';
+
   const thumbs = Array.from(layer.querySelectorAll('.thumb'));
   const imgList = thumbs.map(t => ({
     src: t.querySelector('img').src,
@@ -567,7 +610,7 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
   thumbs.forEach((thumb, i) => {
     thumb.addEventListener('click', (e) => {
       e.stopPropagation();
-      openLightbox(imgList, i);
+      openLightbox(imgList, i, dirClass);
     });
   });
 });
