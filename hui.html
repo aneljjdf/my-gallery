@@ -108,7 +108,7 @@ body {
   transform: scale(1.03);
 }
 
-/* 悬浮时的箭头（暂时不跳转，只做视觉） */
+/* 悬浮时的箭头（暂时不跳转） */
 .cover-jump {
   position: absolute;
   bottom: 14px;
@@ -155,7 +155,7 @@ body {
   letter-spacing: 0.1em;
 }
 
-/* ===== 展开层：从底部弹出，90% 高 ===== */
+/* ===== 展开层：从底部弹出，90% 高，纸感直角 ===== */
 .expand-layer {
   position: fixed;
   inset: 0;
@@ -176,9 +176,7 @@ body {
 
 .expand-content {
   background: rgba(250, 250, 250, 0.98);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 20px 20px 0 0;
+  border-radius: 0;
   height: 90vh;
   padding: 50px 40px 80px;
   transform: translateY(100%);
@@ -575,7 +573,6 @@ body {
 </div>
 
 <script>
-/* ===== 展开层 ===== */
 function openExpand(id) {
   document.getElementById(id).classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -586,12 +583,10 @@ function closeExpand(id) {
   document.body.style.overflow = '';
 }
 
-// 点背景关闭
 function closeExpandIfOutside(e, id) {
   if (e.target === e.currentTarget) closeExpand(id);
 }
 
-/* ===== 大图预览 ===== */
 let currentImages = [];
 let currentIndex = 0;
 
