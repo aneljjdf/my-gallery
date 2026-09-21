@@ -13,7 +13,17 @@
   src: url("./fonts/myfont.ttf") format("truetype");
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 body {
   font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
@@ -22,6 +32,13 @@ body {
   line-height: 1.7;
   padding: 0 24px 120px;
   -webkit-font-smoothing: antialiased;
+}
+
+/* 图片：禁止拖拽、禁止长按保存 */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
 }
 
 /* ===== 开屏：文字先走，背景后走 ===== */
@@ -393,7 +410,7 @@ body {
 
     <div class="brand-card" onclick="openExpand('expand-a')">
       <div class="brand-cover">
-        <img src="QHBY0092.JPG" alt="" loading="lazy">
+        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
       </div>
       <div class="brand-name">BRAND A</div>
       <div class="brand-range">Spring 2027 — Spring 2029 RTW</div>
@@ -402,7 +419,7 @@ body {
 
     <div class="brand-card" onclick="openExpand('expand-b')">
       <div class="brand-cover">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
       </div>
       <div class="brand-name">BRAND B</div>
       <div class="brand-range">Fall 2027 Couture — Spring 2028 RTW</div>
@@ -411,7 +428,7 @@ body {
 
     <div class="brand-card" onclick="openExpand('expand-c')">
       <div class="brand-cover">
-        <img src="CBNS5837.JPG" alt="" loading="lazy">
+        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
       </div>
       <div class="brand-name">BRAND C</div>
       <div class="brand-range">Resort 2028 — Spring 2029 RTW</div>
@@ -419,7 +436,7 @@ body {
 
     <div class="brand-card" onclick="openExpand('expand-d')">
       <div class="brand-cover">
-        <img src="ASCS1531.JPG" alt="" loading="lazy">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
       </div>
       <div class="brand-name">BRAND D</div>
       <div class="brand-range">Spring 2029 RTW</div>
@@ -441,15 +458,15 @@ body {
     </div>
     <div class="expand-images">
       <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
-        <img src="QHBY0092.JPG" alt="" loading="lazy">
+        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2027 RTW</div>
       </div>
       <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
-        <img src="ASCS1531.JPG" alt="" loading="lazy">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Fall 2028 RTW</div>
       </div>
       <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy">
+        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2029 RTW</div>
       </div>
     </div>
@@ -467,27 +484,27 @@ body {
     </div>
     <div class="expand-images">
       <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Fall 2027 Couture 1</div>
       </div>
       <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Fall 2027 Couture 2</div>
       </div>
       <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2028 RTW 1</div>
       </div>
       <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2028 RTW 2</div>
       </div>
       <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 3">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2028 RTW 3</div>
       </div>
       <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 4">
-        <img src="RLHF3163.JPG" alt="" loading="lazy">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2028 RTW 4</div>
       </div>
     </div>
@@ -505,7 +522,7 @@ body {
     </div>
     <div class="expand-images">
       <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
-        <img src="CBNS5837.JPG" alt="" loading="lazy">
+        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Resort 2028</div>
       </div>
     </div>
@@ -523,11 +540,11 @@ body {
     </div>
     <div class="expand-images">
       <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 1">
-        <img src="ASCS1531.JPG" alt="" loading="lazy">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2029 RTW 1</div>
       </div>
       <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 2">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy">
+        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
         <div class="thumb-label">Spring 2029 RTW 2</div>
       </div>
     </div>
@@ -538,7 +555,7 @@ body {
 <div class="lightbox" id="lightbox">
   <div class="lightbox-counter" id="counter">1 / 1</div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
-  <img src="" alt="" class="lightbox-img" id="lightboxImg">
+  <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
   <div class="lightbox-arrow next" id="next">›</div>
   <div class="lightbox-caption">
     <div class="brand" id="captionBrand">品牌</div>
