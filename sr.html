@@ -40,7 +40,6 @@ img {
   pointer-events: auto;
 }
 
-/* 输入框允许选中、输入 */
 input {
   -webkit-user-select: text;
   user-select: text;
@@ -106,21 +105,6 @@ input {
   letter-spacing: 0.2em;
   color: #111;
   flex-shrink: 0;
-}
-
-/* 右侧：菜单 + 搜索 */
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.topbar .menu {
-  display: flex;
-  gap: 22px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: #666;
 }
 
 /* 搜索框 */
@@ -239,7 +223,6 @@ input {
   letter-spacing: 0.1em;
 }
 
-/* 搜索无结果提示 */
 .no-result {
   grid-column: 1 / -1;
   text-align: center;
@@ -399,7 +382,22 @@ input {
   font-size: 11px;
   letter-spacing: 0.2em;
   color: #bbb;
-  line-height: 2;
+  line-height: 2.4;
+}
+
+.footer .links {
+  margin-top: 10px;
+}
+
+.footer .links a {
+  color: #bbb;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s ease;
+}
+
+.footer .links a:hover {
+  color: #555;
 }
 
 /* ===== 回到顶部 ===== */
@@ -440,13 +438,6 @@ input {
   }
 
   .topbar .logo { font-size: 14px; }
-
-  .topbar-right {
-    gap: 12px;
-  }
-
-  /* 手机上隐藏菜单，只留搜索 */
-  .topbar .menu { display: none; }
 
   .search-input {
     width: 80px;
@@ -498,21 +489,13 @@ input {
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
 
-  <div class="topbar-right">
-    <div class="menu">
-      <span>BRANDS</span>
-      <span>SEASONS</span>
-      <span>ABOUT</span>
-    </div>
-
-    <!-- 搜索 -->
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
-      </svg>
-      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH">
-    </div>
+  <!-- 搜索 -->
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+    </svg>
+    <input type="text" class="search-input" id="searchInput" placeholder="SEARCH">
   </div>
 </header>
 
@@ -560,12 +543,17 @@ input {
       <div class="brand-count">2 looks</div>
     </div>
 
-    <!-- 搜索无结果 -->
     <div class="no-result" id="noResult">没有匹配的品牌</div>
 
   </div>
 
+  <!-- ===== 底部 ===== -->
   <div class="footer" id="footer"></div>
+  <div class="footer links">
+    <a href="about.html">ABOUT</a>
+    <span>·</span>
+    <a href="contact.html">CONTACT</a>
+  </div>
 
 </div>
 
@@ -797,7 +785,6 @@ cards.sort((a, b) => {
   return nameA.localeCompare(nameB, 'en');
 });
 
-// 按排好的顺序重新插入
 cards.forEach(card => grid.appendChild(card));
 
 /* ===== 底部数字：自动统计 ===== */
