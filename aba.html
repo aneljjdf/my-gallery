@@ -9,8 +9,8 @@
 
 <style>
 @font-face {
-  font-family: "My Font";
-  src: url("./fonts/myfont.ttf") format("truetype");
+  font-family: "fangzheng";
+  src: url("./fonts/fangzheng.otf") format("truetype");
 }
 
 * {
@@ -30,7 +30,7 @@ html, body {
 }
 
 body {
-  font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-family: "fangzheng", "Hiragino Mincho ProN", "Yu Mincho", serif;
   background: #fafafa;
   color: #111;
 }
@@ -45,7 +45,7 @@ body {
 }
 
 .scroller-inner {
-  height: 400vh;
+  height: 500vh;   /* 从 400 改成 500，多留 1 屏 */
   pointer-events: none;
 }
 
@@ -88,7 +88,6 @@ body {
 .word span {
   display: inline-block;
   position: relative;
-  /* 关键：每个字母独立垂落 */
   transform: translateY(var(--drop-y, 0));
   transition: transform 0.05s linear;
 }
@@ -137,8 +136,8 @@ body {
 .black-text {
   position: absolute;
   left: 50%;
-  bottom: 20%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 80%;
   max-width: 640px;
   text-align: center;
@@ -197,9 +196,9 @@ body {
 
 <section class="black-cover" id="blackCover">
   <div class="black-text" id="blackText">
-    这里收录的，是我看过的秀场造型里，留下来的那些。<br>
-    不是最好看的，是看过后还愿意留下的。<br><br>
-    看过的远不止这些，这里只放留下来的。
+    _<br>
+    当X的标准成为你的视线<br><br>
+    。
   </div>
 </section>
 
@@ -257,7 +256,9 @@ function update() {
 
   const p1 = Math.min(scrollY / vh, 1);
   const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
-  const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
+
+  // ===== 关键：缩圆从 3vh 才开始（原来 2vh） =====
+  const p3 = Math.max(0, Math.min((scrollY - vh * 3) / vh, 1));
 
   introImg.style.filter = `blur(${p1 * 20}px)`;
 
@@ -347,7 +348,7 @@ function update() {
 
   wordWhite.style.clipPath = `inset(${topClip}% 0 0 0)`;
 
-  // ===== 垂落：每个字母独立 =====
+  // 垂落
   const dropProgress = Math.max(0, Math.min((p1 - 0.85) / 0.15, 1));
 
   const spans = wordWhite.querySelectorAll('span');
@@ -357,7 +358,7 @@ function update() {
     span.style.setProperty('--drop-y', y + 'vh');
   });
 
-  // ===== 提线：每一帧，用字母的“垂落后的真实位置”画线 =====
+  // 提线
   const strings = stringsEl.querySelectorAll('.string');
   const wrapRect = wordWrap.getBoundingClientRect();
 
@@ -369,12 +370,10 @@ function update() {
     const centerX = spanRect.left - wrapRect.left + spanRect.width / 2;
     line.style.left = centerX + 'px';
 
-    // 线的底部 = 字母顶部
     const topY = spanRect.top - wrapRect.top;
 
-    // 线长：字母垂落后，从字母顶部往上，到“垂落起点”的高度
     const factor = parseFloat(line.dataset.factor) || 1;
-    const lineHeight = dropProgress * 15 * factor; // vh
+    const lineHeight = dropProgress * 15 * factor;
 
     line.style.top = topY + 'px';
     line.style.height = lineHeight + 'vh';
