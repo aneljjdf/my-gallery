@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — Archive</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700&display=swap" rel="stylesheet">
 
 <style>
 @font-face {
@@ -52,40 +52,45 @@ body {
 .intro {
   position: fixed;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafafa;
   z-index: 1;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  transition: opacity 0.3s ease;
-}
-
-.intro-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  width: 80%;
-  max-width: 900px;
+  overflow: hidden;
 }
 
 .intro-img {
   width: 100%;
-  max-width: 320px;
-  height: auto;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
+  display: block;
   transition: filter 0.1s linear;
 }
 
-.intro-word {
+.word-wrap {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.word {
   font-family: "Playfair Display", Georgia, serif;
-  font-style: italic;
+  font-style: normal;
   font-weight: 500;
-  font-size: 40px;
-  color: #111;
+  font-size: 28px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.word-black { color: #111; }
+
+.word-white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #f0f0f0;
+  clip-path: inset(100% 0 0 0);
 }
 
 .black-cover {
@@ -96,25 +101,7 @@ body {
   transform: translateY(100%);
   will-change: transform;
   overflow: hidden;
-  -webkit-transform: translateZ(0);
 }
-
-.black-word {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: "Playfair Display", Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: 40px;
-  color: #f0f0f0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  white-space: nowrap;
-}
-
-.black-word.show { opacity: 1; }
 
 .black-text {
   position: absolute;
@@ -129,10 +116,7 @@ body {
   letter-spacing: 0.06em;
   color: #888;
   opacity: 0;
-  transition: opacity 0.8s ease;
 }
-
-.black-text.show { opacity: 1; }
 
 .outro {
   position: fixed;
@@ -147,10 +131,7 @@ body {
   transition: opacity 0.4s ease;
 }
 
-.outro.show {
-  opacity: 1;
-  pointer-events: auto;
-}
+.outro.show { opacity: 1; }
 
 .outro a {
   font-size: 13px;
@@ -159,37 +140,29 @@ body {
   text-decoration: none;
   border-bottom: 1px solid #ccc;
   padding-bottom: 4px;
+  pointer-events: auto;
   transition: color 0.3s, border-color 0.3s;
 }
 
-.outro a:hover {
-  color: #111;
-  border-color: #111;
-}
+.outro a:hover { color: #111; border-color: #111; }
 
 @media (max-width: 768px) {
-  .intro-inner {
-    flex-direction: column;
-    gap: 24px;
-  }
-  .intro-img { max-width: 200px; }
-  .intro-word,
-  .black-word { font-size: 26px; }
   .black-text { font-size: 13px; }
 }
 </style>
 </head>
 <body>
 
-<section class="intro" id="intro">
-  <div class="intro-inner">
-    <img class="intro-img" id="introImg" src="IMG_1959.png" alt="">
-    <div class="intro-word" id="introWord">ARCHIVE</div>
-  </div>
+<section class="intro">
+  <img class="intro-img" id="introImg" src="1959.png" alt="">
 </section>
 
+<div class="word-wrap" id="wordWrap">
+  <div class="word word-black" id="wordBlack">ARCHIVE</div>
+  <div class="word word-white" id="wordWhite">ARCHIVE</div>
+</div>
+
 <section class="black-cover" id="blackCover">
-  <div class="black-word" id="blackWord">ARCHIVE</div>
   <div class="black-text" id="blackText">
     这里收录的，是我看过的秀场造型里，留下来的那些。<br>
     不是最好看的，是看过后还愿意留下的。<br><br>
@@ -207,27 +180,32 @@ body {
 
 <script>
 const scroller = document.getElementById('scroller');
-const intro = document.getElementById('intro');
 const introImg = document.getElementById('introImg');
 const blackCover = document.getElementById('blackCover');
-const blackWord = document.getElementById('blackWord');
 const blackText = document.getElementById('blackText');
 const outro = document.getElementById('outro');
+const wordWrap = document.getElementById('wordWrap');
+const wordBlack = document.getElementById('wordBlack');
+const wordWhite = document.getElementById('wordWhite');
+
+const BASE_FONT_SIZE = 28;
+const BASE_LETTER_SPACING = 1;
+const MAX_LETTER_SPACING = 24;   // 字距拉宽的上限（1 → 24px，变化更明显）
 
 function update() {
   const scrollY = scroller.scrollTop;
   const vh = window.innerHeight;
 
-  // 三段进度
   const p1 = Math.min(scrollY / vh, 1);
   const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
   const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
 
-  // ===== 统一 transform =====
+  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.4})`;
+
+  // 黑底
   let transform = '';
 
   if (p3 > 0) {
-    // 缩圆阶段：用正方形 + scale，保证正圆
     const size = Math.min(window.innerWidth, vh);
     const scale = 1 - p3 * 0.96;
 
@@ -238,7 +216,6 @@ function update() {
     blackCover.style.borderRadius = '50%';
     transform = `translate(-50%, -50%) scale(${scale})`;
   } else {
-    // 升起阶段：translateY
     blackCover.style.width = '100%';
     blackCover.style.height = '100%';
     blackCover.style.left = '0';
@@ -248,30 +225,68 @@ function update() {
   }
 
   blackCover.style.transform = transform;
-  blackCover.style.opacity = '1';
 
-  // 图：模糊 + 变暗
-  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
+  // 黑底边缘
+  const blackEdge = (1 - p1) * 100;
 
-  // 黑底上的词、文字
-  if (p1 > 0.5 && p3 < 0.4) {
-    blackWord.classList.add('show');
+  // 字的位置：跟着黑底边缘走
+  const wordPosFollow = blackEdge + 4;
+  const wordPos = Math.min(50, wordPosFollow);
+
+  wordWrap.style.top = wordPos + '%';
+
+  // 用固定基准字号，算字高
+  const wordHeightPercent = (BASE_FONT_SIZE / vh) * 100;
+  const wordTopPercent = wordPos - wordHeightPercent / 2;
+  const wordBottomPercent = wordPos + wordHeightPercent / 2;
+
+  // ===== 变化进度：从“黑底边缘碰到字底部”开始，到“完全过字顶部”结束 =====
+  let passProgress = 0;
+  if (blackEdge >= wordBottomPercent) {
+    passProgress = 0;
+  } else if (blackEdge <= wordTopPercent) {
+    passProgress = 1;
   } else {
-    blackWord.classList.remove('show');
+    passProgress = (wordBottomPercent - blackEdge) / wordHeightPercent;
   }
 
-  if (p2 > 0.15 && p3 < 0.4) {
-    blackText.classList.add('show');
+  // ===== 变化拉长：用 easeOut，开头慢、后面快 =====
+  // passProgress 在字高范围内只占很小一段，通过平方根放大它在视觉上的“慢”
+  // 同时，p1 全程参与，让它不只是“碰到才变”
+  // 混合：主要在 passProgress，但辅以 p1 的平滑
+  const ease = Math.pow(passProgress, 0.5);   // 平方根：前段变化更细
+
+  // ===== 字距：1 → 24px，用 ease 控制 =====
+  const letterSpacingPx = BASE_LETTER_SPACING + ease * (MAX_LETTER_SPACING - BASE_LETTER_SPACING);
+
+  // ===== 字号：28 → 22（只微缩，保持高级） =====
+  const fontSize = 28 - ease * 6;
+
+  wordBlack.style.fontSize = fontSize + 'px';
+  wordBlack.style.letterSpacing = letterSpacingPx + 'px';
+  wordWhite.style.fontSize = fontSize + 'px';
+  wordWhite.style.letterSpacing = letterSpacingPx + 'px';
+
+  // ===== 白层露出：用基准字高精确对齐黑底边缘 =====
+  let topClip = 100;
+  if (blackEdge >= wordBottomPercent) {
+    topClip = 100;
+  } else if (blackEdge <= wordTopPercent) {
+    topClip = 0;
   } else {
-    blackText.classList.remove('show');
+    topClip = ((blackEdge - wordTopPercent) / wordHeightPercent) * 100;
   }
 
-  // 缩圆时：白底淡出，新白底浮现
-  if (p3 > 0) {
-    intro.style.opacity = String(1 - p3);
+  wordWhite.style.clipPath = `inset(${topClip}% 0 0 0)`;
+
+  // 黑底文字
+  const textOpacity = (p2 > 0.15) ? Math.max(0, 1 - p3 * 1.5) : 0;
+  blackText.style.opacity = String(textOpacity);
+
+  // 白底
+  if (p3 > 0.95) {
     outro.classList.add('show');
   } else {
-    intro.style.opacity = '1';
     outro.classList.remove('show');
   }
 }
