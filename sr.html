@@ -248,6 +248,7 @@ input {
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
+  pointer-events: none;   /* 关键：图片不接事件，让卡片接到 */
 }
 
 .brand-card:hover .brand-cover img {
@@ -349,6 +350,7 @@ input {
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;   /* 关键：缩略图也不接事件，让 .thumb 接到 */
 }
 
 .expand-images .thumb-label {
@@ -361,6 +363,7 @@ input {
   color: #fff;
   font-size: 11px;
   letter-spacing: 0.1em;
+  pointer-events: none;
 }
 
 /* ===== 大图预览 ===== */
@@ -724,36 +727,23 @@ input {
 </div>
 
 <script>
-/* ===== 状态 ===== */
-// 记录"是不是从搜索进来的"
-let fromSearch = false;
-
+/* ===== 展开层 ===== */
 function openExpand(id) {
-  // 如果搜索框里有内容，说明用户是从搜索进来的
-  const keyword = document.getElementById('searchInput').value.trim();
-  fromSearch = keyword.length > 0;
-
   document.getElementById(id).classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
-/* 关闭展开层：
-   - 第一次关：回到搜索页（保留搜索结果）
-   - 如果搜索已经空了 / 用户再点一次空白：清空搜索，回主页
-*/
 function closeExpand(id) {
   document.getElementById(id).classList.remove('active');
   document.body.style.overflow = '';
 
-  // 如果是从搜索进来的：保留搜索状态（用户还可以再点进来）
-  if (fromSearch) {
-    // 不做事，保留搜索
-    fromSearch = false;   // 标记已处理，下次再点就清空
-    return;
+  // 如果搜索框里还有内容，就保留搜索状态（停在搜索页）
+  // 如果搜索框已经空了，就说明是第二次关闭，清空一切回主页
+  const input = document.getElementById('searchInput');
+  if (input && input.value.trim() === '') {
+    clearSearchAndReset();
   }
-
-  // 第二次点空白 / 本来就是从主页进来的：清空搜索，回主页
-  clearSearchAndReset();
+  // 否则保留搜索状态，不动
 }
 
 function clearSearchAndReset() {
@@ -778,22 +768,6 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
     if (e.target.closest('.thumb')) return;
     closeExpand(layer.id);
   });
-});
-
-/* 首页上，点任何地方（除了展开层）如果搜索还在，就清掉 */
-document.addEventListener('click', (e) => {
-  // 已经在展开层里，不管
-  if (e.target.closest('.expand-layer')) return;
-  // 点的是搜索框内部，不管
-  if (e.target.closest('.search-wrapper')) return;
-  // 点的是品牌卡片，不管
-  if (e.target.closest('.brand-card')) return;
-
-  // 如果搜索框有内容，点别处就清掉
-  const input = document.getElementById('searchInput');
-  if (input && input.value.trim().length > 0) {
-    clearSearchAndReset();
-  }
 });
 
 /* ===== 大图预览 ===== */
