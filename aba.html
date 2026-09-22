@@ -1,394 +1,285 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>游戏介绍预存</title>
-  <style>
-    @font-face {
-      font-family: "My Font";
-      src: url("./fonts/myfont.ttf") format("truetype");
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Archive</title>
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: "My Font", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #ffffff;
-      color: #222;
-      line-height: 1.7;
-    }
+<style>
+@font-face {
+  font-family: "My Font";
+  src: url("./fonts/myfont.ttf") format("truetype");
+}
 
-    /* 整体容器 */
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 20px 60px;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-    /* 顶部区：带二进制背景 */
-    .top-section {
-      position: relative;
-      padding: 40px 0 0;
-      background-image:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(180, 190, 200, 0.08) 0px,
-          rgba(180, 190, 200, 0.08) 1px,
-          transparent 1px,
-          transparent 18px
-        );
-      overflow: hidden;
-    }
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-    /* 二进制数字背景层 */
-    .top-section::before {
-      content: "010010000101000101101000011010000111010001110100011100000111001100111010001011110010111101110111011101110111011100101110011011100110111101110010011011100011100100101101011100110111010001100001011001110110010100101110011011100110010101110100001011110011101000110000001100010011100000110001001100000011000000110001001100010011000000110000001100010011000100110000001100000011000100110001001100000011000001100001";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      font-size: 11px;
-      line-height: 18px;
-      color: rgba(160, 175, 190, 0.35);
-      letter-spacing: 1px;
-      word-break: break-all;
-      pointer-events: none;
-      z-index: 0;
-      padding: 8px;
-    }
+body {
+  font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #fafafa;
+  color: #111;
+}
 
-    /* Logo 区 */
-    .logo-area {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+.scroller {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10;
+}
 
-    .logo-placeholder {
-      display: inline-block;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: #3a5a8a;
-      padding: 8px 24px;
-    }
+.scroller-inner {
+  height: 400vh;
+  pointer-events: none;
+}
 
-    /* 导航按钮 */
-    .nav-buttons {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
+.intro {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  z-index: 1;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  transition: opacity 0.3s ease;
+}
 
-    .nav-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border: 1px solid #333;
-      padding: 8px 26px;
-      background: rgba(255,255,255,0.85);
-      text-decoration: none;
-      color: #222;
-      min-width: 100px;
-      transition: all 0.2s;
-    }
+.intro-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 80%;
+  max-width: 900px;
+}
 
-    .nav-btn:hover {
-      background: #333;
-      color: #fff;
-    }
+.intro-img {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: filter 0.1s linear;
+}
 
-    .nav-btn .jp {
-      font-size: 13px;
-      letter-spacing: 0.05em;
-    }
+.intro-word {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 40px;
+  color: #111;
+}
 
-    .nav-btn .en {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      margin-top: 2px;
-      opacity: 0.7;
-    }
+.black-cover {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  z-index: 2;
+  transform: translateY(100%);
+  will-change: transform;
+  overflow: hidden;
+  -webkit-transform: translateZ(0);
+}
 
-    /* 大 Banner 占位 */
-    .banner {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: linear-gradient(135deg, #b8d4e8 0%, #d8e8f4 50%, #a8c8e0 100%);
-      border: 1px solid #d0d0d0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 40px;
-      overflow: hidden;
-    }
+.black-word {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 40px;
+  color: #f0f0f0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  white-space: nowrap;
+}
 
-    .banner-placeholder {
-      font-size: 14px;
-      color: #6a8aa8;
-      letter-spacing: 0.1em;
-      background: rgba(255,255,255,0.7);
-      padding: 10px 24px;
-      border-radius: 2px;
-    }
+.black-word.show { opacity: 1; }
 
-    /* 下方两栏：左信息 + 右视频 */
-    .bottom-section {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 24px;
-      margin-bottom: 40px;
-    }
+.black-text {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 640px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 2.2;
+  letter-spacing: 0.06em;
+  color: #888;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
 
-    /* 左：信息表 */
-    .info-box {
-      border: 1px solid #ddd;
-      background: #fafafa;
-      padding: 24px 26px;
-    }
+.black-text.show { opacity: 1; }
 
-    .info-row {
-      display: flex;
-      gap: 20px;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 13px;
-    }
+.outro {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
 
-    .info-row:last-child { border-bottom: none; }
+.outro.show {
+  opacity: 1;
+  pointer-events: auto;
+}
 
-    .info-label {
-      width: 80px;
-      flex-shrink: 0;
-      color: #666;
-    }
+.outro a {
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: #666;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+  transition: color 0.3s, border-color 0.3s;
+}
 
-    .info-value {
-      flex: 1;
-      color: #222;
-      line-height: 1.7;
-    }
+.outro a:hover {
+  color: #111;
+  border-color: #111;
+}
 
-    .info-value .note {
-      display: block;
-      color: #999;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    /* 右：视频黑框 */
-    .video-box {
-      background: #000;
-      color: #fff;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 280px;
-    }
-
-    .video-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .video-sub {
-      font-size: 13px;
-      color: #aaa;
-      margin-bottom: 20px;
-    }
-
-    .video-play {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .play-btn {
-      width: 70px;
-      height: 48px;
-      background: #ff0000;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .play-btn:hover { transform: scale(1.08); }
-
-    .play-btn::after {
-      content: "";
-      width: 0;
-      height: 0;
-      border-left: 14px solid #fff;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
-      margin-left: 3px;
-    }
-
-    .video-footer {
-      font-size: 13px;
-      color: #ccc;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .yt-icon {
-      display: inline-block;
-      background: #ff0000;
-      color: #fff;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-weight: 700;
-    }
-
-    /* 底部三个小标题栏 */
-    .bottom-titles {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .bottom-title {
-      background: #222;
-      color: #fff;
-      padding: 12px 18px;
-      font-size: 14px;
-      letter-spacing: 0.05em;
-      border-bottom: 3px solid #222;
-    }
-
-    /* 手机适配 */
-    @media (max-width: 768px) {
-      .bottom-section { grid-template-columns: 1fr; }
-      .bottom-titles { grid-template-columns: 1fr; }
-      .nav-btn { min-width: 80px; padding: 6px 16px; }
-      .logo-placeholder { font-size: 22px; }
-    }
-  </style>
+@media (max-width: 768px) {
+  .intro-inner {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .intro-img { max-width: 200px; }
+  .intro-word,
+  .black-word { font-size: 26px; }
+  .black-text { font-size: 13px; }
+}
+</style>
 </head>
 <body>
 
-  <div class="container">
-
-    <!-- 顶部区：Logo + 导航 + Banner -->
-    <div class="top-section">
-
-      <!-- Logo -->
-      <div class="logo-area">
-        <div class="logo-placeholder">NORN9</div>
-      </div>
-
-      <!-- 导航按钮 -->
-      <nav class="nav-buttons">
-        <a href=" " class="nav-btn">
-          <span class="jp">トップ</span>
-          <span class="en">TOP</span>
-        </a >
-        <a href="#" class="nav-btn">
-          <span class="jp">ストーリー</span>
-          <span class="en">STORY</span>
-        </a >
-        <a href="#" class="nav-btn">
-          <span class="jp">キャラクター</span>
-          <span class="en">CHARACTER</span>
-        </a >
-        <a href="#" class="nav-btn">
-          <span class="jp">システム</span>
-          <span class="en">SYSTEM</span>
-        </a >
-        <a href="#" class="nav-btn">
-          <span class="jp">ヘルプ</span>
-          <span class="en">HELP</span>
-        </a >
-      </nav>
-
-      <!-- 大 Banner 占位 -->
-      <div class="banner">
-        <div class="banner-placeholder">BANNER 图片位置</div>
-      </div>
-
-    </div>
-
-    <!-- 下方两栏 -->
-    <div class="bottom-section">
-
-      <!-- 左：信息表 -->
-      <div class="info-box">
-        <div class="info-row">
-          <div class="info-label">タイトル</div>
-          <div class="info-value">ノルン＋ノネット ラスト イーラ for iOS & Android</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">配信日</div>
-          <div class="info-value">
-            2022年5月19日
-            <span class="note">※配信を停止いたしました。</span>
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">ジャンル</div>
-          <div class="info-value">女性向け恋愛AVG</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">対応OS</div>
-          <div class="info-value">
-            iOS 10.0以上/Android 7.0以上
-            <span class="note">※日本国内で販売されている端末のみ</span>
-          </div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">価格</div>
-          <div class="info-value">
-            3,800円（税込）
-            <span class="note">※ダウンロードおよび一部シナリオ無料</span>
-            <span class="note">※各マーケット/ストアの価格ルールの変更に伴い、価格は変更になることがございます。</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 右：视频黑框 -->
-      <div class="video-box">
-        <div>
-          <div class="video-title">PS Vita「ノルン＋ノネット ラスト イーラ」</div>
-          <div class="video-sub">オトメイト</div>
-        </div>
-
-        <div class="video-play">
-          <div class="play-btn"></div>
-        </div>
-
-        <div class="video-footer">
-          前往平台观看：
-          <span class="yt-icon">YouTube</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- 底部三个小标题栏 -->
-    <div class="bottom-titles">
-      <div class="bottom-title">お知らせ</div>
-      <div class="bottom-title">オトメイトアプリ 公式SNS</div>
-      <div class="bottom-title">ノルン＋ノネット 公式SNS</div>
-    </div>
-
+<section class="intro" id="intro">
+  <div class="intro-inner">
+    <img class="intro-img" id="introImg" src="IMG_1959.png" alt="">
+    <div class="intro-word" id="introWord">ARCHIVE</div>
   </div>
+</section>
+
+<section class="black-cover" id="blackCover">
+  <div class="black-word" id="blackWord">ARCHIVE</div>
+  <div class="black-text" id="blackText">
+    这里收录的，是我看过的秀场造型里，留下来的那些。<br>
+    不是最好看的，是看过后还愿意留下的。<br><br>
+    看过的远不止这些，这里只放留下来的。
+  </div>
+</section>
+
+<div class="scroller" id="scroller">
+  <div class="scroller-inner"></div>
+</div>
+
+<section class="outro" id="outro">
+  <a href="index.html">回到档案</a>
+</section>
+
+<script>
+const scroller = document.getElementById('scroller');
+const intro = document.getElementById('intro');
+const introImg = document.getElementById('introImg');
+const blackCover = document.getElementById('blackCover');
+const blackWord = document.getElementById('blackWord');
+const blackText = document.getElementById('blackText');
+const outro = document.getElementById('outro');
+
+function update() {
+  const scrollY = scroller.scrollTop;
+  const vh = window.innerHeight;
+
+  // 三段进度
+  const p1 = Math.min(scrollY / vh, 1);
+  const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
+  const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
+
+  // ===== 统一 transform =====
+  let transform = '';
+
+  if (p3 > 0) {
+    // 缩圆阶段：用正方形 + scale，保证正圆
+    const size = Math.min(window.innerWidth, vh);
+    const scale = 1 - p3 * 0.96;
+
+    blackCover.style.width = size + 'px';
+    blackCover.style.height = size + 'px';
+    blackCover.style.left = '50%';
+    blackCover.style.top = '50%';
+    blackCover.style.borderRadius = '50%';
+    transform = `translate(-50%, -50%) scale(${scale})`;
+  } else {
+    // 升起阶段：translateY
+    blackCover.style.width = '100%';
+    blackCover.style.height = '100%';
+    blackCover.style.left = '0';
+    blackCover.style.top = '0';
+    blackCover.style.borderRadius = '0';
+    transform = `translateY(${(1 - p1) * 100}%)`;
+  }
+
+  blackCover.style.transform = transform;
+  blackCover.style.opacity = '1';
+
+  // 图：模糊 + 变暗
+  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
+
+  // 黑底上的词、文字
+  if (p1 > 0.5 && p3 < 0.4) {
+    blackWord.classList.add('show');
+  } else {
+    blackWord.classList.remove('show');
+  }
+
+  if (p2 > 0.15 && p3 < 0.4) {
+    blackText.classList.add('show');
+  } else {
+    blackText.classList.remove('show');
+  }
+
+  // 缩圆时：白底淡出，新白底浮现
+  if (p3 > 0) {
+    intro.style.opacity = String(1 - p3);
+    outro.classList.add('show');
+  } else {
+    intro.style.opacity = '1';
+    outro.classList.remove('show');
+  }
+}
+
+scroller.addEventListener('scroll', update, { passive: true });
+window.addEventListener('resize', update);
+update();
+</script>
 
 </body>
 </html>
