@@ -942,7 +942,7 @@ searchInput.addEventListener('input', () => {
 /* 叉叉：带过渡（淡出淡入） */
 searchClear.addEventListener('click', () => {
   clearSearchWithFade();
-  searchInput.focus();
+  searchInput.blur();
 });
 
 searchInput.addEventListener('keydown', (e) => {
