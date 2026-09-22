@@ -196,7 +196,7 @@ input {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px 24px;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.2s ease;
 }
 
 .brand-grid.fading {
@@ -713,7 +713,7 @@ function clearSearchAndReset() {
   });
 }
 
-/* 带过渡：淡出 → 恢复 → 淡入（只给叉叉用） */
+/* 带过渡：淡出 → 恢复 → 淡入（只给叉叉和过滤页点空白用） */
 function clearSearchWithFade() {
   const input = document.getElementById('searchInput');
   const clear = document.getElementById('searchClear');
@@ -733,13 +733,18 @@ function clearSearchWithFade() {
     return;
   }
 
+  // 先淡出
   gridEl.classList.add('fading');
-  setTimeout(() => {
-    document.querySelectorAll('.brand-card').forEach(card => {
-      card.style.display = '';
+
+  // 用 requestAnimationFrame 代替 setTimeout，不卡
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.brand-card').forEach(card => {
+        card.style.display = '';
+      });
+      gridEl.classList.remove('fading');
     });
-    gridEl.classList.remove('fading');
-  }, 180);
+  });
 }
 
 /* 统一监听：点展开层空白处关闭 */
@@ -953,7 +958,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ===== 过滤页：点空白 → 回主页（不闪） ===== */
+/* ===== 过滤页：点空白 → 回主页（带过渡） ===== */
 document.addEventListener('click', (e) => {
   if (e.target.closest('.expand-layer')) return;
   if (e.target.closest('.lightbox')) return;
@@ -965,7 +970,7 @@ document.addEventListener('click', (e) => {
 
   const input = document.getElementById('searchInput');
   if (input && input.value.trim().length > 0) {
-    clearSearchWithFade();   // 不闪的版本
+    clearSearchWithFade();   // 改成带过渡的
   }
 });
 </script>
