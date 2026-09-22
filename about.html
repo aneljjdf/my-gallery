@@ -30,10 +30,10 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== 第一段：白底 ===== */
+/* ===== 第一段：白底（固定不动） ===== */
 .intro {
-  position: relative;
-  height: 100vh;
+  position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,6 +52,7 @@ body {
   width: 320px;
   height: 320px;
   object-fit: cover;
+  transition: filter 0.1s linear;
 }
 
 .intro-word {
@@ -62,7 +63,7 @@ body {
   color: #111;
 }
 
-/* ===== 第二段：黑底覆盖 ===== */
+/* ===== 第二段：黑底 ===== */
 .black-cover {
   position: fixed;
   inset: 0;
@@ -70,59 +71,60 @@ body {
   z-index: 2;
   transform: translateY(100%);
   will-change: transform;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
-/* 黑底内部：能缩成圆 */
-.black-inner {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 32px;
-  text-align: center;
-  transition: none;
-}
-
+/* 黑底上的词：一开始贴在黑底顶部，跟着黑底上移 */
 .black-word {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: "Playfair Display", Georgia, serif;
   font-style: italic;
   font-weight: 500;
   font-size: 40px;
   color: #f0f0f0;
-  margin-bottom: 60px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.4s ease;
+  white-space: nowrap;
 }
 
 .black-word.show {
   opacity: 1;
-  transform: translateY(0);
 }
 
+/* 黑底下的文字：黑底贴顶后才浮出 */
 .black-text {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 640px;
+  text-align: center;
   font-size: 14px;
   line-height: 2.2;
   letter-spacing: 0.06em;
   color: #888;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  transition: opacity 0.8s ease;
 }
 
 .black-text.show {
   opacity: 1;
-  transform: translateY(0);
 }
 
-/* ===== 第三段：白底回落 ===== */
+/* ===== 第三段：滚动占位 ===== */
+.scroll-space {
+  height: 300vh;
+  pointer-events: none;
+}
+
+/* ===== 第四段：白底回落 ===== */
 .outro {
+  position: relative;
+  z-index: 3;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -160,36 +162,35 @@ body {
 </head>
 <body>
 
-<!-- 第一段 -->
+<!-- 第一段：白底（固定） -->
 <section class="intro">
   <div class="intro-inner">
-    <img class="intro-img" id="introImg" src="IMG_1959.PNG" alt="">
+    <img class="intro-img" id="introImg" src="IMG_1959.webp" alt="">
     <div class="intro-word" id="introWord">ARCHIVE</div>
   </div>
 </section>
 
 <!-- 第二段：黑底 -->
 <section class="black-cover" id="blackCover">
-  <div class="black-inner" id="blackInner">
-    <div class="black-word" id="blackWord">ARCHIVE</div>
-    <div class="black-text" id="blackText">
-      这里收录的，是我看过的秀场造型里，留下来的那些。<br>
-      不是最好看的，是看过后还愿意留下的。<br><br>
-      看过的远不止这些，这里只放留下来的。
-    </div>
+  <div class="black-word" id="blackWord">ARCHIVE</div>
+  <div class="black-text" id="blackText">
+    这里收录的，是我看过的秀场造型里，留下来的那些。<br>
+    不是最好看的，是看过后还愿意留下的。<br><br>
+    看过的远不止这些，这里只放留下来的。
   </div>
 </section>
 
-<!-- 第三段 -->
+<!-- 滚动占位 -->
+<div class="scroll-space"></div>
+
+<!-- 第四段：白底 -->
 <section class="outro">
   <a href="index.html">回到档案</a>
 </section>
 
 <script>
 const introImg = document.getElementById('introImg');
-const introWord = document.getElementById('introWord');
 const blackCover = document.getElementById('blackCover');
-const blackInner = document.getElementById('blackInner');
 const blackWord = document.getElementById('blackWord');
 const blackText = document.getElementById('blackText');
 
@@ -197,63 +198,56 @@ function update() {
   const scrollY = window.scrollY;
   const vh = window.innerHeight;
 
-  // ===== 第 1 段：黑底升起 =====
-  // 0 → 1vh：黑底从底部升到盖住
+  // ===== 第 1 段：黑底升起（0 → 1vh） =====
   const p1 = Math.min(scrollY / vh, 1);
 
-  // ===== 第 2 段：黑底缩圆 =====
-  // 1vh → 2vh：黑底缩成圆形，被白底吞
-  const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
+  // 黑底从底部升到顶部
+  blackCover.style.transform = `translateY(${(1 - p1) * 100}%)`;
 
-  // 黑底：先升起，再缩圆
-  if (p2 === 0) {
-    // 上升阶段
-    blackCover.style.transform = `translateY(${(1 - p1) * 100}%)`;
-    blackCover.style.borderRadius = '0';
-    blackCover.style.opacity = '1';
+  // 白底图片：随黑底覆盖，模糊 + 变暗
+  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
+
+  // ===== 第 2 段：黑底贴顶后（1vh → 3vh） =====
+  const p2 = Math.max(0, Math.min((scrollY - vh) / (vh * 2), 1));
+
+  // 黑底上的词：黑底升到一半时出现，贴在黑底中央
+  if (p1 > 0.5 && p2 < 0.9) {
+    blackWord.classList.add('show');
+  } else {
+    blackWord.classList.remove('show');
+  }
+
+  // 黑底上的文字：黑底贴顶后浮现
+  if (p2 > 0.15 && p2 < 0.9) {
+    blackText.classList.add('show');
+  } else {
+    blackText.classList.remove('show');
+  }
+
+  // ===== 第 3 段：黑底缩成圆（2vh → 3vh） =====
+  const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
+
+  if (p3 > 0) {
+    const size = 100 - p3 * 96;
+    blackCover.style.width = size + '%';
+    blackCover.style.height = size + '%';
+    blackCover.style.left = '50%';
+    blackCover.style.top = '50%';
+    blackCover.style.right = 'auto';
+    blackCover.style.bottom = 'auto';
+    blackCover.style.transform = `translate(-50%, -50%)`;
+    blackCover.style.borderRadius = '50%';
+    blackCover.style.opacity = String(1 - p3 * 0.6);
+  } else {
     blackCover.style.width = '100%';
     blackCover.style.height = '100%';
     blackCover.style.left = '0';
     blackCover.style.top = '0';
     blackCover.style.right = 'auto';
     blackCover.style.bottom = 'auto';
-  } else {
-    // 缩圆阶段：从全屏缩成中间一个小圆
-    blackCover.style.transform = 'translateY(0)';
-    const size = 100 - p2 * 96; // 100% → 4%
-    blackCover.style.width = size + '%';
-    blackCover.style.height = size + '%';
-    blackCover.style.left = '50%';
-    blackCover.style.top = '50%';
-    blackCover.style.transform = `translate(-50%, -50%)`;
-    blackCover.style.borderRadius = '50%';
-    blackCover.style.opacity = String(1 - p2 * 0.3);
+    blackCover.style.borderRadius = '0';
+    blackCover.style.opacity = '1';
   }
-
-  // 图：模糊 + 上移 + 淡出（第 1 段）
-  introImg.style.filter = `blur(${p1 * 12}px)`;
-  introImg.style.transform = `translateY(${-p1 * 60}px)`;
-  introImg.style.opacity = 1 - p1 * 0.9;
-
-  // 白底上的词：淡出
-  introWord.style.opacity = 1 - p1 * 1.5;
-
-  // 黑底上的词：过半浮现，缩圆时淡出
-  if (p1 > 0.5 && p2 < 0.4) {
-    blackWord.classList.add('show');
-  } else {
-    blackWord.classList.remove('show');
-  }
-
-  // 黑底文字：浮现，缩圆时淡出
-  if (p1 > 0.65 && p2 < 0.4) {
-    blackText.classList.add('show');
-  } else {
-    blackText.classList.remove('show');
-  }
-
-  // 黑底内部内容：缩圆时一起淡出
-  blackInner.style.opacity = String(1 - p2 * 2);
 }
 
 window.addEventListener('scroll', update, { passive: true });
