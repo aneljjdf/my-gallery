@@ -35,7 +35,6 @@ body {
   color: #111;
 }
 
-/* ===== 唯一滚动容器：最上层，透明 ===== */
 .scroller {
   position: fixed;
   inset: 0;
@@ -45,13 +44,11 @@ body {
   z-index: 10;
 }
 
-/* 滚动高度：4 屏 */
 .scroller-inner {
   height: 400vh;
   pointer-events: none;
 }
 
-/* ===== 第一段：白底（固定） ===== */
 .intro {
   position: fixed;
   inset: 0;
@@ -62,6 +59,7 @@ body {
   z-index: 1;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  transition: opacity 0.2s ease;
 }
 
 .intro-inner {
@@ -69,11 +67,15 @@ body {
   align-items: center;
   justify-content: center;
   gap: 40px;
+  width: 80%;
+  max-width: 900px;
 }
 
 .intro-img {
-  width: 320px;
-  height: 320px;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   transition: filter 0.1s linear;
 }
@@ -86,7 +88,6 @@ body {
   color: #111;
 }
 
-/* ===== 第二段：黑底（固定） ===== */
 .black-cover {
   position: fixed;
   inset: 0;
@@ -109,11 +110,8 @@ body {
   font-size: 40px;
   color: #f0f0f0;
   opacity: 0;
-  transition: opacity 0.4s ease;
   white-space: nowrap;
 }
-
-.black-word.show { opacity: 1; }
 
 .black-text {
   position: absolute;
@@ -128,20 +126,24 @@ body {
   letter-spacing: 0.06em;
   color: #888;
   opacity: 0;
-  transition: opacity 0.8s ease;
 }
 
-.black-text.show { opacity: 1; }
-
-/* ===== 第四段：白底回落 ===== */
 .outro {
-  position: relative;
-  z-index: 3;
-  height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #fafafa;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fafafa;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.outro.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .outro a {
@@ -159,13 +161,12 @@ body {
   border-color: #111;
 }
 
-/* ===== 手机 ===== */
 @media (max-width: 768px) {
   .intro-inner {
     flex-direction: column;
     gap: 24px;
   }
-  .intro-img { width: 200px; height: 200px; }
+  .intro-img { max-width: 200px; }
   .intro-word,
   .black-word { font-size: 26px; }
   .black-text { font-size: 13px; }
@@ -174,15 +175,13 @@ body {
 </head>
 <body>
 
-<!-- 第一段：白底（固定） -->
-<section class="intro">
+<section class="intro" id="intro">
   <div class="intro-inner">
-    <img class="intro-img" id="introImg" src="IMG_1959.PNG" alt="">
+    <img class="intro-img" id="introImg" src="1959.png" alt="">
     <div class="intro-word" id="introWord">ARCHIVE</div>
   </div>
 </section>
 
-<!-- 第二段：黑底（固定） -->
 <section class="black-cover" id="blackCover">
   <div class="black-word" id="blackWord">ARCHIVE</div>
   <div class="black-text" id="blackText">
@@ -192,66 +191,74 @@ body {
   </div>
 </section>
 
-<!-- 唯一滚动容器（最上层，透明） -->
 <div class="scroller" id="scroller">
   <div class="scroller-inner"></div>
-
-  <!-- 第四段：白底（在 scroller 里，才能滚到） -->
-  <section class="outro">
-    <a href="index.html">回到档案</a>
-  </section>
 </div>
+
+<section class="outro" id="outro">
+  <a href="index.html">回到档案</a>
+</section>
 
 <script>
 const scroller = document.getElementById('scroller');
+const intro = document.getElementById('intro');
 const introImg = document.getElementById('introImg');
 const blackCover = document.getElementById('blackCover');
 const blackWord = document.getElementById('blackWord');
 const blackText = document.getElementById('blackText');
+const outro = document.getElementById('outro');
 
 function update() {
   const scrollY = scroller.scrollTop;
   const vh = window.innerHeight;
 
-  // ===== 第 1 段：黑底升起（0 → 1vh） =====
   const p1 = Math.min(scrollY / vh, 1);
-
-  // 黑底上升（用 translateY）
-  if (p1 < 1 || scrollY < vh) {
-    blackCover.style.transform = `translateY(${(1 - p1) * 100}%)`;
-    blackCover.style.transformOrigin = 'center center';
-    blackCover.style.borderRadius = '0';
-    blackCover.style.opacity = '1';
-  }
-
-  // 图：模糊 + 变暗，位置不动
-  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
-
-  // ===== 第 2 段：黑底贴顶后（1vh → 2vh） =====
   const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
-
-  if (p1 > 0.5 && p2 < 0.9) {
-    blackWord.classList.add('show');
-  } else {
-    blackWord.classList.remove('show');
-  }
-
-  if (p2 > 0.15 && p2 < 0.9) {
-    blackText.classList.add('show');
-  } else {
-    blackText.classList.remove('show');
-  }
-
-  // ===== 第 3 段：黑底缩成正圆（2vh → 3vh） =====
   const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
 
+  let transform = '';
+
   if (p3 > 0) {
-    // 用 scale 统一缩，宽高一致，永远是正圆
+    const size = Math.min(window.innerWidth, vh);
     const scale = 1 - p3 * 0.96;
-    blackCover.style.transform = `scale(${scale})`;
-    blackCover.style.transformOrigin = 'center center';
+
+    blackCover.style.width = size + 'px';
+    blackCover.style.height = size + 'px';
+    blackCover.style.left = '50%';
+    blackCover.style.top = '50%';
     blackCover.style.borderRadius = '50%';
-    blackCover.style.opacity = String(1 - p3 * 0.6);
+    transform = `translate(-50%, -50%) scale(${scale})`;
+  } else {
+    blackCover.style.width = '100%';
+    blackCover.style.height = '100%';
+    blackCover.style.left = '0';
+    blackCover.style.top = '0';
+    blackCover.style.borderRadius = '0';
+    transform = `translateY(${(1 - p1) * 100}%)`;
+  }
+
+  blackCover.style.transform = transform;
+  blackCover.style.opacity = '1';
+
+  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
+
+  // ===== 文字和圆同步 =====
+
+  // 黑底上的词：p1>0.5 出现，p3 一开始就跟着缩，淡出
+  const wordOpacity = (p1 > 0.5) ? Math.max(0, 1 - p3 * 1.5) : 0;
+  blackWord.style.opacity = wordOpacity;
+
+  // 黑底文字：p2>0.15 出现，p3 缩时淡出
+  const textOpacity = (p2 > 0.15) ? Math.max(0, 1 - p3 * 1.5) : 0;
+  blackText.style.opacity = textOpacity;
+
+  // 圆缩到 95%，白底才接管
+  if (p3 > 0.95) {
+    outro.classList.add('show');
+    intro.style.opacity = '0';
+  } else {
+    outro.classList.remove('show');
+    intro.style.opacity = '1';
   }
 }
 
