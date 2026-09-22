@@ -107,7 +107,6 @@ input {
   flex-shrink: 0;
 }
 
-/* 搜索框容器 */
 .search-wrapper {
   position: relative;
 }
@@ -153,7 +152,6 @@ input {
   width: 140px;
 }
 
-/* 清空按钮 */
 .search-clear {
   display: none;
   width: 14px;
@@ -165,44 +163,44 @@ input {
 }
 
 .search-clear:hover { stroke: #333; }
-
 .search-clear.show { display: block; }
 
-/* 建议列表 */
+/* ===== 建议列表：无框纸感 ===== */
 .suggestions {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 8px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  left: -10px;
+  right: -10px;
+  margin-top: 14px;
+  background: rgba(250, 250, 250, 0.95);
+  padding: 4px 0;
   display: none;
-  max-height: 240px;
+  max-height: 260px;
   overflow-y: auto;
   z-index: 300;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  /* 没有边框，只有淡淡的内阴影，像纸浮起来 */
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.04);
 }
 
 .suggestions.show { display: block; }
 
 .suggestion-item {
-  padding: 10px 14px;
+  padding: 11px 18px;
   font-size: 12px;
-  letter-spacing: 0.08em;
-  color: #555;
+  letter-spacing: 0.12em;
+  color: #777;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: color 0.25s ease, background 0.25s ease;
 }
 
 .suggestion-item:hover {
-  background: #f4f4f4;
   color: #111;
+  background: rgba(0, 0, 0, 0.025);
 }
 
-.suggestion-item.highlight {
-  color: #111;
-  font-weight: 700;
+/* 最后一条不用线 */
+.suggestion-item + .suggestion-item {
+  border-top: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .container {
@@ -304,7 +302,10 @@ input {
 
 .expand-layer.active { display: block; }
 
-.expand-inner { max-width: 1200px; margin: 0 auto; }
+.expand-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 .expand-header {
   margin-bottom: 40px;
@@ -431,7 +432,7 @@ input {
   cursor: default;
 }
 
-/* ===== 底部收尾 ===== */
+/* ===== 底部 ===== */
 .footer {
   margin-top: 120px;
   text-align: center;
@@ -452,9 +453,7 @@ input {
   transition: color 0.3s ease;
 }
 
-.footer .links a:hover {
-  color: #555;
-}
+.footer .links a:hover { color: #555; }
 
 /* ===== 回到顶部 ===== */
 .to-top {
@@ -476,11 +475,7 @@ input {
   user-select: none;
 }
 
-.to-top.show {
-  opacity: 0.7;
-  pointer-events: auto;
-}
-
+.to-top.show { opacity: 0.7; pointer-events: auto; }
 .to-top:hover { opacity: 1; }
 
 /* ===== 手机适配 ===== */
@@ -495,14 +490,8 @@ input {
 
   .topbar .logo { font-size: 14px; }
 
-  .search-input {
-    width: 80px;
-    font-size: 11px;
-  }
-
-  .search-input:focus {
-    width: 120px;
-  }
+  .search-input { width: 80px; font-size: 11px; }
+  .search-input:focus { width: 120px; }
 
   .page-header { margin-bottom: 40px; }
   .page-header h1 { font-size: 18px; letter-spacing: 0.3em; }
@@ -545,7 +534,6 @@ input {
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
 
-  <!-- 搜索（含建议 + 清空） -->
   <div class="search-wrapper">
     <div class="search-box">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -559,7 +547,6 @@ input {
       </svg>
     </div>
 
-    <!-- 建议列表 -->
     <div class="suggestions" id="suggestions"></div>
   </div>
 </header>
@@ -624,7 +611,7 @@ input {
 <div class="to-top" id="toTop">↑</div>
 
 <!-- ===== 展开层：品牌 A ===== -->
-<div class="expand-layer" id="expand-a" onclick="closeIfBlank(event, 'expand-a')">
+<div class="expand-layer" id="expand-a">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
@@ -650,7 +637,7 @@ input {
 </div>
 
 <!-- ===== 展开层：品牌 B ===== -->
-<div class="expand-layer" id="expand-b" onclick="closeIfBlank(event, 'expand-b')">
+<div class="expand-layer" id="expand-b">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
@@ -688,7 +675,7 @@ input {
 </div>
 
 <!-- ===== 展开层：品牌 C ===== -->
-<div class="expand-layer" id="expand-c" onclick="closeIfBlank(event, 'expand-c')">
+<div class="expand-layer" id="expand-c">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
@@ -706,7 +693,7 @@ input {
 </div>
 
 <!-- ===== 展开层：品牌 D ===== -->
-<div class="expand-layer" id="expand-d" onclick="closeIfBlank(event, 'expand-d')">
+<div class="expand-layer" id="expand-d">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
@@ -750,11 +737,17 @@ function closeExpand(id) {
   document.body.style.overflow = '';
 }
 
-function closeIfBlank(e, id) {
-  if (e.target.closest('.thumb')) return;
-  closeExpand(id);
-}
+/* 给每个展开层挂统一的点击监听 */
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  layer.addEventListener('click', (e) => {
+    // 点图片：不关（图片有自己的逻辑）
+    if (e.target.closest('.thumb')) return;
+    // 点其他任何位置：关
+    closeExpand(layer.id);
+  });
+});
 
+/* ===== 大图预览 ===== */
 let currentImages = [];
 let currentIndex = 0;
 
@@ -851,7 +844,7 @@ cards.sort((a, b) => {
 
 cards.forEach(card => grid.appendChild(card));
 
-/* ===== 底部数字：自动统计 ===== */
+/* ===== 底部数字 ===== */
 const brandCount = document.querySelectorAll('.brand-card').length;
 const imageCount = document.querySelectorAll('.expand-layer .thumb').length;
 document.getElementById('footer').textContent =
@@ -880,7 +873,6 @@ const noResult = document.getElementById('noResult');
 
 const brandNames = cards.map(card => card.dataset.name || '');
 
-/* 筛选品牌 */
 function filterBrands(keyword) {
   keyword = (keyword || '').trim().toUpperCase();
   let visibleCount = 0;
@@ -898,7 +890,6 @@ function filterBrands(keyword) {
   noResult.classList.toggle('show', visibleCount === 0);
 }
 
-/* 生成建议列表 */
 function showSuggestions(keyword) {
   keyword = (keyword || '').trim().toUpperCase();
   suggestions.innerHTML = '';
@@ -933,7 +924,6 @@ function showSuggestions(keyword) {
   suggestions.classList.add('show');
 }
 
-/* 输入事件 */
 searchInput.addEventListener('input', () => {
   const value = searchInput.value;
   filterBrands(value);
@@ -941,7 +931,6 @@ searchInput.addEventListener('input', () => {
   searchClear.classList.toggle('show', value.length > 0);
 });
 
-/* 清空 */
 searchClear.addEventListener('click', () => {
   searchInput.value = '';
   filterBrands('');
@@ -951,7 +940,6 @@ searchClear.addEventListener('click', () => {
   searchInput.focus();
 });
 
-/* Esc 清空 */
 searchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     searchInput.value = '';
@@ -963,7 +951,6 @@ searchInput.addEventListener('keydown', (e) => {
   }
 });
 
-/* 点外面收起建议 */
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.search-wrapper')) {
     suggestions.classList.remove('show');
