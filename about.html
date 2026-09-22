@@ -59,7 +59,6 @@ body {
   z-index: 1;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  transition: opacity 0.2s ease;
 }
 
 .intro-inner {
@@ -203,6 +202,7 @@ body {
 const scroller = document.getElementById('scroller');
 const intro = document.getElementById('intro');
 const introImg = document.getElementById('introImg');
+const introWord = document.getElementById('introWord');
 const blackCover = document.getElementById('blackCover');
 const blackWord = document.getElementById('blackWord');
 const blackText = document.getElementById('blackText');
@@ -216,6 +216,13 @@ function update() {
   const p2 = Math.max(0, Math.min((scrollY - vh) / vh, 1));
   const p3 = Math.max(0, Math.min((scrollY - vh * 2) / vh, 1));
 
+  // ===== 第一页：黑底升起时，就被盖住 =====
+  // 图 + 英文，在黑底盖到时就没了
+  const introFade = Math.max(0, 1 - p1 * 1.2);
+  introImg.style.opacity = introFade;
+  introWord.style.opacity = introFade;
+
+  // ===== 黑底：升起 / 缩圆 =====
   let transform = '';
 
   if (p3 > 0) {
@@ -240,25 +247,15 @@ function update() {
   blackCover.style.transform = transform;
   blackCover.style.opacity = '1';
 
-  introImg.style.filter = `blur(${p1 * 14}px) brightness(${1 - p1 * 0.5})`;
+  // ===== 黑底上的词、文字 =====
+  blackWord.style.opacity = (p1 > 0.5) ? Math.max(0, 1 - p3 * 1.5) : 0;
+  blackText.style.opacity = (p2 > 0.15) ? Math.max(0, 1 - p3 * 1.5) : 0;
 
-  // ===== 文字和圆同步 =====
-
-  // 黑底上的词：p1>0.5 出现，p3 一开始就跟着缩，淡出
-  const wordOpacity = (p1 > 0.5) ? Math.max(0, 1 - p3 * 1.5) : 0;
-  blackWord.style.opacity = wordOpacity;
-
-  // 黑底文字：p2>0.15 出现，p3 缩时淡出
-  const textOpacity = (p2 > 0.15) ? Math.max(0, 1 - p3 * 1.5) : 0;
-  blackText.style.opacity = textOpacity;
-
-  // 圆缩到 95%，白底才接管
+  // ===== 圆缩到 95%，白底接管 =====
   if (p3 > 0.95) {
     outro.classList.add('show');
-    intro.style.opacity = '0';
   } else {
     outro.classList.remove('show');
-    intro.style.opacity = '1';
   }
 }
 
