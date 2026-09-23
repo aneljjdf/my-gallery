@@ -69,7 +69,7 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
-/* ===== 顶栏 ===== */
+/* ===== 顶栏：三列，去掉分割线 ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -79,12 +79,11 @@ input {
   background: rgba(10, 10, 10, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-  padding: 14px 24px;
+  gap: 24px;
+  padding: 16px 24px;
 }
 
 .topbar .logo {
@@ -95,94 +94,42 @@ input {
   flex-shrink: 0;
 }
 
+.topbar .cols {
+  display: flex;
+  gap: 32px;
+  flex-shrink: 0;
+}
+
+.topbar .col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #888;
+  line-height: 1.6;
+  min-width: 100px;
+}
+
+.topbar .col .label {
+  color: #555;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  margin-bottom: 2px;
+}
+
 .topbar .email-link {
   font-size: 11px;
   letter-spacing: 0.1em;
   color: #888;
   text-decoration: none;
   flex-shrink: 0;
+  align-self: flex-start;
 }
-
-.search-wrapper { position: relative; }
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  padding-bottom: 4px;
-  transition: border-color 0.3s ease;
-}
-
-.search-box:focus-within { border-color: rgba(255, 255, 255, 0.5); }
-
-.search-box svg.search-icon {
-  width: 11px;
-  height: 11px;
-  stroke: #777;
-  flex-shrink: 0;
-}
-
-.search-input {
-  width: 90px;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: #eee;
-  transition: width 0.3s ease;
-}
-
-.search-input::placeholder { color: #555; letter-spacing: 0.12em; }
-.search-input:focus { width: 130px; }
-
-.search-clear {
-  display: none;
-  width: 12px;
-  height: 12px;
-  stroke: #777;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: stroke 0.2s;
-}
-
-.search-clear:hover { stroke: #eee; }
-.search-clear.show { display: block; }
-
-.suggestions {
-  position: absolute;
-  top: 100%;
-  left: -10px;
-  right: -10px;
-  margin-top: 14px;
-  background: rgba(20, 20, 20, 0.95);
-  padding: 4px 0;
-  display: none;
-  max-height: 260px;
-  overflow-y: auto;
-  z-index: 300;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
-}
-
-.suggestions.show { display: block; }
-
-.suggestion-item {
-  padding: 9px 16px;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.25s ease, background 0.25s ease;
-}
-
-.suggestion-item:hover { color: #eee; background: rgba(255, 255, 255, 0.04); }
-.suggestion-item + .suggestion-item { border-top: 1px solid rgba(255, 255, 255, 0.04); }
 
 /* ===== 页头 ===== */
 .page-header {
-  padding: 100px 24px 40px;
+  padding: 140px 24px 40px;
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -450,30 +397,41 @@ input {
 
 /* ===== 手机端媒体查询 ===== */
 @media (max-width: 768px) {
-  .topbar .search-wrapper,
   .page-header,
   .brand-grid { display: none; }
 
   .topbar {
-    padding: 10px 16px;
+    padding: 14px 16px;
     background: #0a0a0a;
   }
 
   .topbar .logo { font-size: 11px; }
+
+  .topbar .cols {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .topbar .col {
+    font-size: 8px;
+    min-width: auto;
+  }
+
+  .topbar .col .label { font-size: 7px; }
+
   .topbar .email-link { font-size: 10px; }
 
   .mobile-split {
     display: grid;
     grid-template-columns: 35% 65%;
     position: fixed;
-    top: 44px;
+    top: 120px;
     left: 0;
     right: 0;
     bottom: 0;
     background: #0a0a0a;
   }
 
-  /* 左栏：黑底固定 */
   .mobile-split .left {
     background: #0a0a0a;
     padding: 20px 14px;
@@ -516,7 +474,6 @@ input {
     flex-direction: column;
   }
 
-  /* 右栏：滚动 */
   .mobile-split .right {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -524,7 +481,6 @@ input {
     background: #0a0a0a;
   }
 
-  /* 横图占位 */
   .mobile-split .hero {
     width: 100%;
     aspect-ratio: 16 / 10;
@@ -532,7 +488,6 @@ input {
     margin-bottom: 24px;
   }
 
-  /* 品牌坑：一行两个 */
   .mobile-split .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -558,11 +513,9 @@ input {
     pointer-events: none;
   }
 
-  /* 手机端隐藏底部页脚和回到顶部 */
   .footer-wrap,
   .to-top { display: none; }
 
-  /* 展开层手机适配 */
   .expand-layer { padding: 40px 16px 80px; }
   .expand-title { font-size: 12px; }
   .expand-images { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -575,23 +528,27 @@ input {
   <span>Archive</span>
 </div>
 
+<!-- ===== 顶栏：三列，去掉分割线 ===== -->
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
-  <a class="email-link" href="mailto:hello@example.com">Email me</a>
-  <div class="search-wrapper">
-    <div class="search-box">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
-      </svg>
-      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH" autocomplete="off">
-      <svg class="search-clear" id="searchClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-      </svg>
+
+  <div class="cols">
+    <div class="col">
+      <span class="label">Services</span>
+      <span>Information Architecture</span>
+      <span>Web Design &amp; Art Direction</span>
+      <span>Interaction design</span>
     </div>
-    <div class="suggestions" id="suggestions"></div>
+    <div class="col">
+      <span class="label">Recognition</span>
+      <span>Awwwards SOTD (15x)</span>
+      <span>FWA Site of the day (13x)</span>
+      <span>Independent of the year Nominee (4x)</span>
+      <span>Site of the Year Nominee (3x)</span>
+    </div>
   </div>
+
+  <a class="email-link" href="mailto:hello@example.com">Email me</a>
 </header>
 
 <!-- ===== 电脑/平板：7列网格 ===== -->
@@ -605,7 +562,6 @@ input {
 <!-- ===== 手机端：左右分栏 ===== -->
 <div class="mobile-split" id="mobileSplit">
 
-  <!-- 左栏：黑底固定 -->
   <div class="left">
     <div class="name">Studio DADO</div>
     <div class="desc">
@@ -633,7 +589,6 @@ input {
     </div>
   </div>
 
-  <!-- 右栏：横图占位 + 品牌坑 -->
   <div class="right">
     <div class="hero"></div>
     <div class="grid" id="mobileGrid"></div>
