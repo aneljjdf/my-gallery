@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive 档案</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+
+<style>
+@font-face {
+  font-family: "My Font";
+  src: url("./fonts/myfont.ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #0a0a0a;
+  color: #e8e8e8;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  -webkit-user-drag: none;
+  pointer-events: auto;
+}
+
+input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ===== 开屏 ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: bgOut 0.6s ease 2.6s forwards;
+}
+
+.splash span {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 46px;
+  letter-spacing: 0.02em;
+  color: #444;
+  opacity: 0;
+  filter: blur(8px);
+  animation: blurIn 1s ease forwards, textOut 0.6s ease 2s forwards;
+}
+
+@keyframes blurIn { to { opacity: 1; filter: blur(0); } }
+@keyframes textOut { to { opacity: 0; filter: blur(6px); } }
+@keyframes bgOut { to { opacity: 0; visibility: hidden; } }
+
+/* ===== 顶栏 ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 24px;
+}
+
+.topbar .logo {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #eee;
+  flex-shrink: 0;
+}
+
+.search-wrapper { position: relative; }
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.search-box:focus-within { border-color: rgba(255, 255, 255, 0.5); }
+
+.search-box svg.search-icon {
+  width: 12px;
+  height: 12px;
+  stroke: #777;
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #eee;
+  transition: width 0.3s ease;
+}
+
+.search-input::placeholder { color: #555; letter-spacing: 0.1em; }
+.search-input:focus { width: 140px; }
+
+.search-clear {
+  display: none;
+  width: 14px;
+  height: 14px;
+  stroke: #777;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: stroke 0.2s;
+}
+
+.search-clear:hover { stroke: #eee; }
+.search-clear.show { display: block; }
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: -10px;
+  right: -10px;
+  margin-top: 14px;
+  background: rgba(20, 20, 20, 0.95);
+  padding: 4px 0;
+  display: none;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 300;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.suggestions.show { display: block; }
+
+.suggestion-item {
+  padding: 11px 18px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+
+.suggestion-item:hover { color: #eee; background: rgba(255, 255, 255, 0.04); }
+.suggestion-item + .suggestion-item { border-top: 1px solid rgba(255, 255, 255, 0.04); }
+
+/* ===== 首页两栏结构 ===== */
+.archive-wrap {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  min-height: 100vh;
+  padding-top: 60px;
+}
+
+/* 左栏：固定文字 */
+.archive-left {
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 60px;
+}
+
+.archive-left-inner {
+  position: relative;
+  height: 200px;
+}
+
+.brand-info {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.brand-info.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.brand-info .name {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.brand-info .range {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.brand-info .count {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: #555;
+}
+
+.brand-info .enter {
+  margin-top: 32px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #666;
+  cursor: pointer;
+  display: inline-block;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 3px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.brand-info .enter:hover {
+  color: #eee;
+  border-color: #eee;
+}
+
+/* 右栏：滚动图片 */
+.archive-right {
+  padding: 0 24px 0 0;
+}
+
+.brand-block {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.brand-block .cover {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4 / 5;
+  background: #1a1a1a;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.brand-block .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.brand-block .cover:hover img {
+  transform: scale(1.03);
+  opacity: 0.85;
+}
+
+/* 无结果提示 */
+.no-result {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 0;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: #444;
+  display: none;
+}
+
+.no-result.show { display: block; }
+
+/* ===== 展开层 ===== */
+.expand-layer {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.98);
+  z-index: 100;
+  display: none;
+  overflow-y: auto;
+  padding: 60px 24px 120px;
+}
+
+.expand-layer.active { display: block; }
+
+.expand-inner { max-width: 1200px; margin: 0 auto; }
+
+.expand-header {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.expand-title {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: #eee;
+}
+
+.expand-range {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+
+.expand-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
+  gap: 20px;
+  justify-content: start;
+}
+
+.expand-images .thumb {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #1a1a1a;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.expand-images .thumb:hover { opacity: 0.7; }
+
+.expand-images .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.expand-images .thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* ===== 大图预览 ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.98);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.lightbox.active { display: flex; }
+
+.lightbox-img {
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
+  cursor: default;
+}
+
+.lightbox-caption {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #ccc;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  cursor: default;
+}
+
+.lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
+.lightbox-caption .season { font-size: 11px; color: #777; }
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.lightbox-arrow:hover { opacity: 1; }
+.lightbox-arrow.prev { left: 30px; }
+.lightbox-arrow.next { right: 30px; }
+
+.lightbox-counter {
+  position: absolute;
+  top: 34px;
+  left: 40px;
+  color: #777;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  cursor: default;
+}
+
+/* ===== 页脚 ===== */
+.footer-wrap {
+  padding: 80px 24px 120px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #555;
+  line-height: 2.4;
+}
+
+.footer .links { margin-top: 10px; }
+
+.footer .links a {
+  color: #555;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s ease;
+}
+
+.footer .links a:hover { color: #ccc; }
+
+/* ===== 回到顶部 ===== */
+.to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 200;
+  user-select: none;
+}
+
+.to-top.show { opacity: 0.7; pointer-events: auto; }
+.to-top:hover { opacity: 1; }
+
+/* ===== 手机 ===== */
+@media (max-width: 768px) {
+  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar .logo { font-size: 14px; }
+  .search-input { width: 80px; font-size: 11px; }
+  .search-input:focus { width: 120px; }
+
+  .archive-wrap {
+    display: block;
+    padding-top: 52px;
+  }
+
+  .archive-left {
+    position: relative;
+    top: auto;
+    height: auto;
+    padding: 30px 20px 10px;
+    justify-content: flex-start;
+  }
+
+  .archive-left-inner {
+    position: relative;
+    height: auto;
+  }
+
+  .brand-info {
+    position: absolute;
+    inset: 0;
+  }
+
+  .brand-info.active {
+    position: relative;
+  }
+
+  .brand-info .name { font-size: 20px; margin-bottom: 12px; }
+  .brand-info .range { font-size: 11px; }
+
+  .archive-right { padding: 0 16px; }
+
+  .brand-block {
+    height: auto;
+    padding: 20px 0 40px;
+  }
+
+  .brand-block .cover {
+    max-width: 100%;
+  }
+
+  .expand-layer { padding: 40px 16px 80px; }
+  .expand-title { font-size: 18px; }
+  .expand-images { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .lightbox-img { max-width: 92vw; max-height: 70vh; }
+  .lightbox-arrow.prev { left: 12px; }
+  .lightbox-arrow.next { right: 12px; }
+
+  .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="splash">
+  <span>Archive</span>
+</div>
+
+<header class="topbar">
+  <div class="logo">ARCHIVE</div>
+
+  <div class="search-wrapper">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH" autocomplete="off">
+      <svg class="search-clear" id="searchClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+</header>
+
+<div class="archive-wrap" id="archiveWrap">
+
+  <!-- 左栏：固定文字 -->
+  <div class="archive-left">
+    <div class="archive-left-inner" id="leftInner">
+
+      <div class="brand-info active" data-name="BRAND A">
+        <div class="name">BRAND A</div>
+        <div class="range">Spring 2027 — Spring 2029 RTW</div>
+        <div class="count">3 looks</div>
+        <div class="enter" onclick="openExpand('expand-a')">进入合集 →</div>
+      </div>
+
+      <div class="brand-info" data-name="BRAND B">
+        <div class="name">BRAND B</div>
+        <div class="range">Fall 2027 Couture — Spring 2028 RTW</div>
+        <div class="count">6 looks</div>
+        <div class="enter" onclick="openExpand('expand-b')">进入合集 →</div>
+      </div>
+
+      <div class="brand-info" data-name="BRAND C">
+        <div class="name">BRAND C</div>
+        <div class="range">Resort 2028 — Spring 2029 RTW</div>
+        <div class="count">1 look</div>
+        <div class="enter" onclick="openExpand('expand-c')">进入合集 →</div>
+      </div>
+
+      <div class="brand-info" data-name="BRAND D">
+        <div class="name">BRAND D</div>
+        <div class="range">Spring 2029 RTW</div>
+        <div class="count">2 looks</div>
+        <div class="enter" onclick="openExpand('expand-d')">进入合集 →</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 右栏：滚动图片 -->
+  <div class="archive-right" id="archiveRight">
+
+    <div class="brand-block" data-name="BRAND A" onclick="openExpand('expand-a')">
+      <div class="cover">
+        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
+      </div>
+    </div>
+
+    <div class="brand-block" data-name="BRAND B" onclick="openExpand('expand-b')">
+      <div class="cover">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+      </div>
+    </div>
+
+    <div class="brand-block" data-name="BRAND C" onclick="openExpand('expand-c')">
+      <div class="cover">
+        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
+      </div>
+    </div>
+
+    <div class="brand-block" data-name="BRAND D" onclick="openExpand('expand-d')">
+      <div class="cover">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer-wrap">
+  <div class="footer" id="footer"></div>
+  <div class="footer links">
+    <a href="about.html">ABOUT</a>
+    <span>·</span>
+    <a href="contact.html">CONTACT</a>
+  </div>
+</div>
+
+<div class="to-top" id="toTop">↑</div>
+
+<!-- ===== 展开层（保持不变） ===== -->
+<div class="expand-layer" id="expand-a">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND A</div>
+        <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images">
+      <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
+        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2027 RTW</div>
+      </div>
+      <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Fall 2028 RTW</div>
+      </div>
+      <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
+        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2029 RTW</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-b">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND B</div>
+        <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images">
+      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 1">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Fall 2027 Couture 1</div>
+      </div>
+      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 2">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Fall 2027 Couture 2</div>
+      </div>
+      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 1">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2028 RTW 1</div>
+      </div>
+      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2028 RTW 2</div>
+      </div>
+      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 3">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2028 RTW 3</div>
+      </div>
+      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 4">
+        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2028 RTW 4</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-c">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND C</div>
+        <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images">
+      <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
+        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Resort 2028</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-d">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND D</div>
+        <div class="expand-range">Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images">
+      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 1">
+        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2029 RTW 1</div>
+      </div>
+      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 2">
+        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">Spring 2029 RTW 2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 大图预览 ===== -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-counter" id="counter">1 / 1</div>
+  <div class="lightbox-arrow prev" id="prev">‹</div>
+  <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
+  <div class="lightbox-arrow next" id="next">›</div>
+  <div class="lightbox-caption">
+    <div class="brand" id="captionBrand">品牌</div>
+    <div class="season" id="captionSeason">季节</div>
+  </div>
+</div>
+
+<script>
+/* ===== 展开层 ===== */
+function openExpand(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExpand(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+
+  const input = document.getElementById('searchInput');
+  if (input && input.value.trim() === '') {
+    clearSearchAndReset();
+  }
+}
+
+function clearSearchAndReset() {
+  const input = document.getElementById('searchInput');
+  const clear = document.getElementById('searchClear');
+  const sug = document.getElementById('suggestions');
+
+  if (input) input.value = '';
+  if (clear) clear.classList.remove('show');
+  if (sug) sug.classList.remove('show');
+
+  document.querySelectorAll('.brand-block').forEach(block => {
+    block.style.display = '';
+  });
+
+  document.querySelectorAll('.brand-info').forEach(info => {
+    info.classList.remove('active');
+  });
+  const first = document.querySelector('.brand-info');
+  if (first) first.classList.add('active');
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  layer.addEventListener('click', (e) => {
+    if (e.target.closest('.thumb')) return;
+    closeExpand(layer.id);
+  });
+});
+
+/* ===== 大图预览 ===== */
+let currentImages = [];
+let currentIndex = 0;
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const captionBrand = document.getElementById('captionBrand');
+const captionSeason = document.getElementById('captionSeason');
+const counter = document.getElementById('counter');
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img = currentImages[currentIndex];
+  lightboxImg.src = img.src;
+  captionBrand.textContent = img.brand;
+  captionSeason.textContent = img.season;
+  counter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  updateLightbox();
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  updateLightbox();
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  const thumbs = Array.from(layer.querySelectorAll('.thumb'));
+  const imgList = thumbs.map(t => ({
+    src: t.querySelector('img').src,
+    brand: t.dataset.brand || '',
+    season: t.dataset.season || ''
+  }));
+
+  thumbs.forEach((thumb, i) => {
+    thumb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(imgList, i);
+    });
+  });
+});
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target.classList.contains('lightbox-img')) return;
+  if (e.target.closest('.lightbox-arrow')) return;
+  closeLightbox();
+});
+
+document.getElementById('prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  prevImage();
+});
+document.getElementById('next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  nextImage();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  } else if (document.querySelector('.expand-layer.active')) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.expand-layer.active').forEach(l => l.classList.remove('active'));
+      document.body.style.overflow = '';
+    }
+  }
+});
+
+/* ===== 底部数字 ===== */
+const brandCount = document.querySelectorAll('.brand-block').length;
+const imageCount = document.querySelectorAll('.expand-layer .thumb').length;
+document.getElementById('footer').textContent =
+  brandCount + ' 个品牌 · ' + imageCount + ' 张图';
+
+/* ===== 回到顶部 ===== */
+const toTop = document.getElementById('toTop');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) {
+    toTop.classList.add('show');
+  } else {
+    toTop.classList.remove('show');
+  }
+});
+
+toTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ===== 滚动切换左栏文字 ===== */
+const brandBlocks = Array.from(document.querySelectorAll('.brand-block'));
+const brandInfos = Array.from(document.querySelectorAll('.brand-info'));
+
+function updateActiveBrand() {
+  const viewportCenter = window.innerHeight / 2;
+  let closestBlock = null;
+  let closestDist = Infinity;
+
+  brandBlocks.forEach(block => {
+    if (block.style.display === 'none') return;
+    const rect = block.getBoundingClientRect();
+    const blockCenter = rect.top + rect.height / 2;
+    const dist = Math.abs(blockCenter - viewportCenter);
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestBlock = block;
+    }
+  });
+
+  if (!closestBlock) return;
+  const name = closestBlock.dataset.name;
+
+  brandInfos.forEach(info => {
+    info.classList.toggle('active', info.dataset.name === name);
+  });
+}
+
+window.addEventListener('scroll', updateActiveBrand, { passive: true });
+window.addEventListener('resize', updateActiveBrand);
+updateActiveBrand();
+
+/* ===== 搜索 + 建议列表 ===== */
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const suggestions = document.getElementById('suggestions');
+
+const brandNames = brandBlocks.map(b => b.dataset.name || '');
+
+function filterBrands(keyword) {
+  keyword = (keyword || '').trim().toUpperCase();
+
+  brandBlocks.forEach(block => {
+    const name = (block.dataset.name || '').toUpperCase();
+    if (!keyword || name.includes(keyword)) {
+      block.style.display = '';
+    } else {
+      block.style.display = 'none';
+    }
+  });
+
+  brandInfos.forEach(info => {
+    const name = (info.dataset.name || '').toUpperCase();
+    if (!keyword || name.includes(keyword)) {
+      info.style.display = '';
+    } else {
+      info.style.display = 'none';
+    }
+  });
+
+  updateActiveBrand();
+}
+
+function showSuggestions(keyword) {
+  keyword = (keyword || '').trim().toUpperCase();
+  suggestions.innerHTML = '';
+
+  if (!keyword) {
+    suggestions.classList.remove('show');
+    return;
+  }
+
+  const matches = brandNames.filter(name =>
+    name.toUpperCase().includes(keyword)
+  );
+
+  if (matches.length === 0) {
+    suggestions.classList.remove('show');
+    return;
+  }
+
+  matches.forEach(name => {
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.textContent = name;
+    item.addEventListener('click', () => {
+      searchInput.value = name;
+      filterBrands(name);
+      suggestions.classList.remove('show');
+      searchClear.classList.add('show');
+    });
+    suggestions.appendChild(item);
+  });
+
+  suggestions.classList.add('show');
+}
+
+searchInput.addEventListener('input', () => {
+  const value = searchInput.value;
+  filterBrands(value);
+  showSuggestions(value);
+  searchClear.classList.toggle('show', value.length > 0);
+});
+
+searchClear.addEventListener('click', () => {
+  clearSearchAndReset();
+  searchInput.blur();
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    clearSearchAndReset();
+    searchInput.blur();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-wrapper')) {
+    suggestions.classList.remove('show');
+  }
+});
+</script>
+
+</body>
+</html>
