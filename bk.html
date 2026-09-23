@@ -193,7 +193,7 @@ input {
   color: #444;
 }
 
-/* ===== 首页网格：一行 7 个 ===== */
+/* ===== 电脑网格：一行 7 个 ===== */
 .brand-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -436,7 +436,7 @@ input {
 .to-top:hover { opacity: 1; }
 
 /* ===== 手机端：默认隐藏 ===== */
-.mobile-two-col {
+.mobile-archive {
   display: none;
 }
 
@@ -450,120 +450,118 @@ input {
   .page-header { display: none; }
   .brand-grid { display: none; }
 
-  .mobile-two-col {
+  .mobile-archive {
     display: block;
     padding-top: 48px;
-  }
-
-  .mobile-black {
     background: #0a0a0a;
-    padding: 16px 16px 20px;
   }
 
+  /* 顶部黑栏：横排信息，占约 1/6 屏 */
   .mobile-topbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px 16px;
-    font-size: 9px;
-    letter-spacing: 0.08em;
+    gap: 8px 14px;
+    padding: 14px 16px 16px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
     color: #888;
-    margin-bottom: 22px;
     line-height: 1.5;
+    background: #0a0a0a;
   }
 
   .mobile-topbar .col {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
   }
 
   .mobile-topbar .col .label {
     color: #555;
-    font-size: 8px;
-    letter-spacing: 0.12em;
-    margin-bottom: 2px;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    margin-bottom: 1px;
   }
 
-  .mobile-info {
+  /* 中部：左固定文字 + 右主图占位 */
+  .mobile-mid {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    padding: 0 16px 20px;
+    gap: 12px;
+  }
+
+  .mobile-left {
     display: flex;
-    justify-content: space-between;
-    gap: 16px;
+    flex-direction: column;
   }
 
-  .mobile-info-left {
-    flex: 1;
-  }
-
-  .mobile-info-left .name {
-    font-size: 13px;
+  .mobile-left .name {
+    font-size: 12px;
     letter-spacing: 0.12em;
     color: #f0f0f0;
     margin-bottom: 12px;
   }
 
-  .mobile-info-left .desc {
-    font-size: 9px;
+  .mobile-left .desc {
+    font-size: 8px;
     line-height: 1.7;
     color: #999;
     letter-spacing: 0.04em;
+    margin-bottom: 16px;
   }
 
-  .mobile-info-right {
-    flex-shrink: 0;
+  .mobile-left .meta {
     display: flex;
-    gap: 18px;
-  }
-
-  .mobile-info-right .meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 9px;
+    gap: 12px;
+    font-size: 8px;
     color: #999;
     letter-spacing: 0.06em;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
-  .mobile-info-right .meta .num {
+  .mobile-left .meta .nums {
+    display: flex;
+    flex-direction: column;
     color: #555;
-    font-size: 8px;
   }
 
+  .mobile-left .meta .labels {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-left .meta .values {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 右主图占位 */
   .mobile-hero {
-    position: relative;
-    margin-top: 0;
-  }
-
-  .mobile-hero-img {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 5;
     background: #1a1a1a;
-    display: block;
   }
 
-  .mobile-hero-caption {
-    position: absolute;
-    bottom: -18px;
-    left: 16px;
-    right: 16px;
-    font-size: 22px;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    color: #fff;
-    line-height: 1.05;
-    z-index: 2;
-    pointer-events: none;
-  }
-
+  /* 白底区：大标题 + 一行两坑 */
   .mobile-white {
     background: #fafafa;
-    padding: 40px 16px 80px;
+    padding: 32px 16px 80px;
+  }
+
+  .mobile-white .headline {
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: #111;
+    line-height: 1.05;
+    margin-bottom: 32px;
+    text-transform: uppercase;
   }
 
   .mobile-brand-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px 12px;
+    gap: 44px 12px;
   }
 
   .mobile-brand-card {
@@ -575,7 +573,6 @@ input {
     aspect-ratio: 4 / 5;
     background: #e8e8e8;
     overflow: hidden;
-    margin-bottom: 8px;
   }
 
   .mobile-brand-card .cover img {
@@ -584,19 +581,6 @@ input {
     object-fit: cover;
     display: block;
     pointer-events: none;
-  }
-
-  .mobile-brand-card .label {
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    color: #333;
-    margin-bottom: 2px;
-  }
-
-  .mobile-brand-card .range {
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    color: #999;
   }
 
   .expand-layer { padding: 40px 16px 80px; }
@@ -646,64 +630,54 @@ input {
 
 <div class="brand-grid" id="brandGrid"></div>
 
-<!-- ===== 手机：Gil Huybrecht 结构 ===== -->
-<div class="mobile-two-col" id="mobileTwoCol">
+<!-- ===== 手机端 ===== -->
+<div class="mobile-archive" id="mobileArchive">
 
-  <div class="mobile-black">
-
-    <div class="mobile-topbar">
-      <div class="col">
-        <span>Gil Huybrecht</span>
-      </div>
-      <div class="col">
-        <span>Available September 2026</span>
-      </div>
-      <div class="col">
-        <span class="label">Services</span>
-        <span>Information Architecture</span>
-        <span>Web Design &amp; Art Direction</span>
-        <span>Interaction design</span>
-      </div>
-      <div class="col">
-        <span class="label">Recognition</span>
-        <span>Awwwards SOTD (15x)</span>
-        <span>FWA Site of the day (13x)</span>
-        <span>Independent of the year Nominee (4x)</span>
-        <span>Site of the Year Nominee (3x)</span>
-        <span>Webby awards (3x)</span>
-        <span>Lovie awards (2x)</span>
-        <span>SiteInspire feature (6x)</span>
-      </div>
-      <div class="col">
-        <span>Profile</span>
-      </div>
-      <div class="col">
-        <span>Email me</span>
-      </div>
+  <!-- 顶部黑栏：横排信息 -->
+  <div class="mobile-topbar">
+    <div class="col"><span>Gil Huybrecht</span></div>
+    <div class="col"><span>Available September 2026</span></div>
+    <div class="col">
+      <span class="label">Services</span>
+      <span>Information Architecture</span>
+      <span>Web Design &amp; Art Direction</span>
+      <span>Interaction design</span>
     </div>
+    <div class="col">
+      <span class="label">Recognition</span>
+      <span>Awwwards SOTD (15x)</span>
+      <span>FWA Site of the day (13x)</span>
+      <span>Independent of the year Nominee (4x)</span>
+      <span>Site of the Year Nominee (3x)</span>
+      <span>Webby awards (3x)</span>
+      <span>Lovie awards (2x)</span>
+      <span>SiteInspire feature (6x)</span>
+    </div>
+    <div class="col"><span>Profile</span></div>
+    <div class="col"><span>Email me</span></div>
+  </div>
 
-    <div class="mobile-info">
-      <div class="mobile-info-left">
-        <div class="name">Studio DADO</div>
-        <div class="desc">
-          A refined website for Studio DADO, a boutique interior design firm shaping world class hospitality spaces for globally recognized brands, balancing craft, clarity, and confidence.
-        </div>
+  <!-- 中部：左固定文字 + 右主图占位 -->
+  <div class="mobile-mid">
+    <div class="mobile-left">
+      <div class="name">Studio DADO</div>
+      <div class="desc">
+        A refined website for Studio DADO, a boutique interior design firm shaping world class hospitality spaces for globally recognized brands, balancing craft, clarity, and confidence.
       </div>
-
-      <div class="mobile-info-right">
-        <div class="meta">
-          <span class="num">1</span>
-          <span class="num">2</span>
-          <span class="num">3</span>
-          <span class="num">4</span>
+      <div class="meta">
+        <div class="nums">
+          <span>1</span>
+          <span>2</span>
+          <span>3</span>
+          <span>4</span>
         </div>
-        <div class="meta">
+        <div class="labels">
           <span>Dev</span>
           <span>Client</span>
           <span>Agency</span>
           <span>Year</span>
         </div>
-        <div class="meta">
+        <div class="values">
           <span>Jesper Westlund</span>
           <span>StudioDADO</span>
           <span>Motto®</span>
@@ -712,16 +686,14 @@ input {
       </div>
     </div>
 
+    <div class="mobile-hero"></div>
   </div>
 
-  <div class="mobile-hero">
-    <div class="mobile-hero-img"></div>
-    <div class="mobile-hero-caption">
+  <!-- 白底区：大标题 + 一行两坑 -->
+  <div class="mobile-white">
+    <div class="headline">
       THE PARTICULARS OF EACH PROJECT ARE WHAT COMBINE TO MAKE AN ORIGINAL, MEMORABLE CONCEPT.
     </div>
-  </div>
-
-  <div class="mobile-white">
     <div class="mobile-brand-grid" id="mobileBrandGrid"></div>
   </div>
 
@@ -872,8 +844,6 @@ brandsData.forEach(brand => {
     <div class="cover">
       <img src="${brand.images[0].src}" alt="" loading="lazy" draggable="false">
     </div>
-    <div class="label">${brand.name}</div>
-    <div class="range">${brand.range}</div>
   `;
   mobileGrid.appendChild(card);
 });
