@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive 档案</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+
+<style>
+@font-face {
+  font-family: "My Font";
+  src: url("./fonts/myfont.ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #0a0a0a;
+  color: #e8e8e8;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  -webkit-user-drag: none;
+  pointer-events: auto;
+}
+
+input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ===== 开屏 ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: bgOut 0.6s ease 2.6s forwards;
+}
+
+.splash span {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 46px;
+  letter-spacing: 0.02em;
+  color: #444;
+  opacity: 0;
+  filter: blur(8px);
+  animation: blurIn 1s ease forwards, textOut 0.6s ease 2s forwards;
+}
+
+@keyframes blurIn { to { opacity: 1; filter: blur(0); } }
+@keyframes textOut { to { opacity: 0; filter: blur(6px); } }
+@keyframes bgOut { to { opacity: 0; visibility: hidden; } }
+
+/* ===== 顶栏 ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 24px;
+}
+
+.topbar .logo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #eee;
+  flex-shrink: 0;
+}
+
+.search-wrapper { position: relative; }
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.search-box:focus-within { border-color: rgba(255, 255, 255, 0.5); }
+
+.search-box svg.search-icon {
+  width: 11px;
+  height: 11px;
+  stroke: #777;
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 90px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #eee;
+  transition: width 0.3s ease;
+}
+
+.search-input::placeholder { color: #555; letter-spacing: 0.12em; }
+.search-input:focus { width: 130px; }
+
+.search-clear {
+  display: none;
+  width: 12px;
+  height: 12px;
+  stroke: #777;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: stroke 0.2s;
+}
+
+.search-clear:hover { stroke: #eee; }
+.search-clear.show { display: block; }
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: -10px;
+  right: -10px;
+  margin-top: 14px;
+  background: rgba(20, 20, 20, 0.95);
+  padding: 4px 0;
+  display: none;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 300;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.suggestions.show { display: block; }
+
+.suggestion-item {
+  padding: 9px 16px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+
+.suggestion-item:hover { color: #eee; background: rgba(255, 255, 255, 0.04); }
+.suggestion-item + .suggestion-item { border-top: 1px solid rgba(255, 255, 255, 0.04); }
+
+/* ===== 页头 ===== */
+.page-header {
+  padding: 100px 24px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.page-header h1 {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.page-header .sub {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #444;
+}
+
+/* ===== 首页网格：一行 7 个 ===== */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 5px;
+  row-gap: 60px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  min-height: 400px;
+}
+
+.brand-card {
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-card .num {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 4px;
+  line-height: 1;
+  text-align: left;
+  pointer-events: none;
+}
+
+.brand-card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0.9;
+  background: #161616;
+}
+
+.brand-card:hover img {
+  opacity: 0.6;
+}
+
+/* ===== 页脚 ===== */
+.footer-wrap {
+  padding: 60px 24px 100px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #444;
+  line-height: 2.4;
+}
+
+.footer .links { margin-top: 10px; }
+
+.footer .links a {
+  color: #444;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s ease;
+}
+
+.footer .links a:hover { color: #ccc; }
+
+/* ===== 展开层 ===== */
+.expand-layer {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.98);
+  z-index: 100;
+  display: none;
+  overflow-y: auto;
+  padding: 60px 24px 120px;
+}
+
+.expand-layer.active { display: block; }
+
+.expand-inner { max-width: 1200px; margin: 0 auto; }
+
+.expand-header {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.expand-title {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: #eee;
+}
+
+.expand-range {
+  font-size: 10px;
+  color: #777;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+}
+
+.expand-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
+  gap: 16px;
+  justify-content: start;
+}
+
+.expand-images .thumb {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #1a1a1a;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.expand-images.has-highlight .thumb {
+  opacity: 0.3;
+}
+
+.expand-images.has-highlight .thumb.highlight {
+  opacity: 1;
+}
+
+.expand-images .thumb:hover { opacity: 1; }
+
+.expand-images .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.expand-images .thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 10px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* ===== 大图预览 ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.98);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.lightbox.active { display: flex; }
+
+.lightbox-img {
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
+  cursor: default;
+}
+
+.lightbox-caption {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #ccc;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  cursor: default;
+}
+
+.lightbox-caption .brand { font-size: 11px; margin-bottom: 6px; }
+.lightbox-caption .season { font-size: 9px; color: #777; }
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.lightbox-arrow:hover { opacity: 1; }
+.lightbox-arrow.prev { left: 30px; }
+.lightbox-arrow.next { right: 30px; }
+
+.lightbox-counter {
+  position: absolute;
+  top: 34px;
+  left: 40px;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  cursor: default;
+}
+
+/* ===== 回到顶部 ===== */
+.to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 200;
+  user-select: none;
+}
+
+.to-top.show { opacity: 0.7; pointer-events: auto; }
+.to-top:hover { opacity: 1; }
+
+/* ===== 手机端：默认隐藏 ===== */
+.mobile-two-col {
+  display: none;
+}
+
+/* ===== 手机端媒体查询 ===== */
+@media (max-width: 768px) {
+  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar .logo { font-size: 11px; }
+  .search-input { width: 70px; font-size: 9px; }
+  .search-input:focus { width: 100px; }
+
+  .page-header { display: none; }
+  .brand-grid { display: none; }
+
+  .mobile-two-col {
+    display: block;
+    padding-top: 48px;
+  }
+
+  .mobile-black {
+    background: #0a0a0a;
+    padding: 16px 16px 20px;
+  }
+
+  .mobile-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .mobile-topbar .col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mobile-topbar .col .label {
+    color: #555;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    margin-bottom: 2px;
+  }
+
+  .mobile-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .mobile-info-left {
+    flex: 1;
+  }
+
+  .mobile-info-left .name {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: #f0f0f0;
+    margin-bottom: 12px;
+  }
+
+  .mobile-info-left .desc {
+    font-size: 9px;
+    line-height: 1.7;
+    color: #999;
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-info-right {
+    flex-shrink: 0;
+    display: flex;
+    gap: 18px;
+  }
+
+  .mobile-info-right .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 9px;
+    color: #999;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+
+  .mobile-info-right .meta .num {
+    color: #555;
+    font-size: 8px;
+  }
+
+  .mobile-hero {
+    position: relative;
+    margin-top: 0;
+  }
+
+  .mobile-hero-img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #1a1a1a;
+    display: block;
+  }
+
+  .mobile-hero-caption {
+    position: absolute;
+    bottom: -18px;
+    left: 16px;
+    right: 16px;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: #fff;
+    line-height: 1.05;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .mobile-white {
+    background: #fafafa;
+    padding: 40px 16px 80px;
+  }
+
+  .mobile-brand-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 12px;
+  }
+
+  .mobile-brand-card {
+    cursor: pointer;
+  }
+
+  .mobile-brand-card .cover {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #e8e8e8;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .mobile-brand-card .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  .mobile-brand-card .label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #333;
+    margin-bottom: 2px;
+  }
+
+  .mobile-brand-card .range {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    color: #999;
+  }
+
+  .expand-layer { padding: 40px 16px 80px; }
+  .expand-title { font-size: 12px; }
+  .expand-images { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .lightbox-img { max-width: 92vw; max-height: 70vh; }
+  .lightbox-arrow.prev { left: 12px; }
+  .lightbox-arrow.next { right: 12px; }
+
+  .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 14px; }
+
+  .footer { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<div class="splash">
+  <span>Archive</span>
+</div>
+
+<header class="topbar">
+  <div class="logo">ARCHIVE</div>
+
+  <div class="search-wrapper">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+      </svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH" autocomplete="off">
+      <svg class="search-clear" id="searchClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+</header>
+
+<!-- ===== 电脑/平板：7列网格 ===== -->
+<div class="page-header">
+  <h1>ARCHIVE</h1>
+  <div class="sub">留下值得的</div>
+</div>
+
+<div class="brand-grid" id="brandGrid"></div>
+
+<!-- ===== 手机：Gil Huybrecht 结构 ===== -->
+<div class="mobile-two-col" id="mobileTwoCol">
+
+  <div class="mobile-black">
+
+    <div class="mobile-topbar">
+      <div class="col">
+        <span>Gil Huybrecht</span>
+      </div>
+      <div class="col">
+        <span>Available September 2026</span>
+      </div>
+      <div class="col">
+        <span class="label">Services</span>
+        <span>Information Architecture</span>
+        <span>Web Design &amp; Art Direction</span>
+        <span>Interaction design</span>
+      </div>
+      <div class="col">
+        <span class="label">Recognition</span>
+        <span>Awwwards SOTD (15x)</span>
+        <span>FWA Site of the day (13x)</span>
+        <span>Independent of the year Nominee (4x)</span>
+        <span>Site of the Year Nominee (3x)</span>
+        <span>Webby awards (3x)</span>
+        <span>Lovie awards (2x)</span>
+        <span>SiteInspire feature (6x)</span>
+      </div>
+      <div class="col">
+        <span>Profile</span>
+      </div>
+      <div class="col">
+        <span>Email me</span>
+      </div>
+    </div>
+
+    <div class="mobile-info">
+      <div class="mobile-info-left">
+        <div class="name">Studio DADO</div>
+        <div class="desc">
+          A refined website for Studio DADO, a boutique interior design firm shaping world class hospitality spaces for globally recognized brands, balancing craft, clarity, and confidence.
+        </div>
+      </div>
+
+      <div class="mobile-info-right">
+        <div class="meta">
+          <span class="num">1</span>
+          <span class="num">2</span>
+          <span class="num">3</span>
+          <span class="num">4</span>
+        </div>
+        <div class="meta">
+          <span>Dev</span>
+          <span>Client</span>
+          <span>Agency</span>
+          <span>Year</span>
+        </div>
+        <div class="meta">
+          <span>Jesper Westlund</span>
+          <span>StudioDADO</span>
+          <span>Motto®</span>
+          <span>2026</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mobile-hero">
+    <div class="mobile-hero-img"></div>
+    <div class="mobile-hero-caption">
+      THE PARTICULARS OF EACH PROJECT ARE WHAT COMBINE TO MAKE AN ORIGINAL, MEMORABLE CONCEPT.
+    </div>
+  </div>
+
+  <div class="mobile-white">
+    <div class="mobile-brand-grid" id="mobileBrandGrid"></div>
+  </div>
+
+</div>
+
+<div class="footer-wrap">
+  <div class="footer" id="footer"></div>
+  <div class="footer links">
+    <a href="about.html">ABOUT</a>
+    <span>·</span>
+    <a href="contact.html">CONTACT</a>
+  </div>
+</div>
+
+<div class="to-top" id="toTop">↑</div>
+
+<!-- ===== 展开层 ===== -->
+<div class="expand-layer" id="expand-a">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND A</div>
+        <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images" data-brand="BRAND A"></div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-b">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND B</div>
+        <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images" data-brand="BRAND B"></div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-c">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND C</div>
+        <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images" data-brand="BRAND C"></div>
+  </div>
+</div>
+
+<div class="expand-layer" id="expand-d">
+  <div class="expand-inner">
+    <div class="expand-header">
+      <div>
+        <div class="expand-title">BRAND D</div>
+        <div class="expand-range">Spring 2029 RTW</div>
+      </div>
+    </div>
+    <div class="expand-images" data-brand="BRAND D"></div>
+  </div>
+</div>
+
+<!-- ===== 大图预览 ===== -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-counter" id="counter">1 / 1</div>
+  <div class="lightbox-arrow prev" id="prev">‹</div>
+  <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
+  <div class="lightbox-arrow next" id="next">›</div>
+  <div class="lightbox-caption">
+    <div class="brand" id="captionBrand">品牌</div>
+    <div class="season" id="captionSeason">季节</div>
+  </div>
+</div>
+
+<script>
+/* ===== 完整数据 ===== */
+const brandsData = [
+  {
+    name: 'BRAND A',
+    expand: 'expand-a',
+    range: 'Spring 2027 — Spring 2029 RTW',
+    images: [
+      { src: 'QHBY0092.JPG', season: 'Spring 2027 RTW' },
+      { src: 'ASCS1531.JPG', season: 'Fall 2028 RTW' },
+      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW' }
+    ]
+  },
+  {
+    name: 'BRAND B',
+    expand: 'expand-b',
+    range: 'Fall 2027 Couture — Spring 2028 RTW',
+    images: [
+      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 1' },
+      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 2' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 1' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 2' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 3' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 4' }
+    ]
+  },
+  {
+    name: 'BRAND C',
+    expand: 'expand-c',
+    range: 'Resort 2028 — Spring 2029 RTW',
+    images: [
+      { src: 'CBNS5837.JPG', season: 'Resort 2028' }
+    ]
+  },
+  {
+    name: 'BRAND D',
+    expand: 'expand-d',
+    range: 'Spring 2029 RTW',
+    images: [
+      { src: 'ASCS1531.JPG', season: 'Spring 2029 RTW 1' },
+      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW 2' }
+    ]
+  }
+];
+
+/* ===== 电脑首页网格 ===== */
+const gridEl = document.getElementById('brandGrid');
+
+brandsData.forEach(brand => {
+  brand.images.forEach((img, i) => {
+    const card = document.createElement('div');
+    card.className = 'brand-card';
+    card.dataset.name = brand.name;
+    card.onclick = () => openExpand(brand.expand, i);
+    card.innerHTML = `
+      <span class="num">${i + 1}</span>
+      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+    `;
+    gridEl.appendChild(card);
+  });
+});
+
+/* ===== 手机白底区：一行两个品牌 ===== */
+const mobileGrid = document.getElementById('mobileBrandGrid');
+
+brandsData.forEach(brand => {
+  const card = document.createElement('div');
+  card.className = 'mobile-brand-card';
+  card.onclick = () => openExpand(brand.expand);
+  card.innerHTML = `
+    <div class="cover">
+      <img src="${brand.images[0].src}" alt="" loading="lazy" draggable="false">
+    </div>
+    <div class="label">${brand.name}</div>
+    <div class="range">${brand.range}</div>
+  `;
+  mobileGrid.appendChild(card);
+});
+
+/* ===== 展开层：同一份数据生成 ===== */
+brandsData.forEach(brand => {
+  const layer = document.getElementById(brand.expand);
+  const container = layer.querySelector('.expand-images');
+  container.dataset.brand = brand.name;
+
+  brand.images.forEach((img, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    thumb.dataset.brand = brand.name;
+    thumb.dataset.season = img.season;
+    thumb.dataset.index = i;
+    thumb.innerHTML = `
+      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+      <div class="thumb-label">${img.season}</div>
+    `;
+    container.appendChild(thumb);
+  });
+});
+
+/* ===== 展开层打开/关闭 + 高亮 ===== */
+function openExpand(id, highlightIndex) {
+  const layer = document.getElementById(id);
+  layer.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  const container = layer.querySelector('.expand-images');
+  const thumbs = container.querySelectorAll('.thumb');
+
+  thumbs.forEach(t => t.classList.remove('highlight'));
+  container.classList.remove('has-highlight');
+
+  if (typeof highlightIndex === 'number') {
+    if (thumbs[highlightIndex]) {
+      thumbs[highlightIndex].classList.add('highlight');
+      container.classList.add('has-highlight');
+
+      setTimeout(() => {
+        thumbs[highlightIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }
+}
+
+function closeExpand(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  layer.addEventListener('click', (e) => {
+    if (e.target.closest('.thumb')) return;
+    closeExpand(layer.id);
+  });
+});
+
+/* ===== 大图预览 ===== */
+let currentImages = [];
+let currentIndex = 0;
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const captionBrand = document.getElementById('captionBrand');
+const captionSeason = document.getElementById('captionSeason');
+const counter = document.getElementById('counter');
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img = currentImages[currentIndex];
+  lightboxImg.src = img.src;
+  captionBrand.textContent = img.brand;
+  captionSeason.textContent = img.season;
+  counter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  updateLightbox();
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  updateLightbox();
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  const thumbs = Array.from(layer.querySelectorAll('.thumb'));
+  const imgList = thumbs.map(t => ({
+    src: t.querySelector('img').src,
+    brand: t.dataset.brand || '',
+    season: t.dataset.season || ''
+  }));
+
+  thumbs.forEach((thumb, i) => {
+    thumb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(imgList, i);
+    });
+  });
+});
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target.classList.contains('lightbox-img')) return;
+  if (e.target.closest('.lightbox-arrow')) return;
+  closeLightbox();
+});
+
+document.getElementById('prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  prevImage();
+});
+document.getElementById('next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  nextImage();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  } else if (document.querySelector('.expand-layer.active')) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.expand-layer.active').forEach(l => l.classList.remove('active'));
+      document.body.style.overflow = '';
+    }
+  }
+});
+
+/* ===== 底部数字 ===== */
+const imageCount = document.querySelectorAll('.expand-layer .thumb').length;
+document.getElementById('footer').textContent =
+  brandsData.length + ' 个品牌 · ' + imageCount + ' 张图';
+
+/* ===== 回到顶部 ===== */
+const toTop = document.getElementById('toTop');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) {
+    toTop.classList.add('show');
+  } else {
+    toTop.classList.remove('show');
+  }
+});
+
+toTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ===== 搜索 ===== */
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const suggestions = document.getElementById('suggestions');
+
+const brandNames = brandsData.map(b => b.name);
+
+function filterBrands(keyword) {
+  keyword = (keyword || '').trim().toUpperCase();
+
+  document.querySelectorAll('.brand-card').forEach(card => {
+    const name = (card.dataset.name || '').toUpperCase();
+    if (!keyword || name.includes(keyword)) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function showSuggestions(keyword) {
+  keyword = (keyword || '').trim().toUpperCase();
+  suggestions.innerHTML = '';
+
+  if (!keyword) {
+    suggestions.classList.remove('show');
+    return;
+  }
+
+  const matches = brandNames.filter(name =>
+    name.toUpperCase().includes(keyword)
+  );
+
+  if (matches.length === 0) {
+    suggestions.classList.remove('show');
+    return;
+  }
+
+  matches.forEach(name => {
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.textContent = name;
+    item.addEventListener('click', () => {
+      searchInput.value = name;
+      filterBrands(name);
+      suggestions.classList.remove('show');
+      searchClear.classList.add('show');
+    });
+    suggestions.appendChild(item);
+  });
+
+  suggestions.classList.add('show');
+}
+
+searchInput.addEventListener('input', () => {
+  const value = searchInput.value;
+  filterBrands(value);
+  showSuggestions(value);
+  searchClear.classList.toggle('show', value.length > 0);
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchClear.classList.remove('show');
+  suggestions.classList.remove('show');
+  document.querySelectorAll('.brand-card').forEach(card => {
+    card.style.display = '';
+  });
+  searchInput.blur();
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-wrapper')) {
+    suggestions.classList.remove('show');
+  }
+});
+</script>
+
+</body>
+</html>
