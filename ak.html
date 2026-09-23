@@ -88,7 +88,7 @@ input {
 }
 
 .topbar .logo {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.2em;
   color: #eee;
@@ -109,31 +109,31 @@ input {
 .search-box:focus-within { border-color: rgba(255, 255, 255, 0.5); }
 
 .search-box svg.search-icon {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   stroke: #777;
   flex-shrink: 0;
 }
 
 .search-input {
-  width: 100px;
+  width: 90px;
   border: none;
   outline: none;
   background: transparent;
   font-family: inherit;
-  font-size: 12px;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  letter-spacing: 0.12em;
   color: #eee;
   transition: width 0.3s ease;
 }
 
-.search-input::placeholder { color: #555; letter-spacing: 0.1em; }
-.search-input:focus { width: 140px; }
+.search-input::placeholder { color: #555; letter-spacing: 0.12em; }
+.search-input:focus { width: 130px; }
 
 .search-clear {
   display: none;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   stroke: #777;
   cursor: pointer;
   flex-shrink: 0;
@@ -161,8 +161,8 @@ input {
 .suggestions.show { display: block; }
 
 .suggestion-item {
-  padding: 11px 18px;
-  font-size: 12px;
+  padding: 9px 16px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   color: #888;
   cursor: pointer;
@@ -172,129 +172,96 @@ input {
 .suggestion-item:hover { color: #eee; background: rgba(255, 255, 255, 0.04); }
 .suggestion-item + .suggestion-item { border-top: 1px solid rgba(255, 255, 255, 0.04); }
 
-/* ===== 首页两栏结构 ===== */
-.archive-wrap {
-  display: grid;
-  grid-template-columns: 42% 58%;
-  min-height: 100vh;
-  padding-top: 60px;
+/* ===== 页头 ===== */
+.page-header {
+  padding: 100px 24px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
-/* 左栏：固定文字 */
-.archive-left {
-  position: sticky;
-  top: 60px;
-  height: calc(100vh - 60px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 60px;
-}
-
-.archive-left-inner {
-  position: relative;
-  height: 200px;
-}
-
-.brand-info {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
-
-.brand-info.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.brand-info .name {
-  font-size: 28px;
+.page-header h1 {
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.15em;
-  color: #f0f0f0;
-  margin-bottom: 20px;
-}
-
-.brand-info .range {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: #888;
-  margin-bottom: 10px;
-}
-
-.brand-info .count {
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  color: #555;
-}
-
-.brand-info .enter {
-  margin-top: 32px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.3em;
   color: #666;
-  cursor: pointer;
-  display: inline-block;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  padding-bottom: 3px;
-  transition: color 0.3s, border-color 0.3s;
+  margin-bottom: 8px;
 }
 
-.brand-info .enter:hover {
-  color: #eee;
-  border-color: #eee;
-}
-
-/* 右栏：滚动图片 */
-.archive-right {
-  padding: 0 24px 0 0;
-}
-
-.brand-block {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 0;
-}
-
-.brand-block .cover {
-  width: 100%;
-  max-width: 640px;
-  aspect-ratio: 4 / 5;
-  background: #1a1a1a;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.brand-block .cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s ease, opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.brand-block .cover:hover img {
-  transform: scale(1.03);
-  opacity: 0.85;
-}
-
-/* 无结果提示 */
-.no-result {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 0;
-  font-size: 12px;
+.page-header .sub {
+  font-size: 10px;
   letter-spacing: 0.2em;
   color: #444;
-  display: none;
 }
 
-.no-result.show { display: block; }
+/* ===== 首页网格 ===== */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 5px;
+  row-gap: 60px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  min-height: 400px;
+}
+
+.brand-card {
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-card .num {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 4px;
+  line-height: 1;
+  text-align: right;
+  pointer-events: none;
+}
+
+.brand-card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0.9;
+  background: #161616;
+}
+
+.brand-card:hover img {
+  opacity: 0.6;
+}
+
+/* ===== 页脚 ===== */
+.footer-wrap {
+  padding: 60px 24px 100px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #444;
+  line-height: 2.4;
+}
+
+.footer .links { margin-top: 10px; }
+
+.footer .links a {
+  color: #444;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color 0.3s ease;
+}
+
+.footer .links a:hover { color: #ccc; }
 
 /* ===== 展开层 ===== */
 .expand-layer {
@@ -318,54 +285,75 @@ input {
 }
 
 .expand-title {
-  font-size: 22px;
+  font-size: 13px;
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   color: #eee;
 }
 
 .expand-range {
-  font-size: 12px;
-  color: #888;
-  letter-spacing: 0.08em;
+  font-size: 10px;
+  color: #777;
+  letter-spacing: 0.1em;
   margin-top: 8px;
 }
 
 .expand-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
+  column-gap: 5px;
+  row-gap: 60px;
   justify-content: start;
 }
 
 .expand-images .thumb {
   position: relative;
-  aspect-ratio: 4 / 5;
-  background: #1a1a1a;
-  overflow: hidden;
+  background: transparent;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.expand-images .thumb:hover { opacity: 0.7; }
-
-.expand-images .thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.expand-images .thumb .num {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 4px;
+  line-height: 1;
+  text-align: right;
   display: block;
   pointer-events: none;
 }
+
+.expand-images .thumb img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  background: #161616;
+}
+
+.expand-images.has-highlight .thumb {
+  opacity: 0.3;
+}
+
+.expand-images.has-highlight .thumb.highlight {
+  opacity: 1;
+}
+
+.expand-images .thumb:hover { opacity: 1; }
 
 .expand-images .thumb-label {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: linear-gradient(transparent, rgba(0,0,0,0.6));
   color: #fff;
-  font-size: 11px;
+  font-size: 9px;
   letter-spacing: 0.1em;
   pointer-events: none;
 }
@@ -398,13 +386,13 @@ input {
   right: 0;
   text-align: center;
   color: #ccc;
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.2em;
   cursor: default;
 }
 
-.lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
-.lightbox-caption .season { font-size: 11px; color: #777; }
+.lightbox-caption .brand { font-size: 11px; margin-bottom: 6px; }
+.lightbox-caption .season { font-size: 9px; color: #777; }
 
 .lightbox-arrow {
   position: absolute;
@@ -416,7 +404,7 @@ input {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 30px;
+  font-size: 28px;
   cursor: pointer;
   user-select: none;
   opacity: 0.6;
@@ -432,35 +420,10 @@ input {
   top: 34px;
   left: 40px;
   color: #777;
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.2em;
   cursor: default;
 }
-
-/* ===== 页脚 ===== */
-.footer-wrap {
-  padding: 80px 24px 120px;
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.footer {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: #555;
-  line-height: 2.4;
-}
-
-.footer .links { margin-top: 10px; }
-
-.footer .links a {
-  color: #555;
-  text-decoration: none;
-  margin: 0 8px;
-  transition: color 0.3s ease;
-}
-
-.footer .links a:hover { color: #ccc; }
 
 /* ===== 回到顶部 ===== */
 .to-top {
@@ -472,7 +435,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   color: #888;
   cursor: pointer;
   opacity: 0;
@@ -485,63 +448,163 @@ input {
 .to-top.show { opacity: 0.7; pointer-events: auto; }
 .to-top:hover { opacity: 1; }
 
-/* ===== 手机 ===== */
+/* ===== 手机：两栏 ===== */
+.mobile-two-col {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .topbar { padding: 12px 16px; gap: 12px; }
-  .topbar .logo { font-size: 14px; }
-  .search-input { width: 80px; font-size: 11px; }
-  .search-input:focus { width: 120px; }
+  .topbar .logo { font-size: 11px; }
+  .search-input { width: 70px; font-size: 9px; }
+  .search-input:focus { width: 100px; }
 
-  .archive-wrap {
-    display: block;
+  .page-header { display: none; }
+
+  .brand-grid { display: none; }
+
+  .mobile-two-col {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    min-height: 100vh;
     padding-top: 52px;
   }
 
-  .archive-left {
-    position: relative;
-    top: auto;
-    height: auto;
-    padding: 30px 20px 10px;
-    justify-content: flex-start;
+  .mobile-two-col .archive-left {
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 16px;
   }
 
-  .archive-left-inner {
+  .mobile-two-col .archive-left-inner {
     position: relative;
-    height: auto;
+    height: 160px;
   }
 
-  .brand-info {
+  .mobile-two-col .brand-info {
     position: absolute;
     inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
   }
 
-  .brand-info.active {
-    position: relative;
+  .mobile-two-col .brand-info.active {
+    opacity: 1;
+    pointer-events: auto;
   }
 
-  .brand-info .name { font-size: 20px; margin-bottom: 12px; }
-  .brand-info .range { font-size: 11px; }
-
-  .archive-right { padding: 0 16px; }
-
-  .brand-block {
-    height: auto;
-    padding: 20px 0 40px;
+  .mobile-two-col .brand-info .name {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: #f0f0f0;
+    margin-bottom: 10px;
   }
 
-  .brand-block .cover {
+  .mobile-two-col .brand-info .range {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .mobile-two-col .brand-info .count {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #555;
+  }
+
+  .mobile-two-col .archive-right {
+    padding: 0 12px 0 0;
+  }
+
+  .mobile-two-col .brand-block {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    cursor: pointer;
+  }
+
+  .mobile-two-col .brand-block .cover {
+    width: 100%;
     max-width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #1a1a1a;
+    overflow: hidden;
   }
 
+  .mobile-two-col .brand-block .cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* 手机合集：一行 3 个，列距小、行距大 */
   .expand-layer { padding: 40px 16px 80px; }
-  .expand-title { font-size: 18px; }
-  .expand-images { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .expand-title { font-size: 12px; }
+
+  .expand-images {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 5px;
+    row-gap: 40px;
+    justify-content: stretch;
+  }
+
+  .expand-images .thumb {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .expand-images .thumb .num {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 4px;
+    line-height: 1;
+    text-align: right;
+    display: block;
+    pointer-events: none;
+  }
+
+  .expand-images .thumb img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    background: #161616;
+  }
+
+  .expand-images .thumb-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 8px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: #fff;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+  }
 
   .lightbox-img { max-width: 92vw; max-height: 70vh; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
 
-  .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 16px; }
+  .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 14px; }
+
+  .footer { font-size: 9px; }
 }
 </style>
 </head>
@@ -570,72 +633,55 @@ input {
   </div>
 </header>
 
-<div class="archive-wrap" id="archiveWrap">
+<!-- ===== 电脑/平板：7列网格 ===== -->
+<div class="page-header">
+  <h1>ARCHIVE</h1>
+  <div class="sub">留下值得的</div>
+</div>
 
-  <!-- 左栏：固定文字 -->
+<div class="brand-grid" id="brandGrid"></div>
+
+<!-- ===== 手机：两栏 ===== -->
+<div class="mobile-two-col" id="mobileTwoCol">
   <div class="archive-left">
     <div class="archive-left-inner" id="leftInner">
-
       <div class="brand-info active" data-name="BRAND A">
         <div class="name">BRAND A</div>
         <div class="range">Spring 2027 — Spring 2029 RTW</div>
         <div class="count">3 looks</div>
-        <div class="enter" onclick="openExpand('expand-a')">进入合集 →</div>
       </div>
-
       <div class="brand-info" data-name="BRAND B">
         <div class="name">BRAND B</div>
         <div class="range">Fall 2027 Couture — Spring 2028 RTW</div>
         <div class="count">6 looks</div>
-        <div class="enter" onclick="openExpand('expand-b')">进入合集 →</div>
       </div>
-
       <div class="brand-info" data-name="BRAND C">
         <div class="name">BRAND C</div>
         <div class="range">Resort 2028 — Spring 2029 RTW</div>
         <div class="count">1 look</div>
-        <div class="enter" onclick="openExpand('expand-c')">进入合集 →</div>
       </div>
-
       <div class="brand-info" data-name="BRAND D">
         <div class="name">BRAND D</div>
         <div class="range">Spring 2029 RTW</div>
         <div class="count">2 looks</div>
-        <div class="enter" onclick="openExpand('expand-d')">进入合集 →</div>
       </div>
-
     </div>
   </div>
 
-  <!-- 右栏：滚动图片 -->
   <div class="archive-right" id="archiveRight">
-
     <div class="brand-block" data-name="BRAND A" onclick="openExpand('expand-a')">
-      <div class="cover">
-        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
-      </div>
+      <div class="cover"><img src="QHBY0092.JPG" alt="" draggable="false"></div>
     </div>
-
     <div class="brand-block" data-name="BRAND B" onclick="openExpand('expand-b')">
-      <div class="cover">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-      </div>
+      <div class="cover"><img src="RLHF3163.JPG" alt="" draggable="false"></div>
     </div>
-
     <div class="brand-block" data-name="BRAND C" onclick="openExpand('expand-c')">
-      <div class="cover">
-        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
-      </div>
+      <div class="cover"><img src="CBNS5837.JPG" alt="" draggable="false"></div>
     </div>
-
     <div class="brand-block" data-name="BRAND D" onclick="openExpand('expand-d')">
-      <div class="cover">
-        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
-      </div>
+      <div class="cover"><img src="ASCS1531.JPG" alt="" draggable="false"></div>
     </div>
-
   </div>
-
 </div>
 
 <div class="footer-wrap">
@@ -649,7 +695,7 @@ input {
 
 <div class="to-top" id="toTop">↑</div>
 
-<!-- ===== 展开层（保持不变） ===== -->
+<!-- ===== 展开层 ===== -->
 <div class="expand-layer" id="expand-a">
   <div class="expand-inner">
     <div class="expand-header">
@@ -658,20 +704,7 @@ input {
         <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
       </div>
     </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND A" data-season="Spring 2027 RTW">
-        <img src="QHBY0092.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2027 RTW</div>
-      </div>
-      <div class="thumb" data-brand="BRAND A" data-season="Fall 2028 RTW">
-        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Fall 2028 RTW</div>
-      </div>
-      <div class="thumb" data-brand="BRAND A" data-season="Spring 2029 RTW">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2029 RTW</div>
-      </div>
-    </div>
+    <div class="expand-images" data-brand="BRAND A"></div>
   </div>
 </div>
 
@@ -683,32 +716,7 @@ input {
         <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
       </div>
     </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Fall 2027 Couture 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Fall 2027 Couture 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Fall 2027 Couture 2</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 1">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2028 RTW 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 2">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2028 RTW 2</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 3">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2028 RTW 3</div>
-      </div>
-      <div class="thumb" data-brand="BRAND B" data-season="Spring 2028 RTW 4">
-        <img src="RLHF3163.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2028 RTW 4</div>
-      </div>
-    </div>
+    <div class="expand-images" data-brand="BRAND B"></div>
   </div>
 </div>
 
@@ -720,12 +728,7 @@ input {
         <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
       </div>
     </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND C" data-season="Resort 2028">
-        <img src="CBNS5837.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Resort 2028</div>
-      </div>
-    </div>
+    <div class="expand-images" data-brand="BRAND C"></div>
   </div>
 </div>
 
@@ -737,16 +740,7 @@ input {
         <div class="expand-range">Spring 2029 RTW</div>
       </div>
     </div>
-    <div class="expand-images">
-      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 1">
-        <img src="ASCS1531.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2029 RTW 1</div>
-      </div>
-      <div class="thumb" data-brand="BRAND D" data-season="Spring 2029 RTW 2">
-        <img src="BBIQ4566.JPG" alt="" loading="lazy" draggable="false">
-        <div class="thumb-label">Spring 2029 RTW 2</div>
-      </div>
-    </div>
+    <div class="expand-images" data-brand="BRAND D"></div>
   </div>
 </div>
 
@@ -763,40 +757,115 @@ input {
 </div>
 
 <script>
+/* ===== 完整数据 ===== */
+const brandsData = [
+  {
+    name: 'BRAND A',
+    expand: 'expand-a',
+    range: 'Spring 2027 — Spring 2029 RTW',
+    images: [
+      { src: 'QHBY0092.JPG', season: 'Spring 2027 RTW' },
+      { src: 'ASCS1531.JPG', season: 'Fall 2028 RTW' },
+      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW' }
+    ]
+  },
+  {
+    name: 'BRAND B',
+    expand: 'expand-b',
+    range: 'Fall 2027 Couture — Spring 2028 RTW',
+    images: [
+      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 1' },
+      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 2' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 1' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 2' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 3' },
+      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 4' }
+    ]
+  },
+  {
+    name: 'BRAND C',
+    expand: 'expand-c',
+    range: 'Resort 2028 — Spring 2029 RTW',
+    images: [
+      { src: 'CBNS5837.JPG', season: 'Resort 2028' }
+    ]
+  },
+  {
+    name: 'BRAND D',
+    expand: 'expand-d',
+    range: 'Spring 2029 RTW',
+    images: [
+      { src: 'ASCS1531.JPG', season: 'Spring 2029 RTW 1' },
+      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW 2' }
+    ]
+  }
+];
+
+/* ===== 首页网格 ===== */
+const gridEl = document.getElementById('brandGrid');
+
+brandsData.forEach(brand => {
+  brand.images.forEach((img, i) => {
+    const card = document.createElement('div');
+    card.className = 'brand-card';
+    card.dataset.name = brand.name;
+    card.onclick = () => openExpand(brand.expand, i);
+    card.innerHTML = `
+      <span class="num">${i + 1}</span>
+      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+    `;
+    gridEl.appendChild(card);
+  });
+});
+
 /* ===== 展开层 ===== */
-function openExpand(id) {
-  document.getElementById(id).classList.add('active');
+brandsData.forEach(brand => {
+  const layer = document.getElementById(brand.expand);
+  const container = layer.querySelector('.expand-images');
+  container.dataset.brand = brand.name;
+
+  brand.images.forEach((img, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    thumb.dataset.brand = brand.name;
+    thumb.dataset.season = img.season;
+    thumb.dataset.index = i;
+    thumb.innerHTML = `
+      <span class="num">${i + 1}</span>
+      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+      <div class="thumb-label">${img.season}</div>
+    `;
+    container.appendChild(thumb);
+  });
+});
+
+/* ===== 展开层打开/关闭 + 高亮 ===== */
+function openExpand(id, highlightIndex) {
+  const layer = document.getElementById(id);
+  layer.classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  const container = layer.querySelector('.expand-images');
+  const thumbs = container.querySelectorAll('.thumb');
+
+  thumbs.forEach(t => t.classList.remove('highlight'));
+  container.classList.remove('has-highlight');
+
+  if (typeof highlightIndex === 'number') {
+    if (thumbs[highlightIndex]) {
+      thumbs[highlightIndex].classList.add('highlight');
+      container.classList.add('has-highlight');
+
+      setTimeout(() => {
+        thumbs[highlightIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }
 }
 
 function closeExpand(id) {
   document.getElementById(id).classList.remove('active');
   document.body.style.overflow = '';
-
-  const input = document.getElementById('searchInput');
-  if (input && input.value.trim() === '') {
-    clearSearchAndReset();
-  }
-}
-
-function clearSearchAndReset() {
-  const input = document.getElementById('searchInput');
-  const clear = document.getElementById('searchClear');
-  const sug = document.getElementById('suggestions');
-
-  if (input) input.value = '';
-  if (clear) clear.classList.remove('show');
-  if (sug) sug.classList.remove('show');
-
-  document.querySelectorAll('.brand-block').forEach(block => {
-    block.style.display = '';
-  });
-
-  document.querySelectorAll('.brand-info').forEach(info => {
-    info.classList.remove('active');
-  });
-  const first = document.querySelector('.brand-info');
-  if (first) first.classList.add('active');
 }
 
 document.querySelectorAll('.expand-layer').forEach(layer => {
@@ -892,10 +961,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ===== 底部数字 ===== */
-const brandCount = document.querySelectorAll('.brand-block').length;
 const imageCount = document.querySelectorAll('.expand-layer .thumb').length;
 document.getElementById('footer').textContent =
-  brandCount + ' 个品牌 · ' + imageCount + ' 张图';
+  brandsData.length + ' 个品牌 · ' + imageCount + ' 张图';
 
 /* ===== 回到顶部 ===== */
 const toTop = document.getElementById('toTop');
@@ -912,17 +980,18 @@ toTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ===== 滚动切换左栏文字 ===== */
-const brandBlocks = Array.from(document.querySelectorAll('.brand-block'));
-const brandInfos = Array.from(document.querySelectorAll('.brand-info'));
+/* ===== 手机两栏：滚动切换 ===== */
+const brandBlocks = Array.from(document.querySelectorAll('.mobile-two-col .brand-block'));
+const brandInfos = Array.from(document.querySelectorAll('.mobile-two-col .brand-info'));
 
 function updateActiveBrand() {
+  if (window.innerWidth > 768) return;
+
   const viewportCenter = window.innerHeight / 2;
   let closestBlock = null;
   let closestDist = Infinity;
 
   brandBlocks.forEach(block => {
-    if (block.style.display === 'none') return;
     const rect = block.getBoundingClientRect();
     const blockCenter = rect.top + rect.height / 2;
     const dist = Math.abs(blockCenter - viewportCenter);
@@ -944,35 +1013,24 @@ window.addEventListener('scroll', updateActiveBrand, { passive: true });
 window.addEventListener('resize', updateActiveBrand);
 updateActiveBrand();
 
-/* ===== 搜索 + 建议列表 ===== */
+/* ===== 搜索 ===== */
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
 const suggestions = document.getElementById('suggestions');
 
-const brandNames = brandBlocks.map(b => b.dataset.name || '');
+const brandNames = brandsData.map(b => b.name);
 
 function filterBrands(keyword) {
   keyword = (keyword || '').trim().toUpperCase();
 
-  brandBlocks.forEach(block => {
-    const name = (block.dataset.name || '').toUpperCase();
+  document.querySelectorAll('.brand-card').forEach(card => {
+    const name = (card.dataset.name || '').toUpperCase();
     if (!keyword || name.includes(keyword)) {
-      block.style.display = '';
+      card.style.display = '';
     } else {
-      block.style.display = 'none';
+      card.style.display = 'none';
     }
   });
-
-  brandInfos.forEach(info => {
-    const name = (info.dataset.name || '').toUpperCase();
-    if (!keyword || name.includes(keyword)) {
-      info.style.display = '';
-    } else {
-      info.style.display = 'none';
-    }
-  });
-
-  updateActiveBrand();
 }
 
 function showSuggestions(keyword) {
@@ -1017,15 +1075,13 @@ searchInput.addEventListener('input', () => {
 });
 
 searchClear.addEventListener('click', () => {
-  clearSearchAndReset();
+  searchInput.value = '';
+  searchClear.classList.remove('show');
+  suggestions.classList.remove('show');
+  document.querySelectorAll('.brand-card').forEach(card => {
+    card.style.display = '';
+  });
   searchInput.blur();
-});
-
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    clearSearchAndReset();
-    searchInput.blur();
-  }
 });
 
 document.addEventListener('click', (e) => {
