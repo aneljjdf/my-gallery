@@ -69,7 +69,7 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
-/* ===== 顶栏：三列，去掉分割线 ===== */
+/* ===== 顶栏：四块均匀分布 ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -94,12 +94,6 @@ input {
   flex-shrink: 0;
 }
 
-.topbar .cols {
-  display: flex;
-  gap: 32px;
-  flex-shrink: 0;
-}
-
 .topbar .col {
   display: flex;
   flex-direction: column;
@@ -108,7 +102,6 @@ input {
   letter-spacing: 0.08em;
   color: #888;
   line-height: 1.6;
-  min-width: 100px;
 }
 
 .topbar .col .label {
@@ -124,7 +117,6 @@ input {
   color: #888;
   text-decoration: none;
   flex-shrink: 0;
-  align-self: flex-start;
 }
 
 /* ===== 页头 ===== */
@@ -403,23 +395,19 @@ input {
   .topbar {
     padding: 14px 16px;
     background: #0a0a0a;
+    gap: 12px;
   }
 
   .topbar .logo { font-size: 11px; }
 
-  .topbar .cols {
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
   .topbar .col {
-    font-size: 8px;
-    min-width: auto;
+    font-size: 7px;
+    letter-spacing: 0.04em;
   }
 
-  .topbar .col .label { font-size: 7px; }
+  .topbar .col .label { font-size: 6px; }
 
-  .topbar .email-link { font-size: 10px; }
+  .topbar .email-link { font-size: 9px; }
 
   .mobile-split {
     display: grid;
@@ -528,24 +516,23 @@ input {
   <span>Archive</span>
 </div>
 
-<!-- ===== 顶栏：三列，去掉分割线 ===== -->
+<!-- ===== 顶栏：四块均匀分布 ===== -->
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
 
-  <div class="cols">
-    <div class="col">
-      <span class="label">Services</span>
-      <span>Information Architecture</span>
-      <span>Web Design &amp; Art Direction</span>
-      <span>Interaction design</span>
-    </div>
-    <div class="col">
-      <span class="label">Recognition</span>
-      <span>Awwwards SOTD (15x)</span>
-      <span>FWA Site of the day (13x)</span>
-      <span>Independent of the year Nominee (4x)</span>
-      <span>Site of the Year Nominee (3x)</span>
-    </div>
+  <div class="col">
+    <span class="label">Services</span>
+    <span>Information Architecture</span>
+    <span>Web Design &amp; Art Direction</span>
+    <span>Interaction design</span>
+  </div>
+
+  <div class="col">
+    <span class="label">Recognition</span>
+    <span>Awwwards SOTD (15x)</span>
+    <span>FWA Site of the day (13x)</span>
+    <span>Independent of the year Nominee (4x)</span>
+    <span>Site of the Year Nominee (3x)</span>
   </div>
 
   <a class="email-link" href="mailto:hello@example.com">Email me</a>
