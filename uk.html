@@ -69,7 +69,7 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
-/* ===== 顶栏：四块均匀分布 ===== */
+/* ===== 顶栏：高度砍一半 ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -83,7 +83,7 @@ input {
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 24px;
+  padding: 10px 24px;
 }
 
 .topbar .logo {
@@ -121,7 +121,7 @@ input {
 
 /* ===== 页头 ===== */
 .page-header {
-  padding: 140px 24px 40px;
+  padding: 100px 24px 40px;
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -393,9 +393,9 @@ input {
   .brand-grid { display: none; }
 
   .topbar {
-    padding: 14px 16px;
+    padding: 10px 14px;
     background: #0a0a0a;
-    gap: 12px;
+    gap: 10px;
   }
 
   .topbar .logo { font-size: 11px; }
@@ -413,7 +413,7 @@ input {
     display: grid;
     grid-template-columns: 35% 65%;
     position: fixed;
-    top: 120px;
+    top: 76px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -422,32 +422,33 @@ input {
 
   .mobile-split .left {
     background: #0a0a0a;
-    padding: 20px 14px;
-    overflow: hidden;
+    padding: 16px 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobile-split .left .name {
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.1em;
     color: #f0f0f0;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   .mobile-split .left .desc {
-    font-size: 8px;
-    line-height: 1.7;
+    font-size: 7px;
+    line-height: 1.6;
     color: #999;
     letter-spacing: 0.03em;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
 
   .mobile-split .left .meta {
     display: flex;
-    gap: 10px;
-    font-size: 8px;
+    gap: 8px;
+    font-size: 7px;
     color: #999;
     letter-spacing: 0.05em;
-    line-height: 1.6;
+    line-height: 1.5;
   }
 
   .mobile-split .left .meta .nums {
@@ -471,7 +472,7 @@ input {
 
   .mobile-split .hero {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
     background: #1a1a1a;
     margin-bottom: 24px;
   }
@@ -516,7 +517,7 @@ input {
   <span>Archive</span>
 </div>
 
-<!-- ===== 顶栏：四块均匀分布 ===== -->
+<!-- ===== 顶栏：高度砍一半 ===== -->
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
 
@@ -524,15 +525,12 @@ input {
     <span class="label">Services</span>
     <span>Information Architecture</span>
     <span>Web Design &amp; Art Direction</span>
-    <span>Interaction design</span>
   </div>
 
   <div class="col">
     <span class="label">Recognition</span>
     <span>Awwwards SOTD (15x)</span>
     <span>FWA Site of the day (13x)</span>
-    <span>Independent of the year Nominee (4x)</span>
-    <span>Site of the Year Nominee (3x)</span>
   </div>
 
   <a class="email-link" href="mailto:hello@example.com">Email me</a>
