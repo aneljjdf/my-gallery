@@ -20,8 +20,6 @@
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -36,7 +34,6 @@ body {
 
 img {
   -webkit-user-drag: none;
-  user-drag: none;
   pointer-events: auto;
 }
 
@@ -45,6 +42,7 @@ input {
   user-select: text;
 }
 
+/* ===== 开屏 ===== */
 .splash {
   position: fixed;
   inset: 0;
@@ -57,7 +55,7 @@ input {
 }
 
 .splash span {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-style: italic;
   font-weight: 500;
   font-size: 46px;
@@ -65,14 +63,14 @@ input {
   color: #c8c8c8;
   opacity: 0;
   filter: blur(8px);
-  animation: blurIn 1s ease forwards,
-             textOut 0.6s ease 2s forwards;
+  animation: blurIn 1s ease forwards, textOut 0.6s ease 2s forwards;
 }
 
 @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
+/* ===== 顶栏 ===== */
 .topbar {
   position: sticky;
   top: 0;
@@ -97,83 +95,18 @@ input {
   flex-shrink: 0;
 }
 
-.search-wrapper { position: relative; }
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  padding-bottom: 4px;
-  transition: border-color 0.3s ease;
-}
-
-.search-box:focus-within { border-color: rgba(0, 0, 0, 0.4); }
-
-.search-box svg.search-icon {
-  width: 12px;
-  height: 12px;
-  stroke: #999;
-  flex-shrink: 0;
-}
-
-.search-input {
-  width: 100px;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
+.topbar .search-btn {
   font-size: 12px;
-  letter-spacing: 0.1em;
-  color: #333;
-  transition: width 0.3s ease;
-}
-
-.search-input::placeholder { color: #bbb; letter-spacing: 0.1em; }
-.search-input:focus { width: 140px; }
-
-.search-clear {
-  display: none;
-  width: 14px;
-  height: 14px;
-  stroke: #999;
+  letter-spacing: 0.2em;
+  color: #666;
   cursor: pointer;
-  flex-shrink: 0;
-  transition: stroke 0.2s;
+  transition: color 0.3s;
+  user-select: none;
 }
 
-.search-clear:hover { stroke: #333; }
-.search-clear.show { display: block; }
+.topbar .search-btn:hover { color: #111; }
 
-.suggestions {
-  position: absolute;
-  top: 100%;
-  left: -10px;
-  right: -10px;
-  margin-top: 14px;
-  background: rgba(250, 250, 250, 0.95);
-  padding: 4px 0;
-  display: none;
-  max-height: 260px;
-  overflow-y: auto;
-  z-index: 300;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.04);
-}
-
-.suggestions.show { display: block; }
-
-.suggestion-item {
-  padding: 11px 18px;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  color: #777;
-  cursor: pointer;
-  transition: color 0.25s ease, background 0.25s ease;
-}
-
-.suggestion-item:hover { color: #111; background: rgba(0, 0, 0, 0.025); }
-.suggestion-item + .suggestion-item { border-top: 1px solid rgba(0, 0, 0, 0.03); }
-
+/* ===== 容器 ===== */
 .container { max-width: 1200px; margin: 0 auto; }
 
 .page-header { text-align: center; margin-bottom: 60px; }
@@ -192,15 +125,11 @@ input {
   color: #aaa;
 }
 
+/* ===== 品牌网格 ===== */
 .brand-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px 24px;
-  transition: opacity 0.2s ease;
-}
-
-.brand-grid.fading {
-  opacity: 0;
 }
 
 .brand-card { cursor: pointer; }
@@ -245,18 +174,122 @@ input {
   letter-spacing: 0.1em;
 }
 
-.no-result {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 0;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  color: #ccc;
+/* ===== 全屏搜索页 ===== */
+.search-page {
+  position: fixed;
+  inset: 0;
+  background: rgba(250, 250, 250, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 500;
   display: none;
+  overflow-y: auto;
+  padding: 60px 24px 120px;
 }
 
-.no-result.show { display: block; }
+.search-page.active { display: block; }
 
+.search-page-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.search-page-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.search-page-input-wrap svg {
+  width: 18px;
+  height: 18px;
+  stroke: #999;
+  flex-shrink: 0;
+}
+
+.search-page-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: #222;
+}
+
+.search-page-input::placeholder { color: #ccc; letter-spacing: 0.1em; }
+
+.search-page-clear {
+  display: none;
+  width: 16px;
+  height: 16px;
+  stroke: #999;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: stroke 0.2s;
+}
+
+.search-page-clear:hover { stroke: #111; }
+.search-page-clear.show { display: block; }
+
+/* A-Z 字母：有品牌的深、其他灰 */
+.alpha-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-bottom: 40px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #ccc;
+}
+
+.alpha-bar span {
+  cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.alpha-bar span:hover { color: #111; }
+
+.alpha-bar span.has-brand { color: #333; }
+
+/* 品牌文字列表 */
+.search-brand-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-brand-item {
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: #555;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: color 0.25s, padding-left 0.25s;
+  user-select: none;
+}
+
+.search-brand-item:hover {
+  color: #111;
+  padding-left: 8px;
+}
+
+.alpha-group-title {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #bbb;
+  margin-top: 30px;
+  margin-bottom: 4px;
+}
+
+.alpha-group-title:first-child { margin-top: 0; }
+
+/* ===== 展开层 ===== */
 .expand-layer {
   position: fixed;
   inset: 0;
@@ -275,6 +308,7 @@ input {
   margin-bottom: 40px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e6e6e6;
+  text-align: center;
 }
 
 .expand-title {
@@ -330,6 +364,7 @@ input {
   pointer-events: none;
 }
 
+/* ===== 大图预览 ===== */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -396,6 +431,7 @@ input {
   cursor: default;
 }
 
+/* ===== 页脚 ===== */
 .footer {
   margin-top: 120px;
   text-align: center;
@@ -416,6 +452,7 @@ input {
 
 .footer .links a:hover { color: #555; }
 
+/* ===== 回到顶部 ===== */
 .to-top {
   position: fixed;
   right: 28px;
@@ -438,6 +475,7 @@ input {
 .to-top.show { opacity: 0.7; pointer-events: auto; }
 .to-top:hover { opacity: 1; }
 
+/* ===== 手机 ===== */
 @media (max-width: 768px) {
   body { padding: 0 16px 80px; }
 
@@ -448,9 +486,7 @@ input {
   }
 
   .topbar .logo { font-size: 14px; }
-
-  .search-input { width: 80px; font-size: 11px; }
-  .search-input:focus { width: 120px; }
+  .topbar .search-btn { font-size: 11px; }
 
   .page-header { margin-bottom: 40px; }
   .page-header h1 { font-size: 18px; letter-spacing: 0.3em; }
@@ -463,6 +499,11 @@ input {
   .brand-name { font-size: 14px; }
   .brand-range { font-size: 11px; }
   .brand-count { font-size: 10px; }
+
+  .search-page { padding: 40px 16px 80px; }
+  .search-page-input { font-size: 15px; }
+  .alpha-bar { gap: 4px 8px; font-size: 10px; }
+  .search-brand-item { font-size: 13px; padding: 14px 0; }
 
   .expand-layer { padding: 40px 16px 80px; }
   .expand-title { font-size: 18px; }
@@ -491,22 +532,7 @@ input {
 
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
-
-  <div class="search-wrapper">
-    <div class="search-box">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
-      </svg>
-      <input type="text" class="search-input" id="searchInput" placeholder="SEARCH" autocomplete="off">
-      <svg class="search-clear" id="searchClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-      </svg>
-    </div>
-
-    <div class="suggestions" id="suggestions"></div>
-  </div>
+  <div class="search-btn" id="searchBtn">SEARCH</div>
 </header>
 
 <div class="container">
@@ -553,8 +579,6 @@ input {
       <div class="brand-count">2 looks</div>
     </div>
 
-    <div class="no-result" id="noResult">没有匹配的品牌</div>
-
   </div>
 
   <div class="footer" id="footer"></div>
@@ -568,6 +592,30 @@ input {
 
 <div class="to-top" id="toTop">↑</div>
 
+<!-- ===== 全屏搜索页 ===== -->
+<div class="search-page" id="searchPage">
+  <div class="search-page-inner">
+
+    <div class="search-page-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+      </svg>
+      <input type="text" class="search-page-input" id="searchPageInput" placeholder="SEARCH" autocomplete="off">
+      <svg class="search-page-clear" id="searchPageClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </div>
+
+    <div class="alpha-bar" id="alphaBar"></div>
+
+    <div class="search-brand-list" id="searchBrandList"></div>
+
+  </div>
+</div>
+
+<!-- ===== 展开层：品牌 A ===== -->
 <div class="expand-layer" id="expand-a">
   <div class="expand-inner">
     <div class="expand-header">
@@ -668,6 +716,7 @@ input {
   </div>
 </div>
 
+<!-- ===== 大图预览 ===== -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-counter" id="counter">1 / 1</div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
@@ -680,74 +729,50 @@ input {
 </div>
 
 <script>
+/* ===== 数据 ===== */
+const brandsData = [
+  { name: 'BRAND A', expand: 'expand-a', range: 'Spring 2027 — Spring 2029 RTW' },
+  { name: 'BRAND B', expand: 'expand-b', range: 'Fall 2027 Couture — Spring 2028 RTW' },
+  { name: 'BRAND C', expand: 'expand-c', range: 'Resort 2028 — Spring 2029 RTW' },
+  { name: 'BRAND D', expand: 'expand-d', range: 'Spring 2029 RTW' }
+];
+
+/* ===== 全屏搜索页元素 ===== */
+const searchPage = document.getElementById('searchPage');
+const searchBtn = document.getElementById('searchBtn');
+const searchPageInput = document.getElementById('searchPageInput');
+const searchPageClear = document.getElementById('searchPageClear');
+const alphaBar = document.getElementById('alphaBar');
+const searchBrandList = document.getElementById('searchBrandList');
+
+/* ===== 分层回退标记 ===== */
+let expandFromSearch = false;
+
 /* ===== 展开层 ===== */
 function openExpand(id) {
-  document.getElementById(id).classList.add('active');
+  const layer = document.getElementById(id);
+  layer.classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  if (searchPage.classList.contains('active')) {
+    expandFromSearch = true;
+    searchPage.classList.remove('active');
+  } else {
+    expandFromSearch = false;
+  }
 }
 
 function closeExpand(id) {
   document.getElementById(id).classList.remove('active');
-  document.body.style.overflow = '';
 
-  const input = document.getElementById('searchInput');
-  if (input && input.value.trim() === '') {
-    clearSearchAndReset();   // 不闪的版本
+  if (expandFromSearch) {
+    searchPage.classList.add('active');
+    expandFromSearch = false;
+  } else {
+    document.body.style.overflow = '';
   }
 }
 
-/* 无过渡：清空 + 恢复全部品牌 */
-function clearSearchAndReset() {
-  const input = document.getElementById('searchInput');
-  const clear = document.getElementById('searchClear');
-  const sug = document.getElementById('suggestions');
-  const noRes = document.getElementById('noResult');
-
-  if (input) input.value = '';
-  if (clear) clear.classList.remove('show');
-  if (sug) sug.classList.remove('show');
-  if (noRes) noRes.classList.remove('show');
-
-  document.querySelectorAll('.brand-card').forEach(card => {
-    card.style.display = '';
-  });
-}
-
-/* 带过渡：淡出 → 恢复 → 淡入（只给叉叉和过滤页点空白用） */
-function clearSearchWithFade() {
-  const input = document.getElementById('searchInput');
-  const clear = document.getElementById('searchClear');
-  const sug = document.getElementById('suggestions');
-  const noRes = document.getElementById('noResult');
-  const gridEl = document.getElementById('brandGrid');
-
-  if (input) input.value = '';
-  if (clear) clear.classList.remove('show');
-  if (sug) sug.classList.remove('show');
-  if (noRes) noRes.classList.remove('show');
-
-  if (!gridEl) {
-    document.querySelectorAll('.brand-card').forEach(card => {
-      card.style.display = '';
-    });
-    return;
-  }
-
-  // 先淡出
-  gridEl.classList.add('fading');
-
-  // 用 requestAnimationFrame 代替 setTimeout，不卡
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.brand-card').forEach(card => {
-        card.style.display = '';
-      });
-      gridEl.classList.remove('fading');
-    });
-  });
-}
-
-/* 统一监听：点展开层空白处关闭 */
 document.querySelectorAll('.expand-layer').forEach(layer => {
   layer.addEventListener('click', (e) => {
     if (e.target.closest('.thumb')) return;
@@ -837,20 +862,10 @@ document.addEventListener('keydown', (e) => {
       document.querySelectorAll('.expand-layer.active').forEach(l => l.classList.remove('active'));
       document.body.style.overflow = '';
     }
+  } else if (searchPage.classList.contains('active')) {
+    if (e.key === 'Escape') closeSearchPage();
   }
 });
-
-/* ===== 品牌按 A→Z 自动排序 ===== */
-const grid = document.getElementById('brandGrid');
-const cards = Array.from(grid.querySelectorAll('.brand-card'));
-
-cards.sort((a, b) => {
-  const nameA = (a.dataset.name || '').toUpperCase();
-  const nameB = (b.dataset.name || '').toUpperCase();
-  return nameA.localeCompare(nameB, 'en');
-});
-
-cards.forEach(card => grid.appendChild(card));
 
 /* ===== 底部数字 ===== */
 const brandCount = document.querySelectorAll('.brand-card').length;
@@ -873,106 +888,131 @@ toTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* ===== 搜索 + 建议列表 ===== */
-const searchInput = document.getElementById('searchInput');
-const searchClear = document.getElementById('searchClear');
-const suggestions = document.getElementById('suggestions');
-const noResult = document.getElementById('noResult');
+/* ===== 搜索页打开 / 关闭 ===== */
+searchBtn.addEventListener('click', () => {
+  searchPage.classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
 
-const brandNames = cards.map(card => card.dataset.name || '');
+function closeSearchPage() {
+  searchPage.classList.remove('active');
+  document.body.style.overflow = '';
+  searchPageInput.value = '';
+  searchPageClear.classList.remove('show');
+  renderBrandList('');
+}
 
-function filterBrands(keyword) {
-  keyword = (keyword || '').trim().toUpperCase();
-  let visibleCount = 0;
+/* ===== 生成 A–Z（有品牌深、其他灰） ===== */
+const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const existingLetters = new Set(
+  brandsData.map(b => (b.name[0] || '').toUpperCase())
+);
 
-  cards.forEach(card => {
-    const name = (card.dataset.name || '').toUpperCase();
-    if (!keyword || name.includes(keyword)) {
-      card.style.display = '';
-      visibleCount++;
-    } else {
-      card.style.display = 'none';
+ALPHA.forEach(letter => {
+  const span = document.createElement('span');
+  span.textContent = letter;
+  span.dataset.letter = letter;
+  if (existingLetters.has(letter)) span.classList.add('has-brand');
+  span.addEventListener('click', () => {
+    const target = document.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
+  alphaBar.appendChild(span);
+});
 
-  noResult.classList.toggle('show', visibleCount === 0);
-}
-
-function showSuggestions(keyword) {
+/* ===== 渲染品牌列表（按 A-Z 分组） ===== */
+function renderBrandList(keyword) {
   keyword = (keyword || '').trim().toUpperCase();
-  suggestions.innerHTML = '';
+  searchBrandList.innerHTML = '';
 
-  if (!keyword) {
-    suggestions.classList.remove('show');
-    return;
-  }
-
-  const matches = brandNames.filter(name =>
-    name.toUpperCase().includes(keyword)
+  const filtered = brandsData.filter(b =>
+    !keyword || b.name.toUpperCase().includes(keyword)
   );
 
-  if (matches.length === 0) {
-    suggestions.classList.remove('show');
+  const grouped = {};
+  filtered.forEach(b => {
+    const letter = (b.name[0] || '').toUpperCase();
+    if (!grouped[letter]) grouped[letter] = [];
+    grouped[letter].push(b);
+  });
+
+  const letters = Object.keys(grouped).sort();
+
+  if (letters.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'search-brand-item';
+    empty.style.cursor = 'default';
+    empty.style.color = '#ccc';
+    empty.textContent = '没有匹配的品牌';
+    searchBrandList.appendChild(empty);
     return;
   }
 
-  matches.forEach(name => {
-    const item = document.createElement('div');
-    item.className = 'suggestion-item';
-    item.textContent = name;
-    item.addEventListener('click', () => {
-      searchInput.value = name;
-      filterBrands(name);
-      suggestions.classList.remove('show');
-      searchClear.classList.add('show');
-    });
-    suggestions.appendChild(item);
-  });
+  letters.forEach(letter => {
+    const title = document.createElement('div');
+    title.className = 'alpha-group-title';
+    title.dataset.letter = letter;
+    title.textContent = letter;
+    searchBrandList.appendChild(title);
 
-  suggestions.classList.add('show');
+    grouped[letter].forEach(b => {
+      const item = document.createElement('div');
+      item.className = 'search-brand-item';
+      item.textContent = b.name;
+      item.addEventListener('click', () => {
+        openExpand(b.expand);
+      });
+      searchBrandList.appendChild(item);
+    });
+  });
 }
 
-searchInput.addEventListener('input', () => {
-  const value = searchInput.value;
-  filterBrands(value);
-  showSuggestions(value);
-  searchClear.classList.toggle('show', value.length > 0);
+renderBrandList('');
+
+/* ===== 搜索页输入 ===== */
+searchPageInput.addEventListener('input', () => {
+  const v = searchPageInput.value;
+  renderBrandList(v);
+  searchPageClear.classList.toggle('show', v.length > 0);
 });
 
-/* 叉叉：带过渡（淡出淡入） */
-searchClear.addEventListener('click', () => {
-  clearSearchWithFade();
-  searchInput.blur();
+searchPageClear.addEventListener('click', () => {
+  searchPageInput.value = '';
+  searchPageClear.classList.remove('show');
+  renderBrandList('');
 });
 
-searchInput.addEventListener('keydown', (e) => {
+searchPageInput.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    clearSearchWithFade();
-    searchInput.blur();
+    searchPageInput.value = '';
+    searchPageClear.classList.remove('show');
+    renderBrandList('');
+    searchPageInput.blur();
   }
 });
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-wrapper')) {
-    suggestions.classList.remove('show');
-  }
+/* ===== 搜索页点空白 → 回主页 ===== */
+searchPage.addEventListener('click', (e) => {
+  if (e.target.closest('.search-brand-item')) return;
+  if (e.target.closest('.search-page-input-wrap')) return;
+  if (e.target.closest('.alpha-bar')) return;
+  if (e.target.closest('.alpha-group-title')) return;
+  closeSearchPage();
 });
 
-/* ===== 过滤页：点空白 → 回主页（带过渡） ===== */
-document.addEventListener('click', (e) => {
-  if (e.target.closest('.expand-layer')) return;
-  if (e.target.closest('.lightbox')) return;
-  if (e.target.closest('.search-wrapper')) return;
-  if (e.target.closest('.brand-card')) return;
-  if (e.target.closest('.search-clear')) return;
-  if (e.target.closest('.footer')) return;
-  if (e.target.closest('.to-top')) return;
+/* ===== 品牌卡 A→Z 排序 ===== */
+const grid = document.getElementById('brandGrid');
+const cards = Array.from(grid.querySelectorAll('.brand-card'));
 
-  const input = document.getElementById('searchInput');
-  if (input && input.value.trim().length > 0) {
-    clearSearchWithFade();   // 改成带过渡的
-  }
+cards.sort((a, b) => {
+  const nameA = (a.dataset.name || '').toUpperCase();
+  const nameB = (b.dataset.name || '').toUpperCase();
+  return nameA.localeCompare(nameB, 'en');
 });
+
+cards.forEach(card => grid.appendChild(card));
 </script>
 
 </body>
