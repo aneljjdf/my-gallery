@@ -6,6 +6,7 @@
 <title>Archive 档案</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 @font-face {
@@ -354,33 +355,48 @@ input {
   inset: 0;
   background: rgba(20, 20, 20, 0.96);
   display: none;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 999;
   cursor: pointer;
+  padding: 40px 0;
 }
 
 .lightbox.active { display: flex; }
 
 .lightbox-img {
   max-width: 80vw;
-  max-height: 76vh;
+  max-height: 72vh;
   object-fit: contain;
   cursor: default;
 }
 
-/* 底部：只留一句话，居中、浅灰、跟图留空 */
+/* 底部信息：不叠在图上，单独一块 */
 .lightbox-caption {
-  position: absolute;
-  bottom: 6vh;
-  left: 0;
-  right: 0;
+  margin-top: 28px;
   text-align: center;
-  color: #aaa;
-  font-size: 11px;
-  letter-spacing: 0.15em;
   cursor: default;
   padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.lightbox-caption .label {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.lightbox-caption .note {
+  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: #c5c5c5;
 }
 
 .lightbox-arrow {
@@ -496,11 +512,14 @@ input {
     justify-content: stretch;
   }
 
-  .lightbox-img { max-width: 92vw; max-height: 68vh; }
+  .lightbox-img { max-width: 92vw; max-height: 64vh; }
   .lightbox-arrow { font-size: 24px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
-  .lightbox-caption { bottom: 8vh; font-size: 10px; }
+
+  .lightbox-caption { margin-top: 20px; }
+  .lightbox-caption .label { font-size: 12px; margin-bottom: 6px; }
+  .lightbox-caption .note { font-size: 12px; }
 
   .footer { margin-top: 80px; font-size: 10px; }
   .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 16px; }
@@ -567,7 +586,7 @@ input {
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
   <div class="lightbox-arrow next" id="next">›</div>
-  <div class="lightbox-caption" id="captionNote"></div>
+  <div class="lightbox-caption" id="captionBox"></div>
 </div>
 
 <script>
@@ -696,7 +715,7 @@ let currentIndex = 0;
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
-const captionNote = document.getElementById('captionNote');
+const captionBox = document.getElementById('captionBox');
 const counter = document.getElementById('counter');
 
 function openLightbox(imgList, index) {
@@ -715,7 +734,16 @@ function closeLightbox() {
 function updateLightbox() {
   const img = currentImages[currentIndex];
   lightboxImg.src = img.src;
-  captionNote.textContent = img.note || '';
+
+  if (img.note) {
+    captionBox.innerHTML = `
+      <div class="label">Directive</div>
+      <div class="note">${img.note}</div>
+    `;
+  } else {
+    captionBox.innerHTML = '';
+  }
+
   counter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
 }
 
