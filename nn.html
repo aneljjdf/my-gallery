@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Archive 档案</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 @font-face {
@@ -25,12 +25,13 @@
 }
 
 body {
-  font-family: "My Font", "Hiragino Mincho ProN", "Yu Mincho", serif;
-  background: #fafafa;
-  color: #333;
+  font-family: "Inter", "Noto Sans SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #f8f9fa;
+  color: #1a1a1a;
   line-height: 1.7;
-  padding: 0 24px 120px;
+  padding: 0 40px 140px;
   -webkit-font-smoothing: antialiased;
+  font-weight: 400;
 }
 
 img {
@@ -47,7 +48,7 @@ input {
 .splash {
   position: fixed;
   inset: 0;
-  background: #fafafa;
+  background: #f8f9fa;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,15 +57,16 @@ input {
 }
 
 .splash span {
-  font-family: "Playfair Display", Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: 46px;
-  letter-spacing: 0.02em;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: 0.4em;
   color: #c8c8c8;
   opacity: 0;
   filter: blur(8px);
   animation: blurIn 1s ease forwards, textOut 0.6s ease 2s forwards;
+  text-transform: lowercase;
 }
 
 @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
@@ -76,61 +78,64 @@ input {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(250, 250, 250, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(248, 249, 250, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  margin: 0 -24px 40px;
-  padding: 14px 24px;
+  gap: 24px;
+  margin: 0 -40px 80px;
+  padding: 22px 40px;
 }
 
 .topbar .logo {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #111;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  color: #1a1a1a;
   flex-shrink: 0;
+  text-transform: uppercase;
 }
 
 .topbar .search-btn {
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  color: #666;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: #888;
   cursor: pointer;
   transition: color 0.3s;
   user-select: none;
+  text-transform: uppercase;
 }
 
-.topbar .search-btn:hover { color: #111; }
+.topbar .search-btn:hover { color: #1a1a1a; }
 
 /* ===== 容器 ===== */
-.container { max-width: 1200px; margin: 0 auto; }
+.container { max-width: 1400px; margin: 0 auto; }
 
-.page-header { text-align: center; margin-bottom: 60px; }
+.page-header { text-align: center; margin-bottom: 100px; }
 
 .page-header h1 {
-  font-size: 24px;
+  font-size: 14px;
   font-weight: 400;
-  letter-spacing: 0.5em;
-  color: #333;
-  margin-bottom: 16px;
+  letter-spacing: 0.6em;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  text-transform: uppercase;
 }
 
 .page-header .sub {
   font-size: 11px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.35em;
   color: #aaa;
+  font-weight: 300;
 }
 
-/* ===== 品牌网格 ===== */
+/* ===== 品牌网格：3 列 ===== */
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 72px 32px;
 }
 
 .brand-card { cursor: pointer; }
@@ -140,7 +145,7 @@ input {
   aspect-ratio: 4 / 5;
   background: #ececec;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .brand-cover img {
@@ -148,58 +153,65 @@ input {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.6s ease, opacity 0.4s ease;
   pointer-events: none;
+  opacity: 0.96;
 }
 
-.brand-card:hover .brand-cover img { transform: scale(1.03); }
+.brand-card:hover .brand-cover img {
+  transform: scale(1.02);
+  opacity: 0.85;
+}
 
 .brand-name {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.08em;
-  color: #222;
+  letter-spacing: 0.22em;
+  color: #1a1a1a;
   margin-bottom: 6px;
+  text-transform: uppercase;
 }
 
 .brand-count {
-  font-size: 11px;
-  color: #bbb;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 0.22em;
+  font-weight: 300;
+  text-transform: uppercase;
 }
 
 /* ===== 全屏搜索页 ===== */
 .search-page {
   position: fixed;
   inset: 0;
-  background: rgba(250, 250, 250, 0.98);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(248, 249, 250, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 500;
   display: none;
   overflow-y: auto;
-  padding: 60px 24px 120px;
+  padding: 80px 40px 140px;
 }
 
 .search-page.active { display: block; }
 
 .search-page-inner {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
 .search-page-input-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 10px;
-  margin-bottom: 30px;
+  gap: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding-bottom: 14px;
+  margin-bottom: 40px;
 }
 
 .search-page-input-wrap svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   stroke: #999;
   flex-shrink: 0;
 }
@@ -210,34 +222,36 @@ input {
   outline: none;
   background: transparent;
   font-family: inherit;
-  font-size: 18px;
-  letter-spacing: 0.1em;
-  color: #222;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  color: #1a1a1a;
+  font-weight: 400;
 }
 
-.search-page-input::placeholder { color: #ccc; letter-spacing: 0.1em; }
+.search-page-input::placeholder { color: #ccc; letter-spacing: 0.2em; font-size: 12px; text-transform: uppercase; }
 
 .search-page-clear {
   display: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   stroke: #999;
   cursor: pointer;
   flex-shrink: 0;
   transition: stroke 0.2s;
 }
 
-.search-page-clear:hover { stroke: #111; }
+.search-page-clear:hover { stroke: #1a1a1a; }
 .search-page-clear.show { display: block; }
 
 .alpha-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 10px;
-  margin-bottom: 40px;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  gap: 6px 14px;
+  margin-bottom: 50px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
   color: #ccc;
+  font-weight: 300;
 }
 
 .alpha-bar span {
@@ -246,9 +260,9 @@ input {
   user-select: none;
 }
 
-.alpha-bar span:hover { color: #111; }
+.alpha-bar span:hover { color: #1a1a1a; }
 
-.alpha-bar span.has-brand { color: #333; }
+.alpha-bar span.has-brand { color: #1a1a1a; }
 
 .search-brand-list {
   display: flex;
@@ -256,27 +270,31 @@ input {
 }
 
 .search-brand-item {
-  font-size: 14px;
-  letter-spacing: 0.1em;
-  color: #555;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #666;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   cursor: pointer;
   transition: color 0.25s, padding-left 0.25s;
   user-select: none;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
 .search-brand-item:hover {
-  color: #111;
-  padding-left: 8px;
+  color: #1a1a1a;
+  padding-left: 10px;
 }
 
 .alpha-group-title {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.3em;
   color: #bbb;
-  margin-top: 30px;
-  margin-bottom: 4px;
+  margin-top: 40px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
 .alpha-group-title:first-child { margin-top: 0; }
@@ -285,35 +303,34 @@ input {
 .expand-layer {
   position: fixed;
   inset: 0;
-  background: rgba(250, 250, 250, 0.98);
+  background: rgba(248, 249, 250, 0.98);
   z-index: 100;
   display: none;
   overflow-y: auto;
-  padding: 60px 24px 120px;
+  padding: 80px 40px 140px;
 }
 
 .expand-layer.active { display: block; }
 
-.expand-inner { max-width: 1200px; margin: 0 auto; }
+.expand-inner { max-width: 1400px; margin: 0 auto; }
 
 .expand-header {
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 60px;
   text-align: center;
 }
 
 .expand-title {
-  font-size: 22px;
+  font-size: 13px;
   font-weight: 400;
-  letter-spacing: 0.12em;
-  color: #222;
+  letter-spacing: 0.35em;
+  color: #1a1a1a;
+  text-transform: uppercase;
 }
 
 .expand-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 240px));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 32px;
   justify-content: start;
 }
 
@@ -323,10 +340,10 @@ input {
   background: #ececec;
   overflow: hidden;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s;
 }
 
-.expand-images .thumb:hover { opacity: 0.7; }
+.expand-images .thumb:hover { opacity: 0.85; }
 
 .expand-images .thumb img {
   width: 100%;
@@ -341,19 +358,21 @@ input {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 10px 12px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  padding: 12px 14px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
   color: #fff;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  letter-spacing: 0.2em;
   pointer-events: none;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
 /* ===== 大图预览 ===== */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(20, 20, 20, 0.96);
+  background: rgba(10, 10, 10, 0.97);
   display: none;
   z-index: 999;
   cursor: pointer;
@@ -361,7 +380,6 @@ input {
 
 .lightbox.active { display: block; }
 
-/* 图片：绝对居中，位置固定，不受底部字影响 */
 .lightbox-img {
   position: absolute;
   top: 50%;
@@ -374,7 +392,6 @@ input {
   display: block;
 }
 
-/* 底部字：固定在屏幕底部，不跟图走 */
 .lightbox-caption {
   position: absolute;
   bottom: 6vh;
@@ -382,25 +399,26 @@ input {
   right: 0;
   text-align: center;
   cursor: default;
-  padding: 0 24px;
+  padding: 0 40px;
 }
 
 .lightbox-caption .label {
-  font-family: "Playfair Display", Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  color: #888;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: #777;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .lightbox-caption .note {
-  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  color: #c5c5c5;
+  font-family: "Noto Sans SC", -apple-system, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #b8b8b8;
+  font-weight: 300;
 }
 
 .lightbox-arrow {
@@ -413,59 +431,65 @@ input {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 30px;
+  font-size: 22px;
   cursor: pointer;
   user-select: none;
-  opacity: 0.6;
+  opacity: 0.4;
   transition: opacity 0.2s;
+  font-weight: 200;
 }
 
 .lightbox-arrow:hover { opacity: 1; }
-.lightbox-arrow.prev { left: 30px; }
-.lightbox-arrow.next { right: 30px; }
+.lightbox-arrow.prev { left: 36px; }
+.lightbox-arrow.next { right: 36px; }
 
 .lightbox-counter {
   position: absolute;
-  top: 34px;
-  left: 40px;
-  color: #888;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  top: 40px;
+  left: 48px;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 0.3em;
   cursor: default;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
 /* ===== 页脚 ===== */
 .footer {
-  margin-top: 120px;
+  margin-top: 160px;
   text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.3em;
   color: #bbb;
-  line-height: 2.4;
+  line-height: 2.6;
+  text-transform: uppercase;
+  font-weight: 300;
 }
 
-.footer .links { margin-top: 10px; }
+.footer .links { margin-top: 14px; }
 
 .footer .links a {
   color: #bbb;
   text-decoration: none;
-  margin: 0 8px;
+  margin: 0 12px;
   transition: color 0.3s ease;
+  letter-spacing: 0.3em;
 }
 
-.footer .links a:hover { color: #555; }
+.footer .links a:hover { color: #1a1a1a; }
 
 /* ===== 回到顶部 ===== */
 .to-top {
   position: fixed;
-  right: 28px;
-  bottom: 28px;
+  right: 36px;
+  bottom: 36px;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 14px;
   color: #999;
   cursor: pointer;
   opacity: 0;
@@ -473,78 +497,80 @@ input {
   transition: opacity 0.4s ease;
   z-index: 200;
   user-select: none;
+  font-weight: 300;
 }
 
-.to-top.show { opacity: 0.7; pointer-events: auto; }
+.to-top.show { opacity: 0.6; pointer-events: auto; }
 .to-top:hover { opacity: 1; }
 
 /* ===== 手机 ===== */
 @media (max-width: 768px) {
-  body { padding: 0 16px 80px; }
+  body { padding: 0 20px 100px; }
 
   .topbar {
-    margin: 0 -16px 30px;
-    padding: 12px 16px;
+    margin: 0 -20px 50px;
+    padding: 16px 20px;
     gap: 12px;
   }
 
-  .topbar .logo { font-size: 14px; }
-  .topbar .search-btn { font-size: 11px; }
+  .topbar .logo { font-size: 11px; }
+  .topbar .search-btn { font-size: 10px; }
 
-  .page-header { margin-bottom: 40px; }
-  .page-header h1 { font-size: 18px; letter-spacing: 0.3em; }
+  .page-header { margin-bottom: 60px; }
+  .page-header h1 { font-size: 12px; letter-spacing: 0.5em; }
+  .page-header .sub { font-size: 10px; }
 
   .brand-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 28px 14px;
+    gap: 40px 16px;
   }
 
-  .brand-name { font-size: 14px; }
-  .brand-count { font-size: 10px; }
+  .brand-name { font-size: 11px; letter-spacing: 0.18em; }
+  .brand-count { font-size: 9px; }
 
-  .search-page { padding: 40px 16px 80px; }
-  .search-page-input { font-size: 15px; }
-  .alpha-bar { gap: 4px 8px; font-size: 10px; }
-  .search-brand-item { font-size: 13px; padding: 14px 0; }
+  .search-page { padding: 50px 20px 100px; }
+  .search-page-input { font-size: 13px; }
+  .alpha-bar { gap: 6px 10px; font-size: 9px; }
+  .search-brand-item { font-size: 11px; padding: 16px 0; }
 
-  .expand-layer { padding: 40px 16px 80px; }
-  .expand-title { font-size: 18px; }
+  .expand-layer { padding: 50px 20px 100px; }
+  .expand-title { font-size: 12px; letter-spacing: 0.3em; }
 
   .expand-images {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 14px;
     justify-content: stretch;
   }
 
-  .lightbox-img { max-width: 92vw; max-height: 72vh; }
-  .lightbox-arrow { font-size: 24px; }
+  .lightbox-img { max-width: 92vw; max-height: 68vh; }
+  .lightbox-arrow { font-size: 20px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
 
-  .lightbox-caption { bottom: 6vh; }
-  .lightbox-caption .label { font-size: 12px; margin-bottom: 6px; }
-  .lightbox-caption .note { font-size: 12px; }
+  .lightbox-caption { bottom: 5vh; padding: 0 24px; }
+  .lightbox-caption .label { font-size: 9px; margin-bottom: 8px; }
+  .lightbox-caption .note { font-size: 11px; }
 
-  .footer { margin-top: 80px; font-size: 10px; }
-  .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 16px; }
+  .footer { margin-top: 100px; font-size: 9px; }
+  .to-top { right: 20px; bottom: 20px; width: 32px; height: 32px; font-size: 13px; }
 }
 </style>
 </head>
 <body>
 
 <div class="splash">
-  <span>Archive</span>
+  <span>archive</span>
 </div>
 
 <header class="topbar">
-  <div class="logo">ARCHIVE</div>
-  <div class="search-btn" id="searchBtn">SEARCH</div>
+  <div class="logo">Archive</div>
+  <div class="search-btn" id="searchBtn">Search</div>
 </header>
 
 <div class="container">
 
   <header class="page-header">
-    <h1>ARCHIVE</h1>
+    <h1>Archive</h1>
     <div class="sub">留下值得的</div>
   </header>
 
@@ -552,9 +578,9 @@ input {
 
   <div class="footer" id="footer"></div>
   <div class="footer links">
-    <a href="about.html">ABOUT</a>
+    <a href="about.html">About</a>
     <span>·</span>
-    <a href="contact.html">CONTACT</a>
+    <a href="contact.html">Contact</a>
   </div>
 
 </div>
@@ -566,12 +592,12 @@ input {
   <div class="search-page-inner">
 
     <div class="search-page-input-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="7"></circle>
         <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
       </svg>
-      <input type="text" class="search-page-input" id="searchPageInput" placeholder="SEARCH" autocomplete="off">
-      <svg class="search-page-clear" id="searchPageClear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <input type="text" class="search-page-input" id="searchPageInput" placeholder="search" autocomplete="off">
+      <svg class="search-page-clear" id="searchPageClear" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="6" y1="6" x2="18" y2="18"></line>
         <line x1="18" y1="6" x2="6" y2="18"></line>
       </svg>
@@ -600,23 +626,23 @@ const brandsData = [
     folder: 'burc-akyol',
     name: 'BURC AKYOL',
     images: [
-      { file: '01.jpg', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点就好了' }
+      { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点就好了' }
     ]
   },
   {
     folder: 'feng-chen-wang',
     name: 'FENG CHEN WANG',
     images: [
-      { file: '01.jpg', season: 'SPRING 2025 MENSWEAR', note: '' }
+      { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }
     ]
   },
   {
     folder: 'palomo-spain',
     name: 'PALOMO SPAIN',
     images: [
-      { file: '01.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '02.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '03.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+      { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
     ]
   }
 ];
@@ -812,7 +838,7 @@ document.addEventListener('keydown', (e) => {
 const totalBrands = brandsData.length;
 const totalImages = brandsData.reduce((sum, b) => sum + b.images.length, 0);
 document.getElementById('footer').textContent =
-  totalBrands + ' 个品牌 · ' + totalImages + ' 张图';
+  totalBrands + ' brands · ' + totalImages + ' images';
 
 /* ===== 回到顶部 ===== */
 const toTop = document.getElementById('toTop');
@@ -893,7 +919,7 @@ function renderBrandList(keyword) {
     empty.className = 'search-brand-item';
     empty.style.cursor = 'default';
     empty.style.color = '#ccc';
-    empty.textContent = '没有匹配的品牌';
+    empty.textContent = 'no results';
     searchBrandList.appendChild(empty);
     return;
   }
