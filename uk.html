@@ -69,7 +69,7 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
-/* ===== 顶栏：高度砍一半 ===== */
+/* ===== 顶栏 ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -466,7 +466,7 @@ input {
   .mobile-split .right {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 12px 40px 0;
+    padding: 0;
     background: #0a0a0a;
   }
 
@@ -474,13 +474,16 @@ input {
     width: 100%;
     aspect-ratio: 3 / 2;
     background: #1a1a1a;
-    margin-bottom: 24px;
+    margin: 0;
   }
 
   .mobile-split .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 32px 10px;
+    background: #fafafa;
+    padding: 20px 12px;
+    margin: 0;
   }
 
   .mobile-split .card {
@@ -490,7 +493,7 @@ input {
   .mobile-split .card .cover {
     width: 100%;
     aspect-ratio: 4 / 5;
-    background: #1a1a1a;
+    background: #e8e8e8;
     overflow: hidden;
   }
 
@@ -517,7 +520,6 @@ input {
   <span>Archive</span>
 </div>
 
-<!-- ===== 顶栏：高度砍一半 ===== -->
 <header class="topbar">
   <div class="logo">ARCHIVE</div>
 
@@ -536,7 +538,6 @@ input {
   <a class="email-link" href="mailto:hello@example.com">Email me</a>
 </header>
 
-<!-- ===== 电脑/平板：7列网格 ===== -->
 <div class="page-header">
   <h1>ARCHIVE</h1>
   <div class="sub">留下值得的</div>
@@ -544,7 +545,6 @@ input {
 
 <div class="brand-grid" id="brandGrid"></div>
 
-<!-- ===== 手机端：左右分栏 ===== -->
 <div class="mobile-split" id="mobileSplit">
 
   <div class="left">
@@ -592,56 +592,42 @@ input {
 
 <div class="to-top" id="toTop">↑</div>
 
-<!-- ===== 展开层 ===== -->
-<div class="expand-layer" id="expand-a">
+<div class="expand-layer" id="expand-0">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
-        <div class="expand-title">BRAND A</div>
-        <div class="expand-range">Spring 2027 — Spring 2029 RTW</div>
+        <div class="expand-title">BURC AKYOL</div>
+        <div class="expand-range">SPRING 2026 READY-TO-WEAR</div>
       </div>
     </div>
-    <div class="expand-images" data-brand="BRAND A"></div>
+    <div class="expand-images" data-brand="BURC AKYOL"></div>
   </div>
 </div>
 
-<div class="expand-layer" id="expand-b">
+<div class="expand-layer" id="expand-1">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
-        <div class="expand-title">BRAND B</div>
-        <div class="expand-range">Fall 2027 Couture — Spring 2028 RTW</div>
+        <div class="expand-title">FENG CHEN WANG</div>
+        <div class="expand-range">SPRING 2025 MENSWEAR</div>
       </div>
     </div>
-    <div class="expand-images" data-brand="BRAND B"></div>
+    <div class="expand-images" data-brand="FENG CHEN WANG"></div>
   </div>
 </div>
 
-<div class="expand-layer" id="expand-c">
+<div class="expand-layer" id="expand-2">
   <div class="expand-inner">
     <div class="expand-header">
       <div>
-        <div class="expand-title">BRAND C</div>
-        <div class="expand-range">Resort 2028 — Spring 2029 RTW</div>
+        <div class="expand-title">PALOMO SPAIN</div>
+        <div class="expand-range">FALL 2023 READY-TO-WEAR</div>
       </div>
     </div>
-    <div class="expand-images" data-brand="BRAND C"></div>
+    <div class="expand-images" data-brand="PALOMO SPAIN"></div>
   </div>
 </div>
 
-<div class="expand-layer" id="expand-d">
-  <div class="expand-inner">
-    <div class="expand-header">
-      <div>
-        <div class="expand-title">BRAND D</div>
-        <div class="expand-range">Spring 2029 RTW</div>
-      </div>
-    </div>
-    <div class="expand-images" data-brand="BRAND D"></div>
-  </div>
-</div>
-
-<!-- ===== 大图预览 ===== -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-counter" id="counter">1 / 1</div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
@@ -654,51 +640,40 @@ input {
 </div>
 
 <script>
-/* ===== 完整数据 ===== */
+/* ===== 数据：三个真品牌 ===== */
 const brandsData = [
   {
-    name: 'BRAND A',
-    expand: 'expand-a',
-    range: 'Spring 2027 — Spring 2029 RTW',
+    name: 'BURC AKYOL',
+    folder: 'burc-akyol',
+    expand: 'expand-0',
+    range: 'SPRING 2026 READY-TO-WEAR',
     images: [
-      { src: 'QHBY0092.JPG', season: 'Spring 2027 RTW' },
-      { src: 'ASCS1531.JPG', season: 'Fall 2028 RTW' },
-      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW' }
+      { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR' }
     ]
   },
   {
-    name: 'BRAND B',
-    expand: 'expand-b',
-    range: 'Fall 2027 Couture — Spring 2028 RTW',
+    name: 'FENG CHEN WANG',
+    folder: 'feng-chen-wang',
+    expand: 'expand-1',
+    range: 'SPRING 2025 MENSWEAR',
     images: [
-      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 1' },
-      { src: 'RLHF3163.JPG', season: 'Fall 2027 Couture 2' },
-      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 1' },
-      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 2' },
-      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 3' },
-      { src: 'RLHF3163.JPG', season: 'Spring 2028 RTW 4' }
+      { file: '01.webp', season: 'SPRING 2025 MENSWEAR' }
     ]
   },
   {
-    name: 'BRAND C',
-    expand: 'expand-c',
-    range: 'Resort 2028 — Spring 2029 RTW',
+    name: 'PALOMO SPAIN',
+    folder: 'palomo-spain',
+    expand: 'expand-2',
+    range: 'FALL 2023 READY-TO-WEAR',
     images: [
-      { src: 'CBNS5837.JPG', season: 'Resort 2028' }
-    ]
-  },
-  {
-    name: 'BRAND D',
-    expand: 'expand-d',
-    range: 'Spring 2029 RTW',
-    images: [
-      { src: 'ASCS1531.JPG', season: 'Spring 2029 RTW 1' },
-      { src: 'BBIQ4566.JPG', season: 'Spring 2029 RTW 2' }
+      { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR' },
+      { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR' },
+      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR' }
     ]
   }
 ];
 
-/* ===== 电脑首页网格 ===== */
+/* ===== 电脑网格 ===== */
 const gridEl = document.getElementById('brandGrid');
 
 brandsData.forEach(brand => {
@@ -709,7 +684,7 @@ brandsData.forEach(brand => {
     card.onclick = () => openExpand(brand.expand, i);
     card.innerHTML = `
       <span class="num">${i + 1}</span>
-      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+      <img src="images/${brand.folder}/${img.file}" alt="" loading="lazy" draggable="false">
     `;
     gridEl.appendChild(card);
   });
@@ -724,7 +699,7 @@ brandsData.forEach(brand => {
   card.onclick = () => openExpand(brand.expand);
   card.innerHTML = `
     <div class="cover">
-      <img src="${brand.images[0].src}" alt="" loading="lazy" draggable="false">
+      <img src="images/${brand.folder}/${brand.images[0].file}" alt="" loading="lazy" draggable="false">
     </div>
   `;
   mobileGrid.appendChild(card);
@@ -743,14 +718,13 @@ brandsData.forEach(brand => {
     thumb.dataset.season = img.season;
     thumb.dataset.index = i;
     thumb.innerHTML = `
-      <img src="${img.src}" alt="" loading="lazy" draggable="false">
+      <img src="images/${brand.folder}/${img.file}" alt="" loading="lazy" draggable="false">
       <div class="thumb-label">${img.season}</div>
     `;
     container.appendChild(thumb);
   });
 });
 
-/* ===== 展开层打开/关闭 + 高亮 ===== */
 function openExpand(id, highlightIndex) {
   const layer = document.getElementById(id);
   layer.classList.add('active');
@@ -889,83 +863,6 @@ window.addEventListener('scroll', () => {
 
 toTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-/* ===== 搜索 ===== */
-const searchInput = document.getElementById('searchInput');
-const searchClear = document.getElementById('searchClear');
-const suggestions = document.getElementById('suggestions');
-
-const brandNames = brandsData.map(b => b.name);
-
-function filterBrands(keyword) {
-  keyword = (keyword || '').trim().toUpperCase();
-
-  document.querySelectorAll('.brand-card').forEach(card => {
-    const name = (card.dataset.name || '').toUpperCase();
-    if (!keyword || name.includes(keyword)) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-}
-
-function showSuggestions(keyword) {
-  keyword = (keyword || '').trim().toUpperCase();
-  suggestions.innerHTML = '';
-
-  if (!keyword) {
-    suggestions.classList.remove('show');
-    return;
-  }
-
-  const matches = brandNames.filter(name =>
-    name.toUpperCase().includes(keyword)
-  );
-
-  if (matches.length === 0) {
-    suggestions.classList.remove('show');
-    return;
-  }
-
-  matches.forEach(name => {
-    const item = document.createElement('div');
-    item.className = 'suggestion-item';
-    item.textContent = name;
-    item.addEventListener('click', () => {
-      searchInput.value = name;
-      filterBrands(name);
-      suggestions.classList.remove('show');
-      searchClear.classList.add('show');
-    });
-    suggestions.appendChild(item);
-  });
-
-  suggestions.classList.add('show');
-}
-
-searchInput.addEventListener('input', () => {
-  const value = searchInput.value;
-  filterBrands(value);
-  showSuggestions(value);
-  searchClear.classList.toggle('show', value.length > 0);
-});
-
-searchClear.addEventListener('click', () => {
-  searchInput.value = '';
-  searchClear.classList.remove('show');
-  suggestions.classList.remove('show');
-  document.querySelectorAll('.brand-card').forEach(card => {
-    card.style.display = '';
-  });
-  searchInput.blur();
-});
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-wrapper')) {
-    suggestions.classList.remove('show');
-  }
 });
 </script>
 
