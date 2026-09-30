@@ -355,30 +355,34 @@ input {
   inset: 0;
   background: rgba(20, 20, 20, 0.96);
   display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   z-index: 999;
   cursor: pointer;
-  padding: 40px 0;
 }
 
-.lightbox.active { display: flex; }
+.lightbox.active { display: block; }
 
+/* 图片：绝对居中，位置固定，不受底部字影响 */
 .lightbox-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   max-width: 80vw;
-  max-height: 72vh;
+  max-height: 69vh;
   object-fit: contain;
   cursor: default;
+  display: block;
 }
 
-/* 底部信息：不叠在图上，单独一块 */
+/* 底部字：固定在屏幕底部，不跟图走 */
 .lightbox-caption {
-  margin-top: 28px;
+  position: absolute;
+  bottom: 6vh;
+  left: 0;
+  right: 0;
   text-align: center;
   cursor: default;
   padding: 0 24px;
-  flex-shrink: 0;
 }
 
 .lightbox-caption .label {
@@ -512,12 +516,12 @@ input {
     justify-content: stretch;
   }
 
-  .lightbox-img { max-width: 92vw; max-height: 64vh; }
+  .lightbox-img { max-width: 92vw; max-height: 72vh; }
   .lightbox-arrow { font-size: 24px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
 
-  .lightbox-caption { margin-top: 20px; }
+  .lightbox-caption { bottom: 6vh; }
   .lightbox-caption .label { font-size: 12px; margin-bottom: 6px; }
   .lightbox-caption .note { font-size: 12px; }
 
