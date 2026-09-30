@@ -73,6 +73,11 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
+/* 已看过 → 直接隐藏，不参与任何动画 */
+.splash.done {
+  display: none;
+}
+
 /* ===== 顶栏 ===== */
 .topbar {
   position: sticky;
@@ -558,7 +563,7 @@ input {
 </head>
 <body>
 
-<div class="splash">
+<div class="splash" id="splash">
   <span>archive</span>
 </div>
 
@@ -620,29 +625,39 @@ input {
 </div>
 
 <script>
+/* ===== 开屏：只在本次会话第一次进站时播放 ===== */
+(function () {
+  const splash = document.getElementById('splash');
+  if (sessionStorage.getItem('splashShown') === '1') {
+    splash.classList.add('done');
+  } else {
+    sessionStorage.setItem('splashShown', '1');
+  }
+})();
+
 /* ===== 数据 ===== */
 const brandsData = [
   {
     folder: 'burc-akyol',
     name: 'BURC AKYOL',
     images: [
-      { file: '01.jpg', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点就好了' }
+      { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点就好了' }
     ]
   },
   {
     folder: 'feng-chen-wang',
     name: 'FENG CHEN WANG',
     images: [
-      { file: '01.jpg', season: 'SPRING 2025 MENSWEAR', note: '' }
+      { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }
     ]
   },
   {
     folder: 'palomo-spain',
     name: 'PALOMO SPAIN',
     images: [
-      { file: '01.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '02.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '03.jpg', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+      { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
     ]
   }
 ];
