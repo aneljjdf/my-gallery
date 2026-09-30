@@ -364,26 +364,24 @@ input {
 
 .lightbox-img {
   max-width: 80vw;
-  max-height: 80vh;
+  max-height: 76vh;
   object-fit: contain;
   cursor: default;
 }
 
+/* 底部：只留一句话，居中、浅灰、跟图留空 */
 .lightbox-caption {
   position: absolute;
-  bottom: 20px;
+  bottom: 6vh;
   left: 0;
   right: 0;
   text-align: center;
-  color: #ddd;
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  color: #aaa;
+  font-size: 11px;
+  letter-spacing: 0.15em;
   cursor: default;
+  padding: 0 24px;
 }
-
-.lightbox-caption .brand { font-size: 14px; margin-bottom: 6px; }
-.lightbox-caption .season { font-size: 11px; color: #888; }
-.lightbox-caption .note { font-size: 11px; color: #aaa; margin-top: 4px; }
 
 .lightbox-arrow {
   position: absolute;
@@ -498,10 +496,11 @@ input {
     justify-content: stretch;
   }
 
-  .lightbox-img { max-width: 92vw; max-height: 70vh; }
+  .lightbox-img { max-width: 92vw; max-height: 68vh; }
   .lightbox-arrow { font-size: 24px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
+  .lightbox-caption { bottom: 8vh; font-size: 10px; }
 
   .footer { margin-top: 80px; font-size: 10px; }
   .to-top { right: 16px; bottom: 16px; width: 32px; height: 32px; font-size: 16px; }
@@ -568,11 +567,7 @@ input {
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
   <div class="lightbox-arrow next" id="next">›</div>
-  <div class="lightbox-caption">
-    <div class="brand" id="captionBrand">品牌</div>
-    <div class="season" id="captionSeason">季节</div>
-    <div class="note" id="captionNote"></div>
-  </div>
+  <div class="lightbox-caption" id="captionNote"></div>
 </div>
 
 <script>
@@ -611,7 +606,6 @@ brandsData.forEach((b, i) => {
 const brandGrid = document.getElementById('brandGrid');
 
 brandsData.forEach(brand => {
-  // 品牌卡
   const card = document.createElement('div');
   card.className = 'brand-card';
   card.dataset.name = brand.name;
@@ -627,12 +621,11 @@ brandsData.forEach(brand => {
   `;
   brandGrid.appendChild(card);
 
-  // 展开层
   const layer = document.createElement('div');
   layer.className = 'expand-layer';
   layer.id = brand.expand;
 
-  const thumbsHTML = brand.images.map((img, i) => {
+  const thumbsHTML = brand.images.map((img) => {
     return `
       <div class="thumb" data-brand="${brand.name}" data-season="${img.season}" data-note="${img.note}">
         <img src="images/${brand.folder}/${img.file}" alt="" loading="lazy" draggable="false">
@@ -703,8 +696,6 @@ let currentIndex = 0;
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
-const captionBrand = document.getElementById('captionBrand');
-const captionSeason = document.getElementById('captionSeason');
 const captionNote = document.getElementById('captionNote');
 const counter = document.getElementById('counter');
 
@@ -724,8 +715,6 @@ function closeLightbox() {
 function updateLightbox() {
   const img = currentImages[currentIndex];
   lightboxImg.src = img.src;
-  captionBrand.textContent = img.brand;
-  captionSeason.textContent = img.season;
   captionNote.textContent = img.note || '';
   counter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
 }
@@ -822,7 +811,7 @@ function closeSearchPage() {
   renderBrandList('');
 }
 
-/* ===== 生成 A–Z（有品牌深、其他灰） ===== */
+/* ===== 生成 A–Z ===== */
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 function getBrandLetter(b) {
@@ -849,7 +838,7 @@ ALPHA.forEach(letter => {
   alphaBar.appendChild(span);
 });
 
-/* ===== 渲染品牌列表（按 A-Z 分组） ===== */
+/* ===== 渲染品牌列表 ===== */
 function renderBrandList(keyword) {
   keyword = (keyword || '').trim().toUpperCase();
   searchBrandList.innerHTML = '';
