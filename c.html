@@ -921,26 +921,18 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊：两列 ===== */
+/* ===== 画廊：两列，左倒序、右正序 ===== */
 const trackLeft = document.getElementById('trackLeft');
 const trackRight = document.getElementById('trackRight');
 const galleryStage = document.getElementById('galleryStage');
 
 let expandedItem = null;
 
-let num = 0;
-const leftData = [];
-const rightData = [];
+const allData = [];
 
 brandsData.forEach(brand => {
   brand.images.forEach(img => {
-    const src = `images/${brand.folder}/${img.file}`;
-    num++;
-    if (num % 2 === 1) {
-      leftData.push(src);
-    } else {
-      rightData.push(src);
-    }
+    allData.push(`images/${brand.folder}/${img.file}`);
   });
 });
 
@@ -964,8 +956,11 @@ function buildColumn(track, dataList) {
   });
 }
 
-buildColumn(trackLeft, leftData);
-buildColumn(trackRight, rightData);
+// 左列倒序（Z→A），右列正序（A→Z）
+const reversedData = allData.slice().reverse();
+
+buildColumn(trackLeft, reversedData);
+buildColumn(trackRight, allData);
 
 /* ===== 放大 + 灰白 + 仅下方让位 ===== */
 function clearPush() {
@@ -980,10 +975,6 @@ function applyPush(item) {
   const col = item.parentElement;
   const siblings = Array.from(col.children);
 
-  const itemH = item.offsetHeight;
-  const push = itemH * 0.15;
-
-  item.style.setProperty('--push', push);
   item.style.zIndex = '9999';
 
   siblings.forEach(el => {
@@ -999,6 +990,10 @@ function toggleExpand(item) {
   } else {
     if (expandedItem) expandedItem.classList.remove('expanded');
     clearPush();
+
+    const itemH = item.offsetHeight;
+    item.style.setProperty('--push', itemH * 0.3);
+
     item.classList.add('expanded');
     applyPush(item);
     expandedItem = item;
@@ -1019,8 +1014,7 @@ galleryStage.addEventListener('click', (e) => {
 });
 
 /* ===== 滚动 + 循环 ===== */
-let leftY = 0;
-let rightY = 0;
+let pos = 0;
 let lastTouchY = 0;
 let wheelAcc = 0;
 
@@ -1028,32 +1022,19 @@ function isMobile() {
   return window.matchMedia('(max-width: 768px)').matches;
 }
 
-function applyTransform() {
-  trackLeft.style.transform = `translateY(${leftY}px)`;
-  trackRight.style.transform = `translateY(${rightY}px)`;
+function getRound() {
+  return trackLeft.scrollHeight / 2;
 }
 
-function getRoundHeight(track) {
-  return track.scrollHeight / 2;
+function applyTransform() {
+  trackLeft.style.transform  = `translateY(${-pos}px)`;
+  trackRight.style.transform = `translateY(${pos}px)`;
 }
 
 function wrapLoop() {
-  const leftRound = getRoundHeight(trackLeft);
-  const rightRound = getRoundHeight(trackRight);
-
-  while (leftY <= -leftRound) {
-    leftY += leftRound;
-  }
-  while (leftY > 0) {
-    leftY -= leftRound;
-  }
-
-  while (rightY >= rightRound) {
-    rightY -= rightRound;
-  }
-  while (rightY < 0) {
-    rightY += rightRound;
-  }
+  const round = getRound();
+  if (round <= 0) return;
+  pos = ((pos % round) + round) % round;
 }
 
 galleryStage.addEventListener('touchstart', (e) => {
@@ -1068,8 +1049,7 @@ galleryStage.addEventListener('touchmove', (e) => {
   const delta = lastTouchY - curY;
   lastTouchY = curY;
 
-  leftY += delta;
-  rightY -= delta;
+  pos += delta;
 
   wrapLoop();
   applyTransform();
@@ -1080,8 +1060,7 @@ window.addEventListener('wheel', (e) => {
   if (isMobile()) return;
   e.preventDefault();
   wheelAcc += e.deltaY;
-  leftY = -wheelAcc;
-  rightY = wheelAcc;
+  pos = wheelAcc;
   wrapLoop();
   applyTransform();
 }, { passive: false });
@@ -1095,8 +1074,7 @@ viewToggle.addEventListener('click', (e) => {
 
   if (document.body.classList.contains('gallery-mode')) {
     document.body.style.overflow = 'hidden';
-    leftY = 0;
-    rightY = 0;
+    pos = 0;
     wheelAcc = 0;
     applyTransform();
   } else {
