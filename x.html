@@ -77,7 +77,7 @@ input {
   display: none;
 }
 
-/* ===== 顶栏（无底色、无边框、固定） ===== */
+/* ===== 顶栏 ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -209,7 +209,7 @@ body.gallery-mode .view-toggle span {
   text-transform: uppercase;
 }
 
-/* ===== 画廊模式（浅色 + 两列窄图 + 大留白 + 循环） ===== */
+/* ===== 画廊模式 ===== */
 .gallery-view {
   display: none;
 }
@@ -247,13 +247,13 @@ body.gallery-mode .gallery-stage {
 .gallery-col {
   position: relative;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .gallery-track {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   will-change: transform;
 }
 
@@ -264,7 +264,7 @@ body.gallery-mode .gallery-stage {
 .g-item {
   position: relative;
   cursor: pointer;
-  transition: margin 0.45s ease;
+  transition: transform 0.4s ease, margin 0.4s ease, opacity 0.3s ease;
 }
 
 .g-item .g-frame {
@@ -272,7 +272,7 @@ body.gallery-mode .gallery-stage {
   width: 100%;
   overflow: hidden;
   background: #ececec;
-  transition: width 0.45s ease, margin 0.45s ease;
+  transition: width 0.4s ease, margin 0.4s ease;
 }
 
 .g-item .g-frame img {
@@ -289,13 +289,16 @@ body.gallery-mode .gallery-stage {
 }
 
 .g-item.expanded {
-  z-index: 10;
-  margin-top: 32px;
-  margin-bottom: 32px;
+  position: relative;
+  z-index: 9999;
 }
 
 .g-item.expanded .g-frame img {
   opacity: 1;
+}
+
+.g-item.dimmed {
+  opacity: 0.2;
 }
 
 .gallery-col.col-left .g-item.expanded .g-frame {
@@ -669,16 +672,11 @@ body.gallery-mode .gallery-stage {
   }
 
   .gallery-track {
-    gap: 10px;
+    gap: 5px;
   }
 
   .gallery-track.col-right-init {
     padding-top: 70px;
-  }
-
-  .g-item.expanded {
-    margin-top: 24px;
-    margin-bottom: 24px;
   }
 
   .search-page { padding: 50px 20px 100px; }
@@ -921,7 +919,7 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊：生成两列（复制一份用于循环） ===== */
+/* ===== 画廊：两列 ===== */
 const trackLeft = document.getElementById('trackLeft');
 const trackRight = document.getElementById('trackRight');
 const galleryStage = document.getElementById('galleryStage');
@@ -967,13 +965,48 @@ function buildColumn(track, dataList) {
 buildColumn(trackLeft, leftData);
 buildColumn(trackRight, rightData);
 
+/* ===== 放大 + 灰白 + 上下让位（按图高算） ===== */
+function clearPush() {
+  document.querySelectorAll('.g-item').forEach(el => {
+    el.style.transform = '';
+    el.style.zIndex = '';
+    el.classList.remove('dimmed');
+  });
+}
+
+function applyPush(item) {
+  const col = item.parentElement;
+  const siblings = Array.from(col.children);
+  const idx = siblings.indexOf(item);
+
+  // 让位距离 = 这张图高度的 15%（因为放大 1.3 倍，上下各多出 15%）
+  const itemH = item.offsetHeight;
+  const push = itemH * 0.15;
+
+  for (let i = 0; i < idx; i++) {
+    siblings[i].style.transform = `translateY(-${push}px)`;
+    siblings[i].style.zIndex = '1';
+    siblings[i].classList.add('dimmed');
+  }
+  for (let i = idx + 1; i < siblings.length; i++) {
+    siblings[i].style.transform = `translateY(${push}px)`;
+    siblings[i].style.zIndex = '1';
+    siblings[i].classList.add('dimmed');
+  }
+  item.style.transform = '';
+  item.style.zIndex = '9999';
+}
+
 function toggleExpand(item) {
   if (expandedItem === item) {
     item.classList.remove('expanded');
+    clearPush();
     expandedItem = null;
   } else {
     if (expandedItem) expandedItem.classList.remove('expanded');
+    clearPush();
     item.classList.add('expanded');
+    applyPush(item);
     expandedItem = item;
   }
 }
@@ -981,6 +1014,7 @@ function toggleExpand(item) {
 function collapseAll() {
   if (expandedItem) {
     expandedItem.classList.remove('expanded');
+    clearPush();
     expandedItem = null;
   }
 }
@@ -990,7 +1024,7 @@ galleryStage.addEventListener('click', (e) => {
   collapseAll();
 });
 
-/* ===== 滚动控制 + 循环 ===== */
+/* ===== 滚动 + 循环 ===== */
 let leftY = 0;
 let rightY = 0;
 let lastTouchY = 0;
@@ -1013,20 +1047,21 @@ function wrapLoop() {
   const leftRound = getRoundHeight(trackLeft);
   const rightRound = getRoundHeight(trackRight);
 
-  if (leftY <= -leftRound) {
+  while (leftY <= -leftRound) {
     leftY += leftRound;
-  } else if (leftY > 0) {
+  }
+  while (leftY > 0) {
     leftY -= leftRound;
   }
 
-  if (rightY >= rightRound) {
+  while (rightY >= rightRound) {
     rightY -= rightRound;
-  } else if (rightY < -rightRound) {
+  }
+  while (rightY < -rightRound) {
     rightY += rightRound;
   }
 }
 
-/* 手机：反向滚动 */
 galleryStage.addEventListener('touchstart', (e) => {
   lastTouchY = e.touches[0].clientY;
 }, { passive: true });
@@ -1046,7 +1081,6 @@ galleryStage.addEventListener('touchmove', (e) => {
   applyTransform();
 }, { passive: false });
 
-/* 电脑：滚轮正常滚 */
 window.addEventListener('wheel', (e) => {
   if (!document.body.classList.contains('gallery-mode')) return;
   if (isMobile()) return;
