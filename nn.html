@@ -32,6 +32,7 @@ body {
   padding: 0 40px 140px;
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 img {
@@ -91,6 +92,7 @@ input {
   gap: 24px;
   margin: 0 -40px 80px;
   padding: 22px 40px;
+  transition: background 0.4s ease;
 }
 
 .topbar .logo {
@@ -100,6 +102,7 @@ input {
   color: #1a1a1a;
   flex-shrink: 0;
   text-transform: uppercase;
+  transition: color 0.4s ease;
 }
 
 .topbar .search-btn {
@@ -126,6 +129,7 @@ input {
   color: #1a1a1a;
   margin-bottom: 20px;
   text-transform: uppercase;
+  transition: color 0.4s ease;
 }
 
 .page-header .sub {
@@ -133,6 +137,48 @@ input {
   letter-spacing: 0.35em;
   color: #aaa;
   font-weight: 300;
+  transition: color 0.4s ease;
+}
+
+/* ===== 四宫格图标（全屏固定容器包住） ===== */
+.view-toggle-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.view-toggle {
+  position: absolute;
+  top: 40%;
+  right: 60px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  transition: opacity 0.3s ease;
+}
+
+.view-toggle span {
+  display: block;
+  border: 1px solid #bbb;
+  transition: border-color 0.4s ease;
+}
+
+.view-toggle:hover span {
+  border-color: #1a1a1a;
+}
+
+body.gallery-mode .view-toggle span {
+  border-color: #fff;
+}
+
+body.gallery-mode .view-toggle:hover span {
+  border-color: #ccc;
 }
 
 /* ===== 品牌网格：3 列 ===== */
@@ -179,6 +225,109 @@ input {
 .brand-count {
   font-size: 10px;
   color: #aaa;
+  letter-spacing: 0.22em;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+/* ===== 画廊模式 ===== */
+.gallery-view {
+  display: none;
+}
+
+body.gallery-mode {
+  background: #0a0a0a;
+  color: #fff;
+}
+
+body.gallery-mode .topbar {
+  background: rgba(10, 10, 10, 0.85);
+}
+
+body.gallery-mode .topbar .logo {
+  color: #fff;
+}
+
+body.gallery-mode .topbar .search-btn {
+  color: #777;
+}
+
+body.gallery-mode .topbar .search-btn:hover {
+  color: #fff;
+}
+
+body.gallery-mode .page-header h1 {
+  color: #fff;
+}
+
+body.gallery-mode .page-header .sub {
+  color: #666;
+}
+
+body.gallery-mode .brand-grid {
+  display: none;
+}
+
+body.gallery-mode .gallery-view {
+  display: block;
+}
+
+body.gallery-mode .footer {
+  color: #555;
+}
+
+body.gallery-mode .footer .links a {
+  color: #555;
+}
+
+body.gallery-mode .footer .links a:hover {
+  color: #fff;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px 24px;
+}
+
+.gallery-item {
+  cursor: pointer;
+}
+
+.gallery-item .g-cover {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #1a1a1a;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.gallery-item .g-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  opacity: 0.92;
+}
+
+.gallery-item:hover .g-cover img {
+  opacity: 0.75;
+}
+
+.gallery-item .g-brand {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: #fff;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.gallery-item .g-season {
+  font-size: 9px;
+  color: #777;
   letter-spacing: 0.22em;
   font-weight: 300;
   text-transform: uppercase;
@@ -473,6 +622,7 @@ input {
   line-height: 2.6;
   text-transform: uppercase;
   font-weight: 300;
+  transition: color 0.4s ease;
 }
 
 .footer .links { margin-top: 14px; }
@@ -528,6 +678,14 @@ input {
   .page-header h1 { font-size: 12px; letter-spacing: 0.5em; }
   .page-header .sub { font-size: 10px; }
 
+  .view-toggle {
+    top: 40%;
+    right: 24px;
+    width: 20px;
+    height: 20px;
+    gap: 3px;
+  }
+
   .brand-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px 16px;
@@ -535,6 +693,14 @@ input {
 
   .brand-name { font-size: 11px; letter-spacing: 0.18em; }
   .brand-count { font-size: 9px; }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 14px;
+  }
+
+  .gallery-item .g-brand { font-size: 10px; }
+  .gallery-item .g-season { font-size: 8px; }
 
   .search-page { padding: 50px 20px 100px; }
   .search-page-input { font-size: 13px; }
@@ -575,6 +741,15 @@ input {
   <div class="search-btn" id="searchBtn">Search</div>
 </header>
 
+<div class="view-toggle-wrap">
+  <div class="view-toggle" id="viewToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
 <div class="container">
 
   <header class="page-header">
@@ -583,6 +758,10 @@ input {
   </header>
 
   <div class="brand-grid" id="brandGrid"></div>
+
+  <div class="gallery-view" id="galleryView">
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
 
   <div class="footer" id="footer"></div>
   <div class="footer links">
@@ -665,10 +844,60 @@ function getSearchKey(name) {
 /* ===== 数据 ===== */
 const brandsData = [
   {
+    folder: 'avavav',
+    name: 'AVAVAV',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'bed-j-w-ford',
+    name: 'BED J.W. FORD',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'botter',
+    name: 'BOTTER',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
+    ]
+  },
+  {
     folder: 'burc-akyol',
     name: 'BURC AKYOL',
     images: [
       { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }
+    ]
+  },
+  {
+    folder: 'charles-jeffrey-loverboy',
+    name: 'CHARLES JEFFREY LOVERBOY',
+    images: [
+      { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'danielle-frankel',
+    name: 'DANIELLE FRANKEL',
+    images: [
+      { file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'dries-van-noten',
+    name: 'DRIES VAN NOTEN',
+    images: [
+      { file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'eenk',
+    name: 'EENK',
+    images: [
+      { file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }
     ]
   },
   {
@@ -679,12 +908,32 @@ const brandsData = [
     ]
   },
   {
-    folder: 'palomo-spain',
-    name: 'PALOMO SPAIN',
+    folder: 'freya-dalsjo',
+    name: 'FREYA DALSJØ',
     images: [
-      { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+      { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+      { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+    ]
+  },
+  {
+    folder: 'harris-reed',
+    name: 'HARRIS REED',
+    images: [
+      { file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }
+    ]
+  },
+  {
+    folder: 'loewe',
+    name: 'LOEWE',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }
+    ]
+  },
+  {
+    folder: 'maison-mihara-yasuhiro',
+    name: 'MAISON MIHARA YASUHIRO',
+    images: [
+      { file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }
     ]
   },
   {
@@ -692,6 +941,15 @@ const brandsData = [
     name: 'MATIÈRES FÉCALES',
     images: [
       { file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'palomo-spain',
+    name: 'PALOMO SPAIN',
+    images: [
+      { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
     ]
   },
   {
@@ -705,62 +963,10 @@ const brandsData = [
     ]
   },
   {
-    folder: 'harris-reed',
-    name: 'HARRIS REED',
+    folder: 'saint-laurent',
+    name: 'SAINT LAURENT',
     images: [
-      { file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的不行' }
-    ]
-  },
-  {
-    folder: 'maison-mihara-yasuhiro',
-    name: 'MAISON MIHARA YASUHIRO',
-    images: [
-      { file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }
-    ]
-  },
-  {
-    folder: 'loewe',
-    name: 'LOEWE',
-    images: [
-      { file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }
-    ]
-  },
-  {
-    folder: 'danielle-frankel',
-    name: 'DANIELLE FRANKEL',
-    images: [
-      { file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'freya-dalsjo',
-    name: 'FREYA DALSJØ',
-    images: [
-      { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
-      { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
-    ]
-  },
-  {
-    folder: 'wooyoungmi',
-    name: 'WOOYOUNGMI',
-    images: [
-      { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
-      { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
-    ]
-  },
-  {
-    folder: 'eenk',
-    name: 'EENK',
-    images: [
-      { file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'charles-jeffrey-loverboy',
-    name: 'CHARLES JEFFREY LOVERBOY',
-    images: [
-      { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
-      { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+      { file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }
     ]
   },
   {
@@ -773,41 +979,19 @@ const brandsData = [
     ]
   },
   {
-    folder: 'saint-laurent',
-    name: 'SAINT LAURENT',
+    folder: 'wooyoungmi',
+    name: 'WOOYOUNGMI',
     images: [
-      { file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'avavav',
-    name: 'AVAVAV',
-    images: [
-      { file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'dries-van-noten',
-    name: 'DRIES VAN NOTEN',
-    images: [
-      { file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'botter',
-    name: 'BOTTER',
-    images: [
-      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
-    ]
-  },
-  {
-    folder: 'bed-j-w-ford',
-    name: 'BED J.W. FORD',
-    images: [
-      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
+      { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
     ]
   }
 ];
+
+/* ===== 强制按 A→Z 排序 ===== */
+brandsData.sort((a, b) =>
+  getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en')
+);
 
 brandsData.forEach((b, i) => {
   b.expand = 'expand-' + i;
@@ -815,6 +999,7 @@ brandsData.forEach((b, i) => {
 
 /* ===== 品牌网格：生成卡片 + 展开层 ===== */
 const brandGrid = document.getElementById('brandGrid');
+const toTop = document.getElementById('toTop');
 
 brandsData.forEach(brand => {
   const card = document.createElement('div');
@@ -858,6 +1043,44 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
+/* ===== 画廊视图：生成网格（按 A→Z，品牌内部按编号） ===== */
+const galleryGrid = document.getElementById('galleryGrid');
+const galleryImgList = [];
+
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    const src = `images/${brand.folder}/${img.file}`;
+    const index = galleryImgList.length;
+    galleryImgList.push({
+      src: src,
+      brand: brand.name,
+      season: img.season,
+      note: img.note
+    });
+
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    item.innerHTML = `
+      <div class="g-cover">
+        <img src="${src}" alt="" loading="lazy" draggable="false">
+      </div>
+      <div class="g-brand">${brand.name}</div>
+      <div class="g-season">${img.season}</div>
+    `;
+    item.addEventListener('click', () => {
+      openLightbox(galleryImgList, index);
+    });
+    galleryGrid.appendChild(item);
+  });
+});
+
+/* ===== 视图切换：品牌格 / 画廊 ===== */
+const viewToggle = document.getElementById('viewToggle');
+viewToggle.addEventListener('click', () => {
+  document.body.classList.toggle('gallery-mode');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 /* ===== 全屏搜索页元素 ===== */
 const searchPage = document.getElementById('searchPage');
 const searchBtn = document.getElementById('searchBtn');
@@ -874,6 +1097,7 @@ function openExpand(id) {
   const layer = document.getElementById(id);
   layer.classList.add('active');
   document.body.style.overflow = 'hidden';
+  toTop.classList.remove('show');
 
   if (searchPage.classList.contains('active')) {
     expandFromSearch = true;
@@ -920,7 +1144,11 @@ function openLightbox(imgList, index) {
 
 function closeLightbox() {
   lightbox.classList.remove('active');
-  document.body.style.overflow = '';
+  if (document.querySelector('.expand-layer.active') || searchPage.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 }
 
 function updateLightbox() {
@@ -1003,10 +1231,9 @@ document.getElementById('footer').textContent =
   totalBrands + ' brands · ' + totalImages + ' images';
 
 /* ===== 回到顶部 ===== */
-const toTop = document.getElementById('toTop');
-
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 400) {
+  const inOverlay = document.querySelector('.expand-layer.active') || searchPage.classList.contains('active');
+  if (!inOverlay && window.scrollY > 400) {
     toTop.classList.add('show');
   } else {
     toTop.classList.remove('show');
@@ -1140,17 +1367,6 @@ searchPage.addEventListener('click', (e) => {
   if (e.target.closest('.alpha-group-title')) return;
   closeSearchPage();
 });
-
-/* ===== 品牌卡 A→Z 排序（按降级名） ===== */
-const cards = Array.from(brandGrid.querySelectorAll('.brand-card'));
-
-cards.sort((a, b) => {
-  const nameA = getSearchKey(a.dataset.name || '');
-  const nameB = getSearchKey(b.dataset.name || '');
-  return nameA.localeCompare(nameB, 'en');
-});
-
-cards.forEach(card => brandGrid.appendChild(card));
 </script>
 
 </body>
