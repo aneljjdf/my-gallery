@@ -235,8 +235,8 @@ body.gallery-mode .gallery-view {
   overflow: hidden;
   display: none;
   justify-content: center;
-  gap: 3%;
-  padding: 90px 12% 0;
+  gap: 2%;
+  padding: 90px 28% 0;
   background: #f8f9fa;
 }
 
@@ -263,12 +263,10 @@ body.gallery-mode .gallery-stage {
   transition: margin 0.4s ease, opacity 0.3s ease;
 }
 
-/* 基准宽度：77%，居中 */
+/* 基准宽度：65% */
 .g-item .g-frame {
   position: relative;
-  width: 77%;
-  margin-left: auto;
-  margin-right: auto;
+  width: 65%;
   overflow: hidden;
   background: #ececec;
   transition: width 0.4s ease, margin 0.4s ease;
@@ -302,15 +300,27 @@ body.gallery-mode .gallery-stage {
   opacity: 0.2;
 }
 
-/* 放大态：变成 100%，往外侧伸 */
+/* 左列图：贴右（内侧） */
+.gallery-col.col-left .g-item .g-frame {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* 右列图：贴左（内侧） */
+.gallery-col.col-right .g-item .g-frame {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* 放大态：往外侧伸 */
 .gallery-col.col-left .g-item.expanded .g-frame {
-  width: 100%;
+  width: 85%;
   margin-left: 0;
   margin-right: auto;
 }
 
 .gallery-col.col-right .g-item.expanded .g-frame {
-  width: 100%;
+  width: 85%;
   margin-left: auto;
   margin-right: 0;
 }
@@ -667,8 +677,8 @@ body.gallery-mode .gallery-stage {
   .brand-count { font-size: 9px; }
 
   .gallery-stage {
-    gap: 3%;
-    padding: 72px 8% 0;
+    gap: 2%;
+    padding: 72px 20% 0;
   }
 
   .gallery-col {
@@ -1026,12 +1036,12 @@ function getRound() {
 
 function applyTransform() {
   const round = getRound();
-  const half = round * 0.7;
+  const half = round * 0.43;
 
   // 右列：偏移一整圈，让第 1 张上方有第 29 张
   trackRight.style.transform = `translateY(${pos - round}px)`;
 
-  // 左列：偏移 0.7 圈，从更靠后的位置开始，反向滚
+  // 左列：偏移 0.43 圈，从更靠后的位置开始，反向滚
   trackLeft.style.transform = `translateY(${-pos - half}px)`;
 }
 
