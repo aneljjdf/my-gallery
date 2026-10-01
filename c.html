@@ -263,9 +263,12 @@ body.gallery-mode .gallery-stage {
   transition: margin 0.4s ease, opacity 0.3s ease;
 }
 
+/* 基准宽度：77%，居中 */
 .g-item .g-frame {
   position: relative;
-  width: 100%;
+  width: 77%;
+  margin-left: auto;
+  margin-right: auto;
   overflow: hidden;
   background: #ececec;
   transition: width 0.4s ease, margin 0.4s ease;
@@ -299,14 +302,17 @@ body.gallery-mode .gallery-stage {
   opacity: 0.2;
 }
 
+/* 放大态：变成 100%，往外侧伸 */
 .gallery-col.col-left .g-item.expanded .g-frame {
-  width: 130%;
-  margin-left: -30%;
+  width: 100%;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .gallery-col.col-right .g-item.expanded .g-frame {
-  width: 130%;
-  margin-right: -30%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: 0;
 }
 
 /* ===== 全屏搜索页 ===== */
