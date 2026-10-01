@@ -194,6 +194,8 @@ input {
   z-index: 500;
   display: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 80px 40px 140px;
 }
 
@@ -311,6 +313,8 @@ input {
   z-index: 100;
   display: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 80px 40px 140px;
 }
 
@@ -694,10 +698,10 @@ const brandsData = [
     folder: 'robert-wun',
     name: 'ROBERT WUN',
     images: [
-      { file: '01.webp', season: 'SPRING 2024 COUTURE', note: '' },
-      { file: '02.webp', season: 'FALL 2024 COUTURE', note: '' },
-      { file: '03.webp', season: 'SPRING 2026 COUTURE', note: '' },
-      { file: '04.webp', season: 'SPRING 2026 COUTURE', note: '' }
+      { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+      { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+      { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+      { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
     ]
   },
   {
@@ -732,8 +736,8 @@ const brandsData = [
     folder: 'freya-dalsjo',
     name: 'FREYA DALSJØ',
     images: [
-      { file: '01.webp', season: 'COPENHAGEN FALL 2026', note: '' },
-      { file: '02.webp', season: 'COPENHAGEN SPRING 2026', note: '' }
+      { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+      { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
     ]
   },
   {
@@ -811,6 +815,7 @@ brandsData.forEach((b, i) => {
 
 /* ===== 品牌网格：生成卡片 + 展开层 ===== */
 const brandGrid = document.getElementById('brandGrid');
+const toTop = document.getElementById('toTop');
 
 brandsData.forEach(brand => {
   const card = document.createElement('div');
@@ -870,6 +875,7 @@ function openExpand(id) {
   const layer = document.getElementById(id);
   layer.classList.add('active');
   document.body.style.overflow = 'hidden';
+  toTop.classList.remove('show');
 
   if (searchPage.classList.contains('active')) {
     expandFromSearch = true;
@@ -916,7 +922,11 @@ function openLightbox(imgList, index) {
 
 function closeLightbox() {
   lightbox.classList.remove('active');
-  document.body.style.overflow = '';
+  if (document.querySelector('.expand-layer.active') || searchPage.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 }
 
 function updateLightbox() {
@@ -999,10 +1009,9 @@ document.getElementById('footer').textContent =
   totalBrands + ' brands · ' + totalImages + ' images';
 
 /* ===== 回到顶部 ===== */
-const toTop = document.getElementById('toTop');
-
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 400) {
+  const inOverlay = document.querySelector('.expand-layer.active') || searchPage.classList.contains('active');
+  if (!inOverlay && window.scrollY > 400) {
     toTop.classList.add('show');
   } else {
     toTop.classList.remove('show');
@@ -1017,6 +1026,7 @@ toTop.addEventListener('click', () => {
 searchBtn.addEventListener('click', () => {
   searchPage.classList.add('active');
   document.body.style.overflow = 'hidden';
+  searchPage.scrollTop = 0;
 });
 
 function closeSearchPage() {
@@ -1040,9 +1050,10 @@ ALPHA.forEach(letter => {
   span.dataset.letter = letter;
   if (existingLetters.has(letter)) span.classList.add('has-brand');
   span.addEventListener('click', () => {
-    const target = document.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
+    const target = searchBrandList.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const top = target.offsetTop - 20;
+      searchPage.scrollTo({ top: top, behavior: 'smooth' });
     }
   });
   alphaBar.appendChild(span);
@@ -1053,9 +1064,10 @@ function renderBrandList(keyword) {
   const kw = getSearchKey(keyword || '').trim();
   searchBrandList.innerHTML = '';
 
-  const filtered = brandsData.filter(b =>
-    !kw || getSearchKey(b.name).includes(kw)
-  );
+  const filtered = brandsData.filter(b => {
+    if (!kw) return true;
+    return getSearchKey(b.name).startsWith(kw);
+  });
 
   const grouped = {};
   filtered.forEach(b => {
@@ -1106,12 +1118,14 @@ searchPageInput.addEventListener('input', () => {
   const v = searchPageInput.value;
   renderBrandList(v);
   searchPageClear.classList.toggle('show', v.length > 0);
+  searchPage.scrollTop = 0;
 });
 
 searchPageClear.addEventListener('click', () => {
   searchPageInput.value = '';
   searchPageClear.classList.remove('show');
   renderBrandList('');
+  searchPage.scrollTop = 0;
 });
 
 searchPageInput.addEventListener('keydown', (e) => {
