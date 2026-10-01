@@ -635,13 +635,44 @@ input {
   }
 })();
 
+/* ===== 变音符号降级 ===== */
+// É → E, Å → A, Ü → U  (NFD 拆开再删掉变音符号)
+// Æ Œ Ø ß 这类连字单独映射
+const LIGATURE_MAP = {
+  'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS',
+  'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H'
+};
+
+// 把整串降级成基础拉丁大写字母
+function toBase(str) {
+  let s = (str || '').toString();
+  // 先处理连字
+  s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
+  // 再拆变音符号
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return s.toUpperCase();
+}
+
+// 取品牌名最后一个词的降级首字母（用于分组 / 索引）
+function getBrandLetter(b) {
+  const parts = b.name.trim().split(/\s+/);
+  const last = parts[parts.length - 1] || b.name;
+  const base = toBase(last);
+  return base[0] || '';
+}
+
+// 用于搜索匹配的降级全名
+function getSearchKey(name) {
+  return toBase(name);
+}
+
 /* ===== 数据 ===== */
 const brandsData = [
   {
     folder: 'burc-akyol',
     name: 'BURC AKYOL',
     images: [
-      { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点就好了' }
+      { file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }
     ]
   },
   {
@@ -658,6 +689,37 @@ const brandsData = [
       { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
       { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
       { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+    ]
+  },
+  {
+    folder: 'matieres-fecales',
+    name: 'MATIÈRES FÉCALES',
+    images: [
+      { file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'robert-wun',
+    name: 'ROBERT WUN',
+    images: [
+      { file: '01.webp', season: 'SPRING 2024 COUTURE', note: '' },
+      { file: '02.webp', season: 'FALL 2024 COUTURE', note: '' },
+      { file: '03.webp', season: 'SPRING 2026 COUTURE', note: '' },
+      { file: '04.webp', season: 'SPRING 2026 COUTURE', note: '' }
+    ]
+  },
+  {
+    folder: 'harris-reed',
+    name: 'HARRIS REED',
+    images: [
+      { file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'maison-mihara-yasuhiro',
+    name: 'MAISON MIHARA YASUHIRO',
+    images: [
+      { file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }
     ]
   }
 ];
@@ -887,12 +949,6 @@ function closeSearchPage() {
 /* ===== 生成 A–Z ===== */
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-function getBrandLetter(b) {
-  const parts = b.name.trim().split(' ');
-  const last = parts[parts.length - 1] || b.name;
-  return (last[0] || '').toUpperCase();
-}
-
 const existingLetters = new Set(
   brandsData.map(b => getBrandLetter(b))
 );
@@ -913,11 +969,11 @@ ALPHA.forEach(letter => {
 
 /* ===== 渲染品牌列表 ===== */
 function renderBrandList(keyword) {
-  keyword = (keyword || '').trim().toUpperCase();
+  const kw = getSearchKey(keyword || '').trim();
   searchBrandList.innerHTML = '';
 
   const filtered = brandsData.filter(b =>
-    !keyword || b.name.toUpperCase().includes(keyword)
+    !kw || getSearchKey(b.name).includes(kw)
   );
 
   const grouped = {};
@@ -945,6 +1001,11 @@ function renderBrandList(keyword) {
     title.dataset.letter = letter;
     title.textContent = letter;
     searchBrandList.appendChild(title);
+
+    // 组内按降级名排序
+    grouped[letter].sort((a, b) =>
+      getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en')
+    );
 
     grouped[letter].forEach(b => {
       const item = document.createElement('div');
@@ -991,12 +1052,12 @@ searchPage.addEventListener('click', (e) => {
   closeSearchPage();
 });
 
-/* ===== 品牌卡 A→Z 排序 ===== */
+/* ===== 品牌卡 A→Z 排序（按降级名） ===== */
 const cards = Array.from(brandGrid.querySelectorAll('.brand-card'));
 
 cards.sort((a, b) => {
-  const nameA = (a.dataset.name || '').toUpperCase();
-  const nameB = (b.dataset.name || '').toUpperCase();
+  const nameA = getSearchKey(a.dataset.name || '');
+  const nameB = getSearchKey(b.dataset.name || '');
   return nameA.localeCompare(nameB, 'en');
 });
 
