@@ -77,7 +77,7 @@ input {
   display: none;
 }
 
-/* ===== 顶栏（无底色、无边框、固定不动） ===== */
+/* ===== 顶栏（无底色、无边框、固定） ===== */
 .topbar {
   position: fixed;
   top: 0;
@@ -209,7 +209,7 @@ body.gallery-mode .view-toggle span {
   text-transform: uppercase;
 }
 
-/* ===== 画廊模式（浅色 + 两列瘦图 + 手机反向滚动） ===== */
+/* ===== 画廊模式（浅色 + 两列瘦图 + 大量留白） ===== */
 .gallery-view {
   display: none;
 }
@@ -226,7 +226,6 @@ body.gallery-mode .gallery-view {
   display: block;
 }
 
-/* 画廊两列容器：固定铺满、无滚动条 */
 .gallery-stage {
   position: fixed;
   top: 0;
@@ -234,12 +233,11 @@ body.gallery-mode .gallery-view {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  padding: 70px 24px 0;
-  background: #f8f9fa;
   display: none;
+  justify-content: center;
+  gap: 32px;
+  padding: 90px 120px 0;
+  background: #f8f9fa;
 }
 
 body.gallery-mode .gallery-stage {
@@ -249,14 +247,14 @@ body.gallery-mode .gallery-stage {
 .gallery-col {
   position: relative;
   width: 50%;
-  max-width: 200px;
+  max-width: 260px;
   overflow: hidden;
 }
 
 .gallery-track {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   will-change: transform;
 }
 
@@ -291,7 +289,6 @@ body.gallery-mode .gallery-stage {
   opacity: 0.8;
 }
 
-/* 放大态：上下都让位 */
 .g-item.expanded {
   z-index: 10;
   margin-top: 32px;
@@ -302,13 +299,11 @@ body.gallery-mode .gallery-stage {
   opacity: 1;
 }
 
-/* 左列图放大 → 往左延伸 */
 .gallery-col.col-left .g-item.expanded .g-frame {
   width: 130%;
   margin-left: -30%;
 }
 
-/* 右列图放大 → 往右延伸 */
 .gallery-col.col-right .g-item.expanded .g-frame {
   width: 130%;
   margin-right: -30%;
@@ -666,20 +661,20 @@ body.gallery-mode .gallery-stage {
   .brand-count { font-size: 9px; }
 
   .gallery-stage {
-    gap: 14px;
-    padding: 64px 16px 0;
+    gap: 12px;
+    padding: 72px 40px 0;
   }
 
   .gallery-col {
-    max-width: 160px;
+    max-width: 120px;
   }
 
   .gallery-track {
-    gap: 12px;
+    gap: 10px;
   }
 
   .gallery-track.col-right-init {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 
   .g-item.expanded {
@@ -753,7 +748,7 @@ body.gallery-mode .gallery-stage {
 
 </div>
 
-<!-- ===== 画廊模式：两列反向滚动 ===== -->
+<!-- ===== 画廊模式 ===== -->
 <div class="gallery-stage" id="galleryStage">
   <div class="gallery-col col-left">
     <div class="gallery-track" id="trackLeft"></div>
@@ -984,10 +979,11 @@ galleryStage.addEventListener('click', (e) => {
   collapseAll();
 });
 
-/* ===== 手机反向滚动 / 电脑正常滚动 ===== */
+/* ===== 滚动控制 ===== */
 let leftY = 0;
 let rightY = 0;
 let lastTouchY = 0;
+let wheelAcc = 0;
 
 function isMobile() {
   return window.matchMedia('(max-width: 768px)').matches;
@@ -1002,7 +998,7 @@ function getLimits() {
   const stageH = galleryStage.clientHeight;
   const leftH = trackLeft.scrollHeight;
   const rightH = trackRight.scrollHeight;
-  const rightInit = isMobile() ? 80 : 100;
+  const rightInit = isMobile() ? 70 : 100;
 
   const leftMax = Math.max(0, leftH - stageH);
   const rightMin = -Math.max(0, rightH + rightInit - stageH);
@@ -1010,7 +1006,7 @@ function getLimits() {
   return { leftMax, rightMin };
 }
 
-/* 手机：反向滚动 */
+/* 手机：反向滚动 —— 手指下滑，左列往上、右列往下 */
 galleryStage.addEventListener('touchstart', (e) => {
   lastTouchY = e.touches[0].clientY;
 }, { passive: true });
@@ -1023,10 +1019,9 @@ galleryStage.addEventListener('touchmove', (e) => {
   const delta = lastTouchY - curY; // 手指上滑为正
   lastTouchY = curY;
 
-  // 手指下滑 → 右列往上、左列往下
-  // delta 为负 = 手指下滑
-  leftY -= delta;
-  rightY += delta;
+  // 手指下滑（delta < 0）→ 左列往上（leftY 减小）、右列往下（rightY 增大）
+  leftY += delta;
+  rightY -= delta;
 
   const lim = getLimits();
   leftY = Math.max(0, Math.min(lim.leftMax, leftY));
@@ -1035,15 +1030,14 @@ galleryStage.addEventListener('touchmove', (e) => {
   applyTransform();
 }, { passive: false });
 
-/* 电脑：正常滚（鼠标滚轮） */
-let wheelAcc = 0;
+/* 电脑：滚轮正常滚 */
 window.addEventListener('wheel', (e) => {
   if (!document.body.classList.contains('gallery-mode')) return;
   if (isMobile()) return;
   e.preventDefault();
   wheelAcc += e.deltaY;
-  leftY = Math.max(0, Math.min(getLimits().leftMax, -wheelAcc));
-  rightY = Math.max(getLimits().rightMin, Math.min(0, -wheelAcc));
+  leftY = Math.max(0, Math.min(getLimits().leftMax, wheelAcc));
+  rightY = Math.max(getLimits().rightMin, Math.min(0, wheelAcc));
   applyTransform();
 }, { passive: false });
 
@@ -1219,7 +1213,7 @@ const totalImages = brandsData.reduce((sum, b) => sum + b.images.length, 0);
 document.getElementById('footer').textContent =
   totalBrands + ' brands · ' + totalImages + ' images';
 
-/* ===== 搜索页打开 / 关闭 ===== */
+/* ===== 搜索页关闭 ===== */
 function closeSearchPage() {
   searchPage.classList.remove('active');
   document.body.style.overflow = '';
