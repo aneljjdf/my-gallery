@@ -73,7 +73,6 @@ input {
 @keyframes textOut { to { opacity: 0; filter: blur(6px); } }
 @keyframes bgOut { to { opacity: 0; visibility: hidden; } }
 
-/* 已看过 → 直接隐藏，不参与任何动画 */
 .splash.done {
   display: none;
 }
@@ -195,6 +194,8 @@ input {
   z-index: 500;
   display: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 80px 40px 140px;
 }
 
@@ -312,6 +313,8 @@ input {
   z-index: 100;
   display: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 80px 40px 140px;
 }
 
@@ -636,24 +639,18 @@ input {
 })();
 
 /* ===== 变音符号降级 ===== */
-// É → E, Å → A, Ü → U  (NFD 拆开再删掉变音符号)
-// Æ Œ Ø ß 这类连字单独映射
 const LIGATURE_MAP = {
   'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS',
   'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H'
 };
 
-// 把整串降级成基础拉丁大写字母
 function toBase(str) {
   let s = (str || '').toString();
-  // 先处理连字
   s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
-  // 再拆变音符号
   s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   return s.toUpperCase();
 }
 
-// 取品牌名最后一个词的降级首字母（用于分组 / 索引）
 function getBrandLetter(b) {
   const parts = b.name.trim().split(/\s+/);
   const last = parts[parts.length - 1] || b.name;
@@ -661,7 +658,6 @@ function getBrandLetter(b) {
   return base[0] || '';
 }
 
-// 用于搜索匹配的降级全名
 function getSearchKey(name) {
   return toBase(name);
 }
@@ -688,7 +684,7 @@ const brandsData = [
     images: [
       { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
       { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
-      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '仅下半身' }
+      { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
     ]
   },
   {
@@ -702,17 +698,17 @@ const brandsData = [
     folder: 'robert-wun',
     name: 'ROBERT WUN',
     images: [
-      { file: '01.webp', season: 'SPRING 2024 COUTURE', note: '' },
-      { file: '02.webp', season: 'FALL 2024 COUTURE', note: '' },
-      { file: '03.webp', season: 'SPRING 2026 COUTURE', note: '' },
-      { file: '04.webp', season: 'SPRING 2026 COUTURE', note: '' }
+      { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+      { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+      { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+      { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
     ]
   },
   {
     folder: 'harris-reed',
     name: 'HARRIS REED',
     images: [
-      { file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '' }
+      { file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的不行' }
     ]
   },
   {
@@ -740,8 +736,8 @@ const brandsData = [
     folder: 'freya-dalsjo',
     name: 'FREYA DALSJØ',
     images: [
-      { file: '01.webp', season: 'COPENHAGEN FALL 2026', note: '' },
-      { file: '02.webp', season: 'COPENHAGEN SPRING 2026', note: '' }
+      { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+      { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
     ]
   },
   {
@@ -750,6 +746,65 @@ const brandsData = [
     images: [
       { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
       { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+    ]
+  },
+  {
+    folder: 'eenk',
+    name: 'EENK',
+    images: [
+      { file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'charles-jeffrey-loverboy',
+    name: 'CHARLES JEFFREY LOVERBOY',
+    images: [
+      { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+      { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'versace',
+    name: 'VERSACE',
+    images: [
+      { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+      { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+      { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'saint-laurent',
+    name: 'SAINT LAURENT',
+    images: [
+      { file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'avavav',
+    name: 'AVAVAV',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'dries-van-noten',
+    name: 'DRIES VAN NOTEN',
+    images: [
+      { file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'botter',
+    name: 'BOTTER',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
+    ]
+  },
+  {
+    folder: 'bed-j-w-ford',
+    name: 'BED J.W. FORD',
+    images: [
+      { file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }
     ]
   }
 ];
@@ -966,6 +1021,7 @@ toTop.addEventListener('click', () => {
 searchBtn.addEventListener('click', () => {
   searchPage.classList.add('active');
   document.body.style.overflow = 'hidden';
+  searchPage.scrollTop = 0;
 });
 
 function closeSearchPage() {
@@ -989,9 +1045,10 @@ ALPHA.forEach(letter => {
   span.dataset.letter = letter;
   if (existingLetters.has(letter)) span.classList.add('has-brand');
   span.addEventListener('click', () => {
-    const target = document.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
+    const target = searchBrandList.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const top = target.offsetTop - 20;
+      searchPage.scrollTo({ top: top, behavior: 'smooth' });
     }
   });
   alphaBar.appendChild(span);
@@ -1002,9 +1059,10 @@ function renderBrandList(keyword) {
   const kw = getSearchKey(keyword || '').trim();
   searchBrandList.innerHTML = '';
 
-  const filtered = brandsData.filter(b =>
-    !kw || getSearchKey(b.name).includes(kw)
-  );
+  const filtered = brandsData.filter(b => {
+    if (!kw) return true;
+    return getSearchKey(b.name).startsWith(kw);
+  });
 
   const grouped = {};
   filtered.forEach(b => {
@@ -1032,7 +1090,6 @@ function renderBrandList(keyword) {
     title.textContent = letter;
     searchBrandList.appendChild(title);
 
-    // 组内按降级名排序
     grouped[letter].sort((a, b) =>
       getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en')
     );
@@ -1056,12 +1113,14 @@ searchPageInput.addEventListener('input', () => {
   const v = searchPageInput.value;
   renderBrandList(v);
   searchPageClear.classList.toggle('show', v.length > 0);
+  searchPage.scrollTop = 0;
 });
 
 searchPageClear.addEventListener('click', () => {
   searchPageInput.value = '';
   searchPageClear.classList.remove('show');
   renderBrandList('');
+  searchPage.scrollTop = 0;
 });
 
 searchPageInput.addEventListener('keydown', (e) => {
