@@ -209,7 +209,7 @@ body.gallery-mode .view-toggle span {
   text-transform: uppercase;
 }
 
-/* ===== 画廊模式（浅色 + 两列瘦图 + 大量留白） ===== */
+/* ===== 画廊模式（浅色 + 两列窄图 + 大留白 + 循环） ===== */
 .gallery-view {
   display: none;
 }
@@ -235,8 +235,8 @@ body.gallery-mode .gallery-view {
   overflow: hidden;
   display: none;
   justify-content: center;
-  gap: 32px;
-  padding: 90px 120px 0;
+  gap: 3%;
+  padding: 90px 33% 0;
   background: #f8f9fa;
 }
 
@@ -246,8 +246,7 @@ body.gallery-mode .gallery-stage {
 
 .gallery-col {
   position: relative;
-  width: 50%;
-  max-width: 260px;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -661,12 +660,12 @@ body.gallery-mode .gallery-stage {
   .brand-count { font-size: 9px; }
 
   .gallery-stage {
-    gap: 12px;
-    padding: 72px 40px 0;
+    gap: 3%;
+    padding: 72px 30% 0;
   }
 
   .gallery-col {
-    max-width: 120px;
+    width: 100%;
   }
 
   .gallery-track {
@@ -922,7 +921,7 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊：生成两列 ===== */
+/* ===== 画廊：生成两列（复制一份用于循环） ===== */
 const trackLeft = document.getElementById('trackLeft');
 const trackRight = document.getElementById('trackRight');
 const galleryStage = document.getElementById('galleryStage');
@@ -930,11 +929,26 @@ const galleryStage = document.getElementById('galleryStage');
 let expandedItem = null;
 
 let num = 0;
+const leftData = [];
+const rightData = [];
+
 brandsData.forEach(brand => {
   brand.images.forEach(img => {
     const src = `images/${brand.folder}/${img.file}`;
     num++;
+    if (num % 2 === 1) {
+      leftData.push(src);
+    } else {
+      rightData.push(src);
+    }
+  });
+});
 
+function buildColumn(track, dataList) {
+  track.innerHTML = '';
+  const doubled = dataList.concat(dataList);
+
+  doubled.forEach(src => {
     const item = document.createElement('div');
     item.className = 'g-item';
     item.innerHTML = `
@@ -942,19 +956,16 @@ brandsData.forEach(brand => {
         <img src="${src}" alt="" loading="lazy" draggable="false">
       </div>
     `;
-
-    if (num % 2 === 1) {
-      trackLeft.appendChild(item);
-    } else {
-      trackRight.appendChild(item);
-    }
-
     item.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleExpand(item);
     });
+    track.appendChild(item);
   });
-});
+}
+
+buildColumn(trackLeft, leftData);
+buildColumn(trackRight, rightData);
 
 function toggleExpand(item) {
   if (expandedItem === item) {
@@ -979,7 +990,7 @@ galleryStage.addEventListener('click', (e) => {
   collapseAll();
 });
 
-/* ===== 滚动控制 ===== */
+/* ===== 滚动控制 + 循环 ===== */
 let leftY = 0;
 let rightY = 0;
 let lastTouchY = 0;
@@ -994,19 +1005,28 @@ function applyTransform() {
   trackRight.style.transform = `translateY(${rightY}px)`;
 }
 
-function getLimits() {
-  const stageH = galleryStage.clientHeight;
-  const leftH = trackLeft.scrollHeight;
-  const rightH = trackRight.scrollHeight;
-  const rightInit = isMobile() ? 70 : 100;
-
-  const leftMax = Math.max(0, leftH - stageH);
-  const rightMin = -Math.max(0, rightH + rightInit - stageH);
-
-  return { leftMax, rightMin };
+function getRoundHeight(track) {
+  return track.scrollHeight / 2;
 }
 
-/* 手机：反向滚动 —— 手指下滑，左列往上、右列往下 */
+function wrapLoop() {
+  const leftRound = getRoundHeight(trackLeft);
+  const rightRound = getRoundHeight(trackRight);
+
+  if (leftY <= -leftRound) {
+    leftY += leftRound;
+  } else if (leftY > 0) {
+    leftY -= leftRound;
+  }
+
+  if (rightY >= rightRound) {
+    rightY -= rightRound;
+  } else if (rightY < -rightRound) {
+    rightY += rightRound;
+  }
+}
+
+/* 手机：反向滚动 */
 galleryStage.addEventListener('touchstart', (e) => {
   lastTouchY = e.touches[0].clientY;
 }, { passive: true });
@@ -1016,17 +1036,13 @@ galleryStage.addEventListener('touchmove', (e) => {
   e.preventDefault();
 
   const curY = e.touches[0].clientY;
-  const delta = lastTouchY - curY; // 手指上滑为正
+  const delta = lastTouchY - curY;
   lastTouchY = curY;
 
-  // 手指下滑（delta < 0）→ 左列往上（leftY 减小）、右列往下（rightY 增大）
   leftY += delta;
   rightY -= delta;
 
-  const lim = getLimits();
-  leftY = Math.max(0, Math.min(lim.leftMax, leftY));
-  rightY = Math.max(lim.rightMin, Math.min(0, rightY));
-
+  wrapLoop();
   applyTransform();
 }, { passive: false });
 
@@ -1036,8 +1052,9 @@ window.addEventListener('wheel', (e) => {
   if (isMobile()) return;
   e.preventDefault();
   wheelAcc += e.deltaY;
-  leftY = Math.max(0, Math.min(getLimits().leftMax, wheelAcc));
-  rightY = Math.max(getLimits().rightMin, Math.min(0, wheelAcc));
+  leftY = -wheelAcc;
+  rightY = wheelAcc;
+  wrapLoop();
   applyTransform();
 }, { passive: false });
 
