@@ -325,7 +325,7 @@ body.gallery-mode .gallery-stage {
 /* 放大宽度：95% */
 .gallery-col.col-left .g-item.expanded .g-frame,
 .gallery-col.col-right .g-item.expanded .g-frame {
-  width: 95%;
+  width: 120%;
 }
 
 /* ===== 全屏搜索页 ===== */
@@ -1044,11 +1044,11 @@ function applyTransform() {
   const round = getRound();
   const half = round * 0.43;
 
-  // 左列：往上走
-  trackLeft.style.transform = `translateY(${pos - half}px)`;
+  // 右列：偏移一整圈，让第 1 张上方有第 29 张
+  trackRight.style.transform = `translateY(${pos - round}px)`;
 
-  // 右列：往下走
-  trackRight.style.transform = `translateY(${-pos - round}px)`;
+  // 左列：偏移 0.43 圈，从更靠后的位置开始，反向滚
+  trackLeft.style.transform = `translateY(${-pos - half}px)`;
 }
 
 function wrapLoop() {
@@ -1069,7 +1069,7 @@ galleryStage.addEventListener('touchmove', (e) => {
   const delta = lastTouchY - curY;
   lastTouchY = curY;
 
-  pos -= delta;
+  pos += delta;
 
   wrapLoop();
   applyTransform();
@@ -1079,7 +1079,7 @@ window.addEventListener('wheel', (e) => {
   if (!document.body.classList.contains('gallery-mode')) return;
   if (isMobile()) return;
   e.preventDefault();
-  wheelAcc -= e.deltaY;
+  wheelAcc += e.deltaY;
   pos = wheelAcc;
   wrapLoop();
   applyTransform();
