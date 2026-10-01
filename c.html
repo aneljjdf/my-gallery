@@ -312,7 +312,7 @@ body.gallery-mode .gallery-stage {
   justify-content: flex-start;
 }
 
-/* 放大态：往外侧伸（左列往左、右列往右） */
+/* 放大态：往外侧伸 */
 .gallery-col.col-left .g-item.expanded {
   justify-content: flex-start;
 }
@@ -960,10 +960,13 @@ function buildColumn(track) {
         <img src="${src}" alt="" loading="lazy" draggable="false">
       </div>
     `;
-    item.addEventListener('click', (e) => {
+
+    // 点击只绑在"图"上，点空白不触发
+    item.querySelector('.g-frame').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleExpand(item);
     });
+
     track.appendChild(item);
   });
 }
@@ -1018,7 +1021,7 @@ function collapseAll() {
 }
 
 galleryStage.addEventListener('click', (e) => {
-  if (e.target.closest('.g-item')) return;
+  if (e.target.closest('.g-frame')) return;
   collapseAll();
 });
 
