@@ -257,10 +257,6 @@ body.gallery-mode .gallery-stage {
   will-change: transform;
 }
 
-.gallery-track.col-right-init {
-  padding-top: 100px;
-}
-
 .g-item {
   position: relative;
   cursor: pointer;
@@ -677,10 +673,6 @@ body.gallery-mode .gallery-stage {
     gap: 5px;
   }
 
-  .gallery-track.col-right-init {
-    padding-top: 70px;
-  }
-
   .search-page { padding: 50px 20px 100px; }
   .search-page-input { font-size: 13px; }
   .alpha-bar { gap: 6px 10px; font-size: 9px; }
@@ -753,7 +745,7 @@ body.gallery-mode .gallery-stage {
     <div class="gallery-track" id="trackLeft"></div>
   </div>
   <div class="gallery-col col-right">
-    <div class="gallery-track col-right-init" id="trackRight"></div>
+    <div class="gallery-track" id="trackRight"></div>
   </div>
 </div>
 
@@ -921,7 +913,7 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊：两列，左倒序、右正序 ===== */
+/* ===== 画廊：一条链，两列共用 ===== */
 const trackLeft = document.getElementById('trackLeft');
 const trackRight = document.getElementById('trackRight');
 const galleryStage = document.getElementById('galleryStage');
@@ -936,11 +928,13 @@ brandsData.forEach(brand => {
   });
 });
 
-function buildColumn(track, dataList) {
-  track.innerHTML = '';
-  const doubled = dataList.concat(dataList);
+// 一条链，复制三份 → 87 张，足够长
+const ringData = allData.concat(allData).concat(allData);
 
-  doubled.forEach(src => {
+function buildColumn(track) {
+  track.innerHTML = '';
+
+  ringData.forEach(src => {
     const item = document.createElement('div');
     item.className = 'g-item';
     item.innerHTML = `
@@ -956,11 +950,8 @@ function buildColumn(track, dataList) {
   });
 }
 
-// 左列倒序（Z→A），右列正序（A→Z）
-const reversedData = allData.slice().reverse();
-
-buildColumn(trackLeft, reversedData);
-buildColumn(trackRight, allData);
+buildColumn(trackLeft);
+buildColumn(trackRight);
 
 /* ===== 放大 + 灰白 + 仅下方让位 ===== */
 function clearPush() {
@@ -1023,12 +1014,19 @@ function isMobile() {
 }
 
 function getRound() {
-  return trackLeft.scrollHeight / 2;
+  // scrollHeight 是 87 张的总高，除以 3 = 29 张的高度（一圈）
+  return trackLeft.scrollHeight / 3;
 }
 
 function applyTransform() {
-  trackLeft.style.transform  = `translateY(${-pos}px)`;
-  trackRight.style.transform = `translateY(${pos}px)`;
+  const round = getRound();
+  const half = round / 2;
+
+  // 右列：偏移一整圈，让第 1 张上方有第 29 张
+  trackRight.style.transform = `translateY(${pos - round}px)`;
+
+  // 左列：偏移半圈，从中间（约第 15 张）开始，反向滚
+  trackLeft.style.transform = `translateY(${-pos - half}px)`;
 }
 
 function wrapLoop() {
