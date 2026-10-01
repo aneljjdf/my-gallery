@@ -120,7 +120,7 @@ input {
 /* ===== 容器 ===== */
 .container { max-width: 1400px; margin: 0 auto; }
 
-.page-header { text-align: center; margin-bottom: 100px; }
+.page-header { text-align: center; margin-bottom: 60px; }
 
 .page-header h1 {
   font-size: 14px;
@@ -140,22 +140,17 @@ input {
   transition: color 0.4s ease;
 }
 
-/* ===== 四宫格图标（全屏固定容器包住） ===== */
-.view-toggle-wrap {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 150;
+/* ===== 四宫格图标 ===== */
+.view-toggle-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
 }
 
 .view-toggle {
-  position: absolute;
-  top: 40%;
-  right: 60px;
   width: 22px;
   height: 22px;
   cursor: pointer;
-  pointer-events: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -294,12 +289,20 @@ body.gallery-mode .footer .links a:hover {
   cursor: pointer;
 }
 
+.gallery-item .g-num {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #555;
+  text-align: right;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
 .gallery-item .g-cover {
   position: relative;
   aspect-ratio: 4 / 5;
   background: #1a1a1a;
   overflow: hidden;
-  margin-bottom: 16px;
 }
 
 .gallery-item .g-cover img {
@@ -314,6 +317,16 @@ body.gallery-mode .footer .links a:hover {
 
 .gallery-item:hover .g-cover img {
   opacity: 0.75;
+}
+
+.gallery-item .g-info {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin-top: 14px;
+}
+
+.gallery-item:hover .g-info {
+  opacity: 1;
 }
 
 .gallery-item .g-brand {
@@ -674,13 +687,13 @@ body.gallery-mode .footer .links a:hover {
   .topbar .logo { font-size: 11px; }
   .topbar .search-btn { font-size: 10px; }
 
-  .page-header { margin-bottom: 60px; }
+  .page-header { margin-bottom: 40px; }
   .page-header h1 { font-size: 12px; letter-spacing: 0.5em; }
   .page-header .sub { font-size: 10px; }
 
+  .view-toggle-bar { margin-bottom: 16px; }
+
   .view-toggle {
-    top: 40%;
-    right: 24px;
     width: 20px;
     height: 20px;
     gap: 3px;
@@ -699,8 +712,11 @@ body.gallery-mode .footer .links a:hover {
     gap: 36px 14px;
   }
 
+  .gallery-item .g-num { font-size: 9px; margin-bottom: 8px; }
   .gallery-item .g-brand { font-size: 10px; }
   .gallery-item .g-season { font-size: 8px; }
+
+  .gallery-item .g-info { opacity: 1; }
 
   .search-page { padding: 50px 20px 100px; }
   .search-page-input { font-size: 13px; }
@@ -741,21 +757,21 @@ body.gallery-mode .footer .links a:hover {
   <div class="search-btn" id="searchBtn">Search</div>
 </header>
 
-<div class="view-toggle-wrap">
-  <div class="view-toggle" id="viewToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-
 <div class="container">
 
   <header class="page-header">
     <h1>Archive</h1>
     <div class="sub">留下值得的</div>
   </header>
+
+  <div class="view-toggle-bar">
+    <div class="view-toggle" id="viewToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
 
   <div class="brand-grid" id="brandGrid"></div>
 
@@ -1061,11 +1077,14 @@ brandsData.forEach(brand => {
     const item = document.createElement('div');
     item.className = 'gallery-item';
     item.innerHTML = `
+      <div class="g-num">${index + 1}</div>
       <div class="g-cover">
         <img src="${src}" alt="" loading="lazy" draggable="false">
       </div>
-      <div class="g-brand">${brand.name}</div>
-      <div class="g-season">${img.season}</div>
+      <div class="g-info">
+        <div class="g-brand">${brand.name}</div>
+        <div class="g-season">${img.season}</div>
+      </div>
     `;
     item.addEventListener('click', () => {
       openLightbox(galleryImgList, index);
