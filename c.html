@@ -312,19 +312,20 @@ body.gallery-mode .gallery-stage {
   justify-content: flex-start;
 }
 
-/* 放大态：往外侧伸 */
+/* 左列放大：贴右，往左伸 */
 .gallery-col.col-left .g-item.expanded {
-  justify-content: flex-start;
-}
-
-.gallery-col.col-right .g-item.expanded {
   justify-content: flex-end;
 }
 
-/* 放大宽度：90% */
+/* 右列放大：贴左，往右伸 */
+.gallery-col.col-right .g-item.expanded {
+  justify-content: flex-start;
+}
+
+/* 放大宽度：95% */
 .gallery-col.col-left .g-item.expanded .g-frame,
 .gallery-col.col-right .g-item.expanded .g-frame {
-  width: 90%;
+  width: 95%;
 }
 
 /* ===== 全屏搜索页 ===== */
@@ -1004,7 +1005,7 @@ function toggleExpand(item) {
     clearPush();
 
     const itemH = item.offsetHeight;
-    item.style.setProperty('--push', itemH * 0.3);
+    item.style.setProperty('--push', itemH * 0);
 
     item.classList.add('expanded');
     applyPush(item);
