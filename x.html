@@ -117,6 +117,12 @@ input {
 
 .topbar .search-btn:hover { color: #1a1a1a; }
 
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
 /* ===== 容器 ===== */
 .container { max-width: 1400px; margin: 0 auto; }
 
@@ -225,7 +231,7 @@ body.gallery-mode .view-toggle:hover span {
   text-transform: uppercase;
 }
 
-/* ===== 画廊模式 ===== */
+/* ===== 画廊模式（两列错位 + 点击放大） ===== */
 .gallery-view {
   display: none;
 }
@@ -237,26 +243,23 @@ body.gallery-mode {
 
 body.gallery-mode .topbar {
   background: rgba(10, 10, 10, 0.85);
+  margin-bottom: 0;
+}
+
+body.gallery-mode .view-toggle-bar {
+  display: none;
+}
+
+body.gallery-mode .topbar .search-btn {
+  display: none;
 }
 
 body.gallery-mode .topbar .logo {
   color: #fff;
 }
 
-body.gallery-mode .topbar .search-btn {
-  color: #777;
-}
-
-body.gallery-mode .topbar .search-btn:hover {
-  color: #fff;
-}
-
-body.gallery-mode .page-header h1 {
-  color: #fff;
-}
-
-body.gallery-mode .page-header .sub {
-  color: #666;
+body.gallery-mode .page-header {
+  display: none;
 }
 
 body.gallery-mode .brand-grid {
@@ -279,44 +282,71 @@ body.gallery-mode .footer .links a:hover {
   color: #fff;
 }
 
-.gallery-grid {
+.gallery-columns {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 56px;
+  padding: 0 40px;
 }
 
-.gallery-item {
-  cursor: pointer;
+.gallery-col {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 
-.gallery-item .g-num {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  color: #555;
-  text-align: right;
-  margin-bottom: 8px;
-  font-weight: 300;
+.gallery-col.col-right {
+  padding-top: 220px;
 }
 
-.gallery-item .g-cover {
+.g-item {
   position: relative;
-  aspect-ratio: 4 / 5;
-  background: #1a1a1a;
-  overflow: hidden;
+  cursor: pointer;
+  transition: margin 0.5s ease;
 }
 
-.gallery-item .g-cover img {
+.g-item .g-frame {
+  position: relative;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: hidden;
+  background: #1a1a1a;
+  transition: width 0.5s ease, margin 0.5s ease;
+}
+
+.g-item .g-frame img {
+  width: 100%;
+  height: auto;
   display: block;
   pointer-events: none;
   transition: opacity 0.4s ease;
   opacity: 0.92;
 }
 
-.gallery-item:hover .g-cover img {
-  opacity: 0.7;
+.g-item:hover .g-frame img {
+  opacity: 0.75;
+}
+
+/* 放大态 */
+.g-item.expanded {
+  z-index: 10;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.g-item.expanded .g-frame img {
+  opacity: 1;
+}
+
+.gallery-col.col-left .g-item.expanded .g-frame {
+  width: 130%;
+  margin-left: -30%;
+  margin-right: 0;
+}
+
+.gallery-col.col-right .g-item.expanded .g-frame {
+  width: 130%;
+  margin-left: 0;
+  margin-right: -30%;
 }
 
 /* ===== 全屏搜索页 ===== */
@@ -598,6 +628,21 @@ body.gallery-mode .footer .links a:hover {
   font-weight: 400;
 }
 
+.lightbox-brand-center {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  cursor: default;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: none;
+}
+
 /* ===== 页脚 ===== */
 .footer {
   margin-top: 160px;
@@ -659,6 +704,7 @@ body.gallery-mode .footer .links a:hover {
 
   .topbar .logo { font-size: 11px; }
   .topbar .search-btn { font-size: 10px; }
+  .topbar-right { gap: 20px; }
 
   .page-header { margin-bottom: 40px; }
   .page-header h1 { font-size: 12px; letter-spacing: 0.5em; }
@@ -680,12 +726,33 @@ body.gallery-mode .footer .links a:hover {
   .brand-name { font-size: 11px; letter-spacing: 0.18em; }
   .brand-count { font-size: 9px; }
 
-  .gallery-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px 8px;
+  .gallery-columns {
+    gap: 0 20px;
+    padding: 0 10px;
   }
 
-  .gallery-item .g-num { font-size: 8px; margin-bottom: 5px; }
+  .gallery-col {
+    gap: 28px;
+  }
+
+  .gallery-col.col-right {
+    padding-top: 140px;
+  }
+
+  .gallery-col.col-left .g-item.expanded .g-frame {
+    width: 130%;
+    margin-left: -30%;
+  }
+
+  .gallery-col.col-right .g-item.expanded .g-frame {
+    width: 130%;
+    margin-right: -30%;
+  }
+
+  .g-item.expanded {
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
 
   .search-page { padding: 50px 20px 100px; }
   .search-page-input { font-size: 13px; }
@@ -707,6 +774,7 @@ body.gallery-mode .footer .links a:hover {
   .lightbox-arrow.next { right: 12px; }
 
   .lightbox-meta { top: 24px; left: 20px; font-size: 9px; }
+  .lightbox-brand-center { top: 24px; font-size: 10px; }
 
   .lightbox-caption { bottom: 5vh; padding: 0 24px; }
   .lightbox-caption .label { font-size: 9px; margin-bottom: 8px; }
@@ -725,7 +793,15 @@ body.gallery-mode .footer .links a:hover {
 
 <header class="topbar">
   <div class="logo">Archive</div>
-  <div class="search-btn" id="searchBtn">Search</div>
+  <div class="topbar-right">
+    <div class="view-toggle" id="viewToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="search-btn" id="searchBtn">Search</div>
+  </div>
 </header>
 
 <div class="container">
@@ -735,19 +811,13 @@ body.gallery-mode .footer .links a:hover {
     <div class="sub">留下值得的</div>
   </header>
 
-  <div class="view-toggle-bar">
-    <div class="view-toggle" id="viewToggle">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-
   <div class="brand-grid" id="brandGrid"></div>
 
   <div class="gallery-view" id="galleryView">
-    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="gallery-columns">
+      <div class="gallery-col col-left" id="galleryColLeft"></div>
+      <div class="gallery-col col-right" id="galleryColRight"></div>
+    </div>
   </div>
 
   <div class="footer" id="footer"></div>
@@ -787,6 +857,7 @@ body.gallery-mode .footer .links a:hover {
 <!-- ===== 大图预览 ===== -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-meta" id="lightboxMeta"></div>
+  <div class="lightbox-brand-center" id="lightboxBrandCenter"></div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
   <div class="lightbox-arrow next" id="next">›</div>
@@ -1030,40 +1101,76 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊视图：生成网格 ===== */
-const galleryGrid = document.getElementById('galleryGrid');
-const galleryImgList = [];
+/* ===== 画廊视图：两列错位 + 点击放大 ===== */
+const galleryColLeft = document.getElementById('galleryColLeft');
+const galleryColRight = document.getElementById('galleryColRight');
+
+let galleryIndex = 0;
+let expandedItem = null;
 
 brandsData.forEach(brand => {
   brand.images.forEach(img => {
     const src = `images/${brand.folder}/${img.file}`;
-    const index = galleryImgList.length;
-    galleryImgList.push({
-      src: src,
-      brand: brand.name,
-      season: img.season,
-      note: img.note
-    });
+    const num = galleryIndex + 1;
+    galleryIndex++;
 
     const item = document.createElement('div');
-    item.className = 'gallery-item';
+    item.className = 'g-item';
+    item.dataset.src = src;
+    item.dataset.brand = brand.name;
+    item.dataset.season = img.season;
+    item.dataset.num = num;
     item.innerHTML = `
-      <div class="g-num">${index + 1}</div>
-      <div class="g-cover">
+      <div class="g-frame">
         <img src="${src}" alt="" loading="lazy" draggable="false">
       </div>
     `;
-    item.addEventListener('click', () => {
-      openLightbox(galleryImgList, index);
+
+    // 交替放进左右两列
+    if (num % 2 === 1) {
+      galleryColLeft.appendChild(item);
+    } else {
+      galleryColRight.appendChild(item);
+    }
+
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleExpand(item);
     });
-    galleryGrid.appendChild(item);
   });
+});
+
+function toggleExpand(item) {
+  if (expandedItem === item) {
+    item.classList.remove('expanded');
+    expandedItem = null;
+  } else {
+    if (expandedItem) expandedItem.classList.remove('expanded');
+    item.classList.add('expanded');
+    expandedItem = item;
+  }
+}
+
+function collapseAll() {
+  if (expandedItem) {
+    expandedItem.classList.remove('expanded');
+    expandedItem = null;
+  }
+}
+
+/* 点空白缩回 */
+document.addEventListener('click', (e) => {
+  if (!document.body.classList.contains('gallery-mode')) return;
+  if (e.target.closest('.g-item')) return;
+  collapseAll();
 });
 
 /* ===== 视图切换：品牌格 / 画廊 ===== */
 const viewToggle = document.getElementById('viewToggle');
-viewToggle.addEventListener('click', () => {
+viewToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
   document.body.classList.toggle('gallery-mode');
+  collapseAll();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
@@ -1118,6 +1225,7 @@ let currentIndex = 0;
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxMeta = document.getElementById('lightboxMeta');
+const lightboxBrandCenter = document.getElementById('lightboxBrandCenter');
 const captionBox = document.getElementById('captionBox');
 
 function openLightbox(imgList, index) {
@@ -1141,13 +1249,16 @@ function updateLightbox() {
   const img = currentImages[currentIndex];
   lightboxImg.src = img.src;
 
-  // 顶部信息行：1 / 29 · 品牌名 · 季节
-  lightboxMeta.textContent =
-    (currentIndex + 1) + ' / ' + currentImages.length +
-    '  ·  ' + img.brand +
-    '  ·  ' + img.season;
+  lightboxMeta.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
 
-  // 底部只放 note
+  if (img.showBrandInfo) {
+    lightboxBrandCenter.textContent = img.brand;
+    lightboxBrandCenter.style.display = 'block';
+  } else {
+    lightboxBrandCenter.textContent = '';
+    lightboxBrandCenter.style.display = 'none';
+  }
+
   if (img.note) {
     captionBox.innerHTML = `
       <div class="label">Directive</div>
@@ -1174,7 +1285,8 @@ document.querySelectorAll('.expand-layer').forEach(layer => {
     src: t.querySelector('img').src,
     brand: t.dataset.brand || '',
     season: t.dataset.season || '',
-    note: t.dataset.note || ''
+    note: t.dataset.note || '',
+    showBrandInfo: false
   }));
 
   thumbs.forEach((thumb, i) => {
@@ -1236,7 +1348,8 @@ toTop.addEventListener('click', () => {
 });
 
 /* ===== 搜索页打开 / 关闭 ===== */
-searchBtn.addEventListener('click', () => {
+searchBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
   searchPage.classList.add('active');
   document.body.style.overflow = 'hidden';
   searchPage.scrollTop = 0;
