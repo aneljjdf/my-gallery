@@ -281,8 +281,8 @@ body.gallery-mode .footer .links a:hover {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 56px 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px 16px;
 }
 
 .gallery-item {
@@ -290,11 +290,11 @@ body.gallery-mode .footer .links a:hover {
 }
 
 .gallery-item .g-num {
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 0.2em;
   color: #555;
   text-align: right;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 300;
 }
 
@@ -316,34 +316,7 @@ body.gallery-mode .footer .links a:hover {
 }
 
 .gallery-item:hover .g-cover img {
-  opacity: 0.75;
-}
-
-.gallery-item .g-info {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  margin-top: 14px;
-}
-
-.gallery-item:hover .g-info {
-  opacity: 1;
-}
-
-.gallery-item .g-brand {
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  color: #fff;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.gallery-item .g-season {
-  font-size: 9px;
-  color: #777;
-  letter-spacing: 0.22em;
-  font-weight: 300;
-  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 /* ===== 全屏搜索页 ===== */
@@ -613,7 +586,7 @@ body.gallery-mode .footer .links a:hover {
 .lightbox-arrow.prev { left: 36px; }
 .lightbox-arrow.next { right: 36px; }
 
-.lightbox-counter {
+.lightbox-meta {
   position: absolute;
   top: 40px;
   left: 48px;
@@ -708,15 +681,11 @@ body.gallery-mode .footer .links a:hover {
   .brand-count { font-size: 9px; }
 
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 36px 14px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 8px;
   }
 
-  .gallery-item .g-num { font-size: 9px; margin-bottom: 8px; }
-  .gallery-item .g-brand { font-size: 10px; }
-  .gallery-item .g-season { font-size: 8px; }
-
-  .gallery-item .g-info { opacity: 1; }
+  .gallery-item .g-num { font-size: 8px; margin-bottom: 5px; }
 
   .search-page { padding: 50px 20px 100px; }
   .search-page-input { font-size: 13px; }
@@ -736,6 +705,8 @@ body.gallery-mode .footer .links a:hover {
   .lightbox-arrow { font-size: 20px; }
   .lightbox-arrow.prev { left: 12px; }
   .lightbox-arrow.next { right: 12px; }
+
+  .lightbox-meta { top: 24px; left: 20px; font-size: 9px; }
 
   .lightbox-caption { bottom: 5vh; padding: 0 24px; }
   .lightbox-caption .label { font-size: 9px; margin-bottom: 8px; }
@@ -815,7 +786,7 @@ body.gallery-mode .footer .links a:hover {
 
 <!-- ===== 大图预览 ===== -->
 <div class="lightbox" id="lightbox">
-  <div class="lightbox-counter" id="counter">1 / 1</div>
+  <div class="lightbox-meta" id="lightboxMeta"></div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
   <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
   <div class="lightbox-arrow next" id="next">›</div>
@@ -1059,7 +1030,7 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊视图：生成网格（按 A→Z，品牌内部按编号） ===== */
+/* ===== 画廊视图：生成网格 ===== */
 const galleryGrid = document.getElementById('galleryGrid');
 const galleryImgList = [];
 
@@ -1080,10 +1051,6 @@ brandsData.forEach(brand => {
       <div class="g-num">${index + 1}</div>
       <div class="g-cover">
         <img src="${src}" alt="" loading="lazy" draggable="false">
-      </div>
-      <div class="g-info">
-        <div class="g-brand">${brand.name}</div>
-        <div class="g-season">${img.season}</div>
       </div>
     `;
     item.addEventListener('click', () => {
@@ -1150,8 +1117,8 @@ let currentIndex = 0;
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
+const lightboxMeta = document.getElementById('lightboxMeta');
 const captionBox = document.getElementById('captionBox');
-const counter = document.getElementById('counter');
 
 function openLightbox(imgList, index) {
   currentImages = imgList;
@@ -1174,6 +1141,13 @@ function updateLightbox() {
   const img = currentImages[currentIndex];
   lightboxImg.src = img.src;
 
+  // 顶部信息行：1 / 29 · 品牌名 · 季节
+  lightboxMeta.textContent =
+    (currentIndex + 1) + ' / ' + currentImages.length +
+    '  ·  ' + img.brand +
+    '  ·  ' + img.season;
+
+  // 底部只放 note
   if (img.note) {
     captionBox.innerHTML = `
       <div class="label">Directive</div>
@@ -1182,8 +1156,6 @@ function updateLightbox() {
   } else {
     captionBox.innerHTML = '';
   }
-
-  counter.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
 }
 
 function prevImage() {
