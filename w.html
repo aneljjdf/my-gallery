@@ -844,7 +844,7 @@ brandsData.forEach(brand => {
   document.body.appendChild(layer);
 });
 
-/* ===== 画廊：一条链，两列共用 ===== */
+/* ===== 画廊：两列各自独立 ===== */
 const trackLeft = document.getElementById('trackLeft');
 const trackRight = document.getElementById('trackRight');
 const galleryStage = document.getElementById('galleryStage');
@@ -937,16 +937,17 @@ galleryStage.addEventListener('click', (e) => {
   collapseAll();
 });
 
-/* ===== 滚动 + 循环 ===== */
-let pos = 0;
+/* ===== 两列各自独立：posLeft / posRight ===== */
+let posLeft = 0;
+let posRight = 0;
+
 let lastTouchY = 0;
-let wheelAcc = 0;
 
 // 两列速度（照 MAPP：左 1，右 0.75）
 const SPEED_LEFT = 1;
 const SPEED_RIGHT = 0.75;
 
-// 自动滚：桌面端，每帧加 pos
+// 自动滚：桌面端，每帧各加各的
 let autoRaf = null;
 let autoLast = 0;
 
@@ -964,13 +965,16 @@ function stopAuto() {
 }
 
 function tick(now) {
-  const dt = (now - autoLast) / 1000; // 秒
+  const dt = (now - autoLast) / 1000;
   autoLast = now;
 
-  // 每秒滚 60px（可调）
-  pos += 60 * dt;
+  // 左列：往下（posLeft 加）
+  // 右列：往上（posRight 加，最后用 -posRight）
+  posLeft += 60 * SPEED_LEFT * dt;
+  posRight += 60 * SPEED_RIGHT * dt;
 
-  wrapLoop();
+  wrapLoopLeft();
+  wrapLoopRight();
   applyTransform();
 
   autoRaf = requestAnimationFrame(tick);
@@ -988,20 +992,26 @@ function applyTransform() {
   const round = getRound();
   const half = round * 0.43;
 
-  // 左列：往下（跟 pos，速度 1）
-  trackLeft.style.transform = `translateY(${pos * SPEED_LEFT - round}px)`;
+  // 左列：往下
+  trackLeft.style.transform = `translateY(${posLeft - round}px)`;
 
-  // 右列：往上（跟 -pos，速度 0.75），错开 0.43 圈
-  trackRight.style.transform = `translateY(${-pos * SPEED_RIGHT - half}px)`;
+  // 右列：往上（-posRight），错开 0.43 圈
+  trackRight.style.transform = `translateY(${-posRight - half}px)`;
 }
 
-function wrapLoop() {
+function wrapLoopLeft() {
   const round = getRound();
   if (round <= 0) return;
-  pos = ((pos % round) + round) % round;
+  posLeft = ((posLeft % round) + round) % round;
 }
 
-/* ===== 手机：触摸驱动（方向与桌面一致） ===== */
+function wrapLoopRight() {
+  const round = getRound();
+  if (round <= 0) return;
+  posRight = ((posRight % round) + round) % round;
+}
+
+/* ===== 手机：触摸驱动 ===== */
 galleryStage.addEventListener('touchstart', (e) => {
   lastTouchY = e.touches[0].clientY;
 }, { passive: true });
@@ -1014,21 +1024,27 @@ galleryStage.addEventListener('touchmove', (e) => {
   const delta = lastTouchY - curY;
   lastTouchY = curY;
 
-  // 手指往上滑 → pos 加 → 左列往下、右列往上（与桌面同方向）
-  pos += delta;
+  // 手指往上滑 → 左列往下、右列往上
+  posLeft += delta;
+  posRight += delta;
 
-  wrapLoop();
+  wrapLoopLeft();
+  wrapLoopRight();
   applyTransform();
 }, { passive: false });
 
-/* ===== 桌面：滚轮（辅助，仍以自动滚为主） ===== */
+/* ===== 桌面：滚轮 ===== */
 window.addEventListener('wheel', (e) => {
   if (!document.body.classList.contains('gallery-mode')) return;
   if (isMobile()) return;
   e.preventDefault();
-  wheelAcc += e.deltaY * 0.6;
-  pos = wheelAcc;
-  wrapLoop();
+
+  const d = e.deltaY * 0.6;
+  posLeft += d;
+  posRight += d;
+
+  wrapLoopLeft();
+  wrapLoopRight();
   applyTransform();
 }, { passive: false });
 
@@ -1041,11 +1057,10 @@ viewToggle.addEventListener('click', (e) => {
 
   if (document.body.classList.contains('gallery-mode')) {
     document.body.style.overflow = 'hidden';
-    pos = 0;
-    wheelAcc = 0;
+    posLeft = 0;
+    posRight = 0;
     applyTransform();
 
-    // 桌面：开自动滚
     if (!isMobile()) startAuto();
   } else {
     document.body.style.overflow = '';
