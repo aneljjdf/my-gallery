@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive 档案</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+@font-face {
+  font-family: "My Font";
+  src: url("./fonts/myfont.ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: "Inter", "Noto Sans SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #f8f9fa;
+  color: #1a1a1a;
+  line-height: 1.7;
+  padding: 0 40px 140px;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+}
+
+img {
+  -webkit-user-drag: none;
+  pointer-events: auto;
+}
+
+input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ===== 开屏 ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: bgOut 0.6s ease 2.6s forwards;
+}
+
+.splash span {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: 0.4em;
+  color: #c8c8c8;
+  opacity: 0;
+  filter: blur(8px);
+  animation: blurIn 1s ease forwards, textOut 0.6s ease 2s forwards;
+  text-transform: lowercase;
+}
+
+@keyframes blurIn { to { opacity: 1; filter: blur(0); } }
+@keyframes textOut { to { opacity: 0; filter: blur(6px); } }
+@keyframes bgOut { to { opacity: 0; visibility: hidden; } }
+
+.splash.done { display: none; }
+
+/* ===== 顶栏 ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 40px;
+  pointer-events: none;
+}
+
+.topbar .logo {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  color: #1a1a1a;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  pointer-events: auto;
+}
+
+.topbar .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  pointer-events: auto;
+}
+
+/* ===== 四宫格图标 ===== */
+.view-toggle {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+}
+
+.view-toggle span {
+  display: block;
+  border: 1px solid #bbb;
+  transition: border-color 0.3s ease;
+}
+
+.view-toggle:hover span { border-color: #1a1a1a; }
+body.gallery-mode .view-toggle span { border-color: #1a1a1a; }
+
+/* ===== 容器 ===== */
+.container { max-width: 1400px; margin: 0 auto; }
+
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding-top: 120px;
+}
+
+.page-header h1 {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.6em;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.page-header .sub {
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  color: #aaa;
+  font-weight: 300;
+}
+
+/* ===== 品牌网格 ===== */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 72px 32px;
+}
+
+.brand-card { cursor: pointer; }
+
+.brand-cover {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #ececec;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.brand-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease, opacity 0.4s ease;
+  pointer-events: none;
+  opacity: 0.96;
+}
+
+.brand-card:hover .brand-cover img {
+  transform: scale(1.02);
+  opacity: 0.85;
+}
+
+.brand-name {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.brand-count {
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 0.22em;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+/* ===== 画廊模式 ===== */
+.gallery-view { display: none; }
+body.gallery-mode .brand-grid { display: none; }
+body.gallery-mode .page-header { display: none; }
+body.gallery-mode .gallery-view { display: block; }
+
+.gallery-stage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  display: none;
+  justify-content: center;
+  gap: 2%;
+  padding: 90px 20% 0;
+  background: #f8f9fa;
+}
+
+body.gallery-mode .gallery-stage { display: flex; }
+
+.gallery-col {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.gallery-track {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  will-change: transform;
+}
+
+.g-item {
+  position: relative;
+  cursor: pointer;
+  transition: margin 0.4s ease, opacity 0.3s ease;
+}
+
+.g-item .g-frame {
+  position: relative;
+  width: 55%;
+  overflow: hidden;
+  background: #ececec;
+  transition: width 0.4s ease, margin 0.4s ease;
+}
+
+.g-item .g-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0.95;
+}
+
+.g-item:hover .g-frame img { opacity: 0.8; }
+
+.g-item.expanded {
+  position: relative;
+  z-index: 9999;
+  margin-top: 0;
+  margin-bottom: calc(var(--push, 0) * 1px);
+}
+
+.g-item.expanded .g-frame img { opacity: 1; }
+.g-item.dimmed { opacity: 0.2; }
+
+.gallery-col.col-left .g-item { display: flex; justify-content: flex-end; }
+.gallery-col.col-right .g-item { display: flex; justify-content: flex-start; }
+
+.gallery-col.col-left .g-item.expanded { justify-content: flex-end; }
+.gallery-col.col-right .g-item.expanded { justify-content: flex-start; }
+
+.gallery-col.col-left .g-item.expanded .g-frame,
+.gallery-col.col-right .g-item.expanded .g-frame {
+  width: 120%;
+}
+
+/* ===== 全屏搜索页 ===== */
+.search-page {
+  position: fixed;
+  inset: 0;
+  background: rgba(248, 249, 250, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 500;
+  display: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 80px 40px 140px;
+}
+
+.search-page.active { display: block; }
+
+.search-page-inner { max-width: 800px; margin: 0 auto; }
+
+.search-page-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding-bottom: 14px;
+  margin-bottom: 40px;
+}
+
+.search-page-input-wrap svg {
+  width: 16px;
+  height: 16px;
+  stroke: #999;
+  flex-shrink: 0;
+}
+
+.search-page-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  color: #1a1a1a;
+  font-weight: 400;
+}
+
+.search-page-input::placeholder { color: #ccc; letter-spacing: 0.2em; font-size: 12px; text-transform: uppercase; }
+
+.search-page-clear {
+  display: none;
+  width: 14px;
+  height: 14px;
+  stroke: #999;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: stroke 0.2s;
+}
+
+.search-page-clear:hover { stroke: #1a1a1a; }
+.search-page-clear.show { display: block; }
+
+.alpha-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-bottom: 50px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #ccc;
+  font-weight: 300;
+}
+
+.alpha-bar span {
+  cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.alpha-bar span:hover { color: #1a1a1a; }
+.alpha-bar span.has-brand { color: #1a1a1a; }
+
+.search-brand-list { display: flex; flex-direction: column; }
+
+.search-brand-item {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #666;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: color 0.25s, padding-left 0.25s;
+  user-select: none;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.search-brand-item:hover { color: #1a1a1a; padding-left: 10px; }
+
+.alpha-group-title {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: #bbb;
+  margin-top: 40px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.alpha-group-title:first-child { margin-top: 0; }
+
+/* ===== 展开层 ===== */
+.expand-layer {
+  position: fixed;
+  inset: 0;
+  background: rgba(248, 249, 250, 0.98);
+  z-index: 100;
+  display: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 80px 40px 140px;
+}
+
+.expand-layer.active { display: block; }
+
+.expand-inner { max-width: 1400px; margin: 0 auto; }
+
+.expand-header { margin-bottom: 60px; text-align: center; }
+
+.expand-title {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  color: #1a1a1a;
+  text-transform: uppercase;
+}
+
+.expand-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 32px;
+  justify-content: start;
+}
+
+.expand-images .thumb {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #ececec;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.4s;
+}
+
+.expand-images .thumb:hover { opacity: 0.85; }
+
+.expand-images .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.expand-images .thumb-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 14px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  pointer-events: none;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* ===== 大图预览 ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.97);
+  display: none;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.lightbox.active { display: block; }
+
+.lightbox-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80vw;
+  max-height: 69vh;
+  object-fit: contain;
+  cursor: default;
+  display: block;
+}
+
+.lightbox-caption {
+  position: absolute;
+  bottom: 6vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  cursor: default;
+  padding: 0 40px;
+}
+
+.lightbox-caption .label {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: #777;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.lightbox-caption .note {
+  font-family: "Noto Sans SC", -apple-system, "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: #b8b8b8;
+  font-weight: 300;
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  font-weight: 200;
+}
+
+.lightbox-arrow:hover { opacity: 1; }
+.lightbox-arrow.prev { left: 36px; }
+.lightbox-arrow.next { right: 36px; }
+
+.lightbox-meta {
+  position: absolute;
+  top: 40px;
+  left: 48px;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  cursor: default;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.lightbox-brand-center {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  cursor: default;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: none;
+}
+
+/* ===== 页脚 ===== */
+.footer {
+  margin-top: 160px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #bbb;
+  line-height: 2.6;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+.footer .links { margin-top: 14px; }
+
+.footer .links a {
+  color: #bbb;
+  text-decoration: none;
+  margin: 0 12px;
+  transition: color 0.3s ease;
+  letter-spacing: 0.3em;
+}
+
+.footer .links a:hover { color: #1a1a1a; }
+
+/* ===== 手机 ===== */
+@media (max-width: 768px) {
+  body { padding: 0 20px 100px; }
+
+  .topbar { padding: 18px 20px; }
+  .topbar .logo { font-size: 11px; }
+  .topbar-right { gap: 20px; }
+  .view-toggle { width: 20px; height: 20px; gap: 3px; }
+
+  .page-header { padding-top: 90px; margin-bottom: 40px; }
+  .page-header h1 { font-size: 12px; letter-spacing: 0.5em; }
+  .page-header .sub { font-size: 10px; }
+
+  .brand-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 16px;
+  }
+
+  .brand-name { font-size: 11px; letter-spacing: 0.18em; }
+  .brand-count { font-size: 9px; }
+
+  .gallery-stage { gap: 2%; padding: 72px 4% 0; }
+  .gallery-col { width: 100%; }
+  .gallery-track { gap: 5px; }
+
+  .search-page { padding: 50px 20px 100px; }
+  .search-page-input { font-size: 13px; }
+  .alpha-bar { gap: 6px 10px; font-size: 9px; }
+  .search-brand-item { font-size: 11px; padding: 16px 0; }
+
+  .expand-layer { padding: 50px 20px 100px; }
+  .expand-title { font-size: 12px; letter-spacing: 0.3em; }
+
+  .expand-images {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    justify-content: stretch;
+  }
+
+  .lightbox-img { max-width: 92vw; max-height: 68vh; }
+  .lightbox-arrow { font-size: 20px; }
+  .lightbox-arrow.prev { left: 12px; }
+  .lightbox-arrow.next { right: 12px; }
+
+  .lightbox-meta { top: 24px; left: 20px; font-size: 9px; }
+  .lightbox-brand-center { top: 24px; font-size: 10px; }
+
+  .lightbox-caption { bottom: 5vh; padding: 0 24px; }
+  .lightbox-caption .label { font-size: 9px; margin-bottom: 8px; }
+  .lightbox-caption .note { font-size: 11px; }
+
+  .footer { margin-top: 100px; font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<div class="splash" id="splash">
+  <span>archive</span>
+</div>
+
+<header class="topbar">
+  <div class="logo">Archive</div>
+  <div class="topbar-right">
+    <div class="view-toggle" id="viewToggle">
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <header class="page-header">
+    <h1>Archive</h1>
+    <div class="sub">留下值得的</div>
+  </header>
+
+  <div class="brand-grid" id="brandGrid"></div>
+
+  <div class="footer" id="footer"></div>
+  <div class="footer links">
+    <a href="about.html">About</a>
+    <span>·</span>
+    <a href="contact.html">Contact</a>
+  </div>
+</div>
+
+<!-- ===== 画廊模式 ===== -->
+<div class="gallery-stage" id="galleryStage">
+  <div class="gallery-col col-left">
+    <div class="gallery-track" id="trackLeft"></div>
+  </div>
+  <div class="gallery-col col-right">
+    <div class="gallery-track" id="trackRight"></div>
+  </div>
+</div>
+
+<!-- ===== 全屏搜索页 ===== -->
+<div class="search-page" id="searchPage">
+  <div class="search-page-inner">
+    <div class="search-page-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+      </svg>
+      <input type="text" class="search-page-input" id="searchPageInput" placeholder="search" autocomplete="off">
+      <svg class="search-page-clear" id="searchPageClear" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </div>
+    <div class="alpha-bar" id="alphaBar"></div>
+    <div class="search-brand-list" id="searchBrandList"></div>
+  </div>
+</div>
+
+<!-- ===== 大图预览 ===== -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-meta" id="lightboxMeta"></div>
+  <div class="lightbox-brand-center" id="lightboxBrandCenter"></div>
+  <div class="lightbox-arrow prev" id="prev">‹</div>
+  <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
+  <div class="lightbox-arrow next" id="next">›</div>
+  <div class="lightbox-caption" id="captionBox"></div>
+</div>
+
+<script>
+/* ===== 开屏 ===== */
+(function () {
+  const splash = document.getElementById('splash');
+  if (sessionStorage.getItem('splashShown') === '1') {
+    splash.classList.add('done');
+  } else {
+    sessionStorage.setItem('splashShown', '1');
+  }
+})();
+
+/* ===== 变音符号降级 ===== */
+const LIGATURE_MAP = {
+  'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS',
+  'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H'
+};
+
+function toBase(str) {
+  let s = (str || '').toString();
+  s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return s.toUpperCase();
+}
+
+function getBrandLetter(b) {
+  const parts = b.name.trim().split(/\s+/);
+  const last = parts[parts.length - 1] || b.name;
+  const base = toBase(last);
+  return base[0] || '';
+}
+
+function getSearchKey(name) {
+  return toBase(name);
+}
+
+/* ===== 数据 ===== */
+const brandsData = [
+  { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'botter', name: 'BOTTER', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'burc-akyol', name: 'BURC AKYOL', images: [{ file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }] },
+  { folder: 'charles-jeffrey-loverboy', name: 'CHARLES JEFFREY LOVERBOY', images: [
+    { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+  ]},
+  { folder: 'danielle-frankel', name: 'DANIELLE FRANKEL', images: [{ file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }] },
+  { folder: 'dries-van-noten', name: 'DRIES VAN NOTEN', images: [{ file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }] },
+  { folder: 'eenk', name: 'EENK', images: [{ file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'feng-chen-wang', name: 'FENG CHEN WANG', images: [{ file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }] },
+  { folder: 'freya-dalsjo', name: 'FREYA DALSJØ', images: [
+    { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+    { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+  ]},
+  { folder: 'harris-reed', name: 'HARRIS REED', images: [{ file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }] },
+  { folder: 'loewe', name: 'LOEWE', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }] },
+  { folder: 'maison-mihara-yasuhiro', name: 'MAISON MIHARA YASUHIRO', images: [{ file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }] },
+  { folder: 'matieres-fecales', name: 'MATIÈRES FÉCALES', images: [{ file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }] },
+  { folder: 'palomo-spain', name: 'PALOMO SPAIN', images: [
+    { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+  ]},
+  { folder: 'robert-wun', name: 'ROBERT WUN', images: [
+    { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+    { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
+  ]},
+  { folder: 'saint-laurent', name: 'SAINT LAURENT', images: [{ file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }] },
+  { folder: 'versace', name: 'VERSACE', images: [
+    { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+    { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+  ]},
+  { folder: 'wooyoungmi', name: 'WOOYOUNGMI', images: [
+    { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+  ]}
+];
+
+brandsData.sort((a, b) =>
+  getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en')
+);
+
+brandsData.forEach((b, i) => {
+  b.expand = 'expand-' + i;
+});
+
+/* ===== 品牌网格 ===== */
+const brandGrid = document.getElementById('brandGrid');
+
+brandsData.forEach(brand => {
+  const card = document.createElement('div');
+  card.className = 'brand-card';
+  card.dataset.name = brand.name;
+  card.onclick = () => openExpand(brand.expand);
+
+  const cover = brand.images[0];
+  card.innerHTML = `
+    <div class="brand-cover">
+      <img src="images/${brand.folder}/${cover.file}" alt="" loading="lazy" draggable="false">
+    </div>
+    <div class="brand-name">${brand.name}</div>
+    <div class="brand-count">${brand.images.length} ${brand.images.length > 1 ? 'looks' : 'look'}</div>
+  `;
+  brandGrid.appendChild(card);
+
+  const layer = document.createElement('div');
+  layer.className = 'expand-layer';
+  layer.id = brand.expand;
+
+  const thumbsHTML = brand.images.map((img) => {
+    return `
+      <div class="thumb" data-brand="${brand.name}" data-season="${img.season}" data-note="${img.note}">
+        <img src="images/${brand.folder}/${img.file}" alt="" loading="lazy" draggable="false">
+        <div class="thumb-label">${img.season}</div>
+      </div>
+    `;
+  }).join('');
+
+  layer.innerHTML = `
+    <div class="expand-inner">
+      <div class="expand-header">
+        <div class="expand-title">${brand.name}</div>
+      </div>
+      <div class="expand-images">${thumbsHTML}</div>
+    </div>
+  `;
+  document.body.appendChild(layer);
+});
+
+/* ===== 画廊：一条链，两列共用 ===== */
+const trackLeft = document.getElementById('trackLeft');
+const trackRight = document.getElementById('trackRight');
+const galleryStage = document.getElementById('galleryStage');
+
+let expandedItem = null;
+
+const allData = [];
+
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    allData.push(`images/${brand.folder}/${img.file}`);
+  });
+});
+
+// 一条链，复制三份
+const ringData = allData.concat(allData).concat(allData);
+
+function buildColumn(track) {
+  track.innerHTML = '';
+
+  ringData.forEach(src => {
+    const item = document.createElement('div');
+    item.className = 'g-item';
+    item.innerHTML = `
+      <div class="g-frame">
+        <img src="${src}" alt="" loading="lazy" draggable="false">
+      </div>
+    `;
+
+    item.querySelector('.g-frame').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleExpand(item);
+    });
+
+    track.appendChild(item);
+  });
+}
+
+buildColumn(trackLeft);
+buildColumn(trackRight);
+
+/* ===== 放大 + 灰白 ===== */
+function clearPush() {
+  document.querySelectorAll('.g-item').forEach(el => {
+    el.style.removeProperty('--push');
+    el.style.zIndex = '';
+    el.classList.remove('dimmed');
+  });
+}
+
+function applyPush(item) {
+  const col = item.parentElement;
+  const siblings = Array.from(col.children);
+
+  item.style.zIndex = '9999';
+
+  siblings.forEach(el => {
+    if (el !== item) el.classList.add('dimmed');
+  });
+}
+
+function toggleExpand(item) {
+  if (expandedItem === item) {
+    item.classList.remove('expanded');
+    clearPush();
+    expandedItem = null;
+  } else {
+    if (expandedItem) expandedItem.classList.remove('expanded');
+    clearPush();
+
+    const itemH = item.offsetHeight;
+    item.style.setProperty('--push', itemH * 0);
+
+    item.classList.add('expanded');
+    applyPush(item);
+    expandedItem = item;
+  }
+}
+
+function collapseAll() {
+  if (expandedItem) {
+    expandedItem.classList.remove('expanded');
+    clearPush();
+    expandedItem = null;
+  }
+}
+
+galleryStage.addEventListener('click', (e) => {
+  if (e.target.closest('.g-frame')) return;
+  collapseAll();
+});
+
+/* ===== 滚动 + 循环 ===== */
+let pos = 0;
+let lastTouchY = 0;
+let wheelAcc = 0;
+
+// 两列速度（照 MAPP：左 1，右 0.75）
+const SPEED_LEFT = 1;
+const SPEED_RIGHT = 0.75;
+
+// 自动滚：桌面端，每帧加 pos
+let autoRaf = null;
+let autoLast = 0;
+
+function startAuto() {
+  if (autoRaf) return;
+  autoLast = performance.now();
+  autoRaf = requestAnimationFrame(tick);
+}
+
+function stopAuto() {
+  if (autoRaf) {
+    cancelAnimationFrame(autoRaf);
+    autoRaf = null;
+  }
+}
+
+function tick(now) {
+  const dt = (now - autoLast) / 1000; // 秒
+  autoLast = now;
+
+  // 每秒滚 60px（可调）
+  pos += 60 * dt;
+
+  wrapLoop();
+  applyTransform();
+
+  autoRaf = requestAnimationFrame(tick);
+}
+
+function isMobile() {
+  return window.matchMedia('(max-width: 768px)').matches;
+}
+
+function getRound() {
+  return trackLeft.scrollHeight / 3;
+}
+
+function applyTransform() {
+  const round = getRound();
+  const half = round * 0.43;
+
+  // 左列：往下（跟 pos，速度 1）
+  trackLeft.style.transform = `translateY(${pos * SPEED_LEFT - round}px)`;
+
+  // 右列：往上（跟 -pos，速度 0.75），错开 0.43 圈
+  trackRight.style.transform = `translateY(${-pos * SPEED_RIGHT - half}px)`;
+}
+
+function wrapLoop() {
+  const round = getRound();
+  if (round <= 0) return;
+  pos = ((pos % round) + round) % round;
+}
+
+/* ===== 手机：触摸驱动（方向与桌面一致） ===== */
+galleryStage.addEventListener('touchstart', (e) => {
+  lastTouchY = e.touches[0].clientY;
+}, { passive: true });
+
+galleryStage.addEventListener('touchmove', (e) => {
+  if (!isMobile()) return;
+  e.preventDefault();
+
+  const curY = e.touches[0].clientY;
+  const delta = lastTouchY - curY;
+  lastTouchY = curY;
+
+  // 手指往上滑 → pos 加 → 左列往下、右列往上（与桌面同方向）
+  pos += delta;
+
+  wrapLoop();
+  applyTransform();
+}, { passive: false });
+
+/* ===== 桌面：滚轮（辅助，仍以自动滚为主） ===== */
+window.addEventListener('wheel', (e) => {
+  if (!document.body.classList.contains('gallery-mode')) return;
+  if (isMobile()) return;
+  e.preventDefault();
+  wheelAcc += e.deltaY * 0.6;
+  pos = wheelAcc;
+  wrapLoop();
+  applyTransform();
+}, { passive: false });
+
+/* ===== 视图切换 ===== */
+const viewToggle = document.getElementById('viewToggle');
+viewToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.body.classList.toggle('gallery-mode');
+  collapseAll();
+
+  if (document.body.classList.contains('gallery-mode')) {
+    document.body.style.overflow = 'hidden';
+    pos = 0;
+    wheelAcc = 0;
+    applyTransform();
+
+    // 桌面：开自动滚
+    if (!isMobile()) startAuto();
+  } else {
+    document.body.style.overflow = '';
+    stopAuto();
+  }
+});
+
+/* ===== 搜索页 ===== */
+const searchPage = document.getElementById('searchPage');
+const searchPageInput = document.getElementById('searchPageInput');
+const searchPageClear = document.getElementById('searchPageClear');
+const alphaBar = document.getElementById('alphaBar');
+const searchBrandList = document.getElementById('searchBrandList');
+
+let expandFromSearch = false;
+
+function openExpand(id) {
+  const layer = document.getElementById(id);
+  layer.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  if (searchPage.classList.contains('active')) {
+    expandFromSearch = true;
+    searchPage.classList.remove('active');
+  } else {
+    expandFromSearch = false;
+  }
+}
+
+function closeExpand(id) {
+  document.getElementById(id).classList.remove('active');
+
+  if (expandFromSearch) {
+    searchPage.classList.add('active');
+    expandFromSearch = false;
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  layer.addEventListener('click', (e) => {
+    if (e.target.closest('.thumb')) return;
+    closeExpand(layer.id);
+  });
+});
+
+/* ===== 大图预览 ===== */
+let currentImages = [];
+let currentIndex = 0;
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxMeta = document.getElementById('lightboxMeta');
+const lightboxBrandCenter = document.getElementById('lightboxBrandCenter');
+const captionBox = document.getElementById('captionBox');
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  if (document.querySelector('.expand-layer.active') || searchPage.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
+function updateLightbox() {
+  const img = currentImages[currentIndex];
+  lightboxImg.src = img.src;
+  lightboxMeta.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+
+  if (img.showBrandInfo) {
+    lightboxBrandCenter.textContent = img.brand;
+    lightboxBrandCenter.style.display = 'block';
+  } else {
+    lightboxBrandCenter.textContent = '';
+    lightboxBrandCenter.style.display = 'none';
+  }
+
+  if (img.note) {
+    captionBox.innerHTML = `
+      <div class="label">Directive</div>
+      <div class="note">${img.note}</div>
+    `;
+  } else {
+    captionBox.innerHTML = '';
+  }
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  updateLightbox();
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  updateLightbox();
+}
+
+document.querySelectorAll('.expand-layer').forEach(layer => {
+  const thumbs = Array.from(layer.querySelectorAll('.thumb'));
+  const imgList = thumbs.map(t => ({
+    src: t.querySelector('img').src,
+    brand: t.dataset.brand || '',
+    season: t.dataset.season || '',
+    note: t.dataset.note || '',
+    showBrandInfo: false
+  }));
+
+  thumbs.forEach((thumb, i) => {
+    thumb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(imgList, i);
+    });
+  });
+});
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target.classList.contains('lightbox-img')) return;
+  if (e.target.closest('.lightbox-arrow')) return;
+  closeLightbox();
+});
+
+document.getElementById('prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  prevImage();
+});
+
+document.getElementById('next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  nextImage();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  } else if (document.querySelector('.expand-layer.active')) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.expand-layer.active').forEach(l => l.classList.remove('active'));
+      document.body.style.overflow = '';
+    }
+  } else if (searchPage.classList.contains('active')) {
+    if (e.key === 'Escape') closeSearchPage();
+  }
+});
+
+/* ===== 底部数字 ===== */
+const totalBrands = brandsData.length;
+const totalImages = brandsData.reduce((sum, b) => sum + b.images.length, 0);
+document.getElementById('footer').textContent =
+  totalBrands + ' brands · ' + totalImages + ' images';
+
+/* ===== 搜索页关闭 ===== */
+function closeSearchPage() {
+  searchPage.classList.remove('active');
+  document.body.style.overflow = '';
+  searchPageInput.value = '';
+  searchPageClear.classList.remove('show');
+  renderBrandList('');
+}
+
+/* ===== A–Z ===== */
+const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const existingLetters = new Set(brandsData.map(b => getBrandLetter(b)));
+
+ALPHA.forEach(letter => {
+  const span = document.createElement('span');
+  span.textContent = letter;
+  span.dataset.letter = letter;
+  if (existingLetters.has(letter)) span.classList.add('has-brand');
+  span.addEventListener('click', () => {
+    const target = searchBrandList.querySelector('.alpha-group-title[data-letter="' + letter + '"]');
+    if (target) {
+      const top = target.offsetTop - 20;
+      searchPage.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  });
+  alphaBar.appendChild(span);
+});
+
+function renderBrandList(keyword) {
+  const kw = getSearchKey(keyword || '').trim();
+  searchBrandList.innerHTML = '';
+
+  const filtered = brandsData.filter(b => {
+    if (!kw) return true;
+    return getSearchKey(b.name).startsWith(kw);
+  });
+
+  const grouped = {};
+  filtered.forEach(b => {
+    const letter = getBrandLetter(b);
+    if (!grouped[letter]) grouped[letter] = [];
+    grouped[letter].push(b);
+  });
+
+  const letters = Object.keys(grouped).sort();
+
+  if (letters.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'search-brand-item';
+    empty.style.cursor = 'default';
+    empty.style.color = '#ccc';
+    empty.textContent = 'no results';
+    searchBrandList.appendChild(empty);
+    return;
+  }
+
+  letters.forEach(letter => {
+    const title = document.createElement('div');
+    title.className = 'alpha-group-title';
+    title.dataset.letter = letter;
+    title.textContent = letter;
+    searchBrandList.appendChild(title);
+
+    grouped[letter].sort((a, b) =>
+      getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en')
+    );
+
+    grouped[letter].forEach(b => {
+      const item = document.createElement('div');
+      item.className = 'search-brand-item';
+      item.textContent = b.name;
+      item.addEventListener('click', () => {
+        openExpand(b.expand);
+      });
+      searchBrandList.appendChild(item);
+    });
+  });
+}
+
+renderBrandList('');
+
+searchPageInput.addEventListener('input', () => {
+  const v = searchPageInput.value;
+  renderBrandList(v);
+  searchPageClear.classList.toggle('show', v.length > 0);
+  searchPage.scrollTop = 0;
+});
+
+searchPageClear.addEventListener('click', () => {
+  searchPageInput.value = '';
+  searchPageClear.classList.remove('show');
+  renderBrandList('');
+  searchPage.scrollTop = 0;
+});
+
+searchPageInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    searchPageInput.value = '';
+    searchPageClear.classList.remove('show');
+    renderBrandList('');
+    searchPageInput.blur();
+  }
+});
+
+searchPage.addEventListener('click', (e) => {
+  if (e.target.closest('.search-brand-item')) return;
+  if (e.target.closest('.search-page-input-wrap')) return;
+  if (e.target.closest('.alpha-bar')) return;
+  if (e.target.closest('.alpha-group-title')) return;
+  closeSearchPage();
+});
+</script>
+
+</body>
+</html>
