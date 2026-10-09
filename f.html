@@ -63,19 +63,42 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 56px;
+  gap: 20px;
 }
 
+/* 可编辑标题 */
 .topbar .title {
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: #1a1a1a;
+  outline: none;
+  cursor: text;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+  min-width: 40px;
+  word-break: break-all;
+}
+
+.topbar .title:hover {
+  border-bottom-color: #d8d6d2;
+}
+
+.topbar .title:focus {
+  border-bottom-color: #b8b6b2;
+}
+
+.topbar .title:empty::before {
+  content: "未命名";
+  color: #c8c8c5;
 }
 
 .topbar .btns {
   display: flex;
   gap: 20px;
+  flex-shrink: 0;
 }
 
 .topbar button {
@@ -89,13 +112,14 @@ body {
   cursor: pointer;
   padding: 4px 0;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .topbar button:hover {
   color: #1a1a1a;
 }
 
-/* ===== 遮罩滑动条（极简 · 竖线滑块） ===== */
+/* ===== 遮罩滑动条 ===== */
 .mask-control {
   display: flex;
   align-items: center;
@@ -120,7 +144,6 @@ body {
   background: #c0beba;
 }
 
-/* 滑块：竖直小细线 - Chrome / Safari */
 .mask-control input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -137,7 +160,6 @@ body {
   height: 20px;
 }
 
-/* 滑块：竖直小细线 - Firefox */
 .mask-control input[type="range"]::-moz-range-thumb {
   width: 2px;
   height: 14px;
@@ -210,10 +232,18 @@ body {
   }
   .topbar {
     margin-bottom: 40px;
+    gap: 12px;
   }
   .topbar .title {
     font-size: 11px;
     letter-spacing: 0.3em;
+  }
+  .topbar .btns {
+    gap: 14px;
+  }
+  .topbar button {
+    font-size: 9px;
+    letter-spacing: 0.2em;
   }
   .mask-control {
     margin-bottom: 36px;
@@ -232,7 +262,7 @@ body {
 <div class="page">
 
   <div class="topbar">
-    <div class="title">随笔</div>
+    <div class="title" id="title" contenteditable="true" spellcheck="false">随笔</div>
     <div class="btns">
       <button id="btnUpload">换背景</button>
       <button id="btnClearBg">清除背景</button>
@@ -261,11 +291,13 @@ const savedTip = document.getElementById('saved');
 const fileInput = document.getElementById('fileInput');
 const maskRange = document.getElementById('maskRange');
 const maskValue = document.getElementById('maskValue');
+const titleEl = document.getElementById('title');
 
 /* ===== 键名 ===== */
 const KEY_TEXT = 'suibi_text';
 const KEY_BG = 'suibi_bg';
 const KEY_MASK = 'suibi_mask';
+const KEY_TITLE = 'suibi_title';
 
 /* ===== 应用遮罩 ===== */
 function applyMask(percent) {
@@ -286,6 +318,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const initMask = m !== null ? parseInt(m, 10) : 82;
   maskRange.value = initMask;
   applyMask(initMask);
+
+  const ti = localStorage.getItem(KEY_TITLE);
+  if (ti) titleEl.textContent = ti;
 });
 
 /* ===== 滑动条实时调遮罩 ===== */
@@ -293,6 +328,29 @@ maskRange.addEventListener('input', () => {
   const v = parseInt(maskRange.value, 10);
   applyMask(v);
   localStorage.setItem(KEY_MASK, v);
+});
+
+/* ===== 标题编辑 + 保存 ===== */
+let titleTimer = null;
+titleEl.addEventListener('input', () => {
+  clearTimeout(titleTimer);
+  titleTimer = setTimeout(() => {
+    localStorage.setItem(KEY_TITLE, titleEl.textContent.trim());
+    showSaved();
+  }, 600);
+});
+
+/* 标题回车不换行，改成失焦 */
+titleEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    titleEl.blur();
+  }
+});
+
+/* 标题失焦立刻存一次 */
+titleEl.addEventListener('blur', () => {
+  localStorage.setItem(KEY_TITLE, titleEl.textContent.trim());
 });
 
 /* ===== 自动保存文字 ===== */
