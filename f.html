@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>随笔</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+@font-face {
+  font-family: "My Font";
+  src: url("./fonts/myfont.ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: "Noto Sans SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #2a2a2a;
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ===== 背景图 ===== */
+#bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-color: #e8e6e2;
+}
+
+/* ===== 遮罩 ===== */
+#bgMask {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(248, 247, 245, 0.82);
+  pointer-events: none;
+}
+
+/* ===== 内容容器 ===== */
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 60px 28px 160px;
+}
+
+/* ===== 顶栏 ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 56px;
+}
+
+.topbar .title {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.topbar .btns {
+  display: flex;
+  gap: 20px;
+}
+
+.topbar button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #b0b0ad;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.3s ease;
+}
+
+.topbar button:hover {
+  color: #1a1a1a;
+}
+
+/* ===== 遮罩滑动条（极简 · 竖线滑块） ===== */
+.mask-control {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+  padding: 8px 0;
+}
+
+.mask-control input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 1px;
+  background: #dcdad6;
+  outline: none;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: background 0.3s ease;
+}
+
+.mask-control input[type="range"]:hover {
+  background: #c0beba;
+}
+
+/* 滑块：竖直小细线 - Chrome / Safari */
+.mask-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 2px;
+  height: 14px;
+  border-radius: 1px;
+  background: #1a1a1a;
+  cursor: pointer;
+  border: none;
+  transition: height 0.25s cubic-bezier(.38,.005,.215,1);
+}
+
+.mask-control input[type="range"]:hover::-webkit-slider-thumb {
+  height: 20px;
+}
+
+/* 滑块：竖直小细线 - Firefox */
+.mask-control input[type="range"]::-moz-range-thumb {
+  width: 2px;
+  height: 14px;
+  border-radius: 1px;
+  background: #1a1a1a;
+  cursor: pointer;
+  border: none;
+}
+
+.mask-control .value {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: #c0c0bd;
+  min-width: 24px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 300;
+}
+
+/* ===== 编辑区 ===== */
+#editor {
+  width: 100%;
+  min-height: 70vh;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  color: #2a2a2a;
+  resize: none;
+  padding: 0;
+}
+
+#editor::placeholder {
+  color: #b8b8b5;
+  letter-spacing: 0.06em;
+}
+
+/* ===== 保存提示 ===== */
+#saved {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #9a9a97;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+#saved.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== 手机 ===== */
+@media (max-width: 600px) {
+  .page {
+    padding: 40px 20px 140px;
+  }
+  #editor {
+    font-size: 14px;
+    min-height: 60vh;
+  }
+  .topbar {
+    margin-bottom: 40px;
+  }
+  .topbar .title {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+  }
+  .mask-control {
+    margin-bottom: 36px;
+  }
+  .mask-control input[type="range"]::-webkit-slider-thumb {
+    height: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+<div id="bgMask"></div>
+
+<div class="page">
+
+  <div class="topbar">
+    <div class="title">随笔</div>
+    <div class="btns">
+      <button id="btnUpload">换背景</button>
+      <button id="btnClearBg">清除背景</button>
+    </div>
+  </div>
+
+  <div class="mask-control">
+    <input type="range" id="maskRange" min="0" max="100" value="82">
+    <span class="value" id="maskValue">82</span>
+  </div>
+
+  <textarea id="editor" placeholder="在这里写点什么……"></textarea>
+
+</div>
+
+<div id="saved">已保存</div>
+
+<input type="file" id="fileInput" accept="image/*" hidden>
+
+<script>
+/* ===== 元素 ===== */
+const bg = document.getElementById('bg');
+const bgMask = document.getElementById('bgMask');
+const editor = document.getElementById('editor');
+const savedTip = document.getElementById('saved');
+const fileInput = document.getElementById('fileInput');
+const maskRange = document.getElementById('maskRange');
+const maskValue = document.getElementById('maskValue');
+
+/* ===== 键名 ===== */
+const KEY_TEXT = 'suibi_text';
+const KEY_BG = 'suibi_bg';
+const KEY_MASK = 'suibi_mask';
+
+/* ===== 应用遮罩 ===== */
+function applyMask(percent) {
+  const alpha = percent / 100;
+  bgMask.style.background = `rgba(248, 247, 245, ${alpha})`;
+  maskValue.textContent = percent;
+}
+
+/* ===== 读回上次内容 ===== */
+window.addEventListener('DOMContentLoaded', () => {
+  const t = localStorage.getItem(KEY_TEXT);
+  if (t) editor.value = t;
+
+  const b = localStorage.getItem(KEY_BG);
+  if (b) bg.style.backgroundImage = `url(${b})`;
+
+  const m = localStorage.getItem(KEY_MASK);
+  const initMask = m !== null ? parseInt(m, 10) : 82;
+  maskRange.value = initMask;
+  applyMask(initMask);
+});
+
+/* ===== 滑动条实时调遮罩 ===== */
+maskRange.addEventListener('input', () => {
+  const v = parseInt(maskRange.value, 10);
+  applyMask(v);
+  localStorage.setItem(KEY_MASK, v);
+});
+
+/* ===== 自动保存文字 ===== */
+let textTimer = null;
+editor.addEventListener('input', () => {
+  clearTimeout(textTimer);
+  textTimer = setTimeout(() => {
+    localStorage.setItem(KEY_TEXT, editor.value);
+    showSaved();
+  }, 600);
+});
+
+/* ===== 保存提示 ===== */
+let savedTimer = null;
+function showSaved() {
+  savedTip.classList.add('show');
+  clearTimeout(savedTimer);
+  savedTimer = setTimeout(() => {
+    savedTip.classList.remove('show');
+  }, 1200);
+}
+
+/* ===== 换背景 ===== */
+document.getElementById('btnUpload').addEventListener('click', () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    bg.style.backgroundImage = `url(${dataUrl})`;
+    try {
+      localStorage.setItem(KEY_BG, dataUrl);
+    } catch (err) {
+      alert('图片太大，浏览器存不下。换一张小一点的图试试。');
+    }
+  };
+  reader.readAsDataURL(file);
+
+  fileInput.value = '';
+});
+
+/* ===== 清除背景 ===== */
+document.getElementById('btnClearBg').addEventListener('click', () => {
+  bg.style.backgroundImage = '';
+  localStorage.removeItem(KEY_BG);
+});
+</script>
+
+</body>
+</html>
