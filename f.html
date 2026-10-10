@@ -179,9 +179,11 @@ body {
   font-weight: 300;
 }
 
-/* ===== 编辑区 ===== */
+/* ===== 编辑区（关键改动：随内容自动增高） ===== */
 #editor {
   width: 100%;
+  display: block;
+  height: auto;
   min-height: 70vh;
   border: none;
   outline: none;
@@ -194,6 +196,8 @@ body {
   color: #2a2a2a;
   resize: none;
   padding: 0;
+  overflow: hidden;          /* 不出现内部滚动条 */
+  field-sizing: content;     /* 现代浏览器：随内容自动增高 */
 }
 
 #editor::placeholder {
@@ -299,6 +303,12 @@ const KEY_BG = 'suibi_bg';
 const KEY_MASK = 'suibi_mask';
 const KEY_TITLE = 'suibi_title';
 
+/* ===== 编辑区自动增高（兜底，兼容所有浏览器） ===== */
+function autoGrow() {
+  editor.style.height = 'auto';
+  editor.style.height = editor.scrollHeight + 'px';
+}
+
 /* ===== 应用遮罩 ===== */
 function applyMask(percent) {
   const alpha = percent / 100;
@@ -321,6 +331,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const ti = localStorage.getItem(KEY_TITLE);
   if (ti) titleEl.textContent = ti;
+
+  /* 内容读回后，先撑一次高度 */
+  autoGrow();
 });
 
 /* ===== 滑动条实时调遮罩 ===== */
@@ -353,9 +366,11 @@ titleEl.addEventListener('blur', () => {
   localStorage.setItem(KEY_TITLE, titleEl.textContent.trim());
 });
 
-/* ===== 自动保存文字 ===== */
+/* ===== 自动保存文字 + 自动增高 ===== */
 let textTimer = null;
 editor.addEventListener('input', () => {
+  autoGrow();                    /* 每次输入都撑一次高度 */
+
   clearTimeout(textTimer);
   textTimer = setTimeout(() => {
     localStorage.setItem(KEY_TEXT, editor.value);
