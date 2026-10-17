@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>为这个领域，划一条金线。</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f7f7f7;
+    color: #111;
+    font-family: "Inter", "Noto Sans SC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* 左侧绝对固定的坐标系 */
+  .coordinate-axis {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    border-right: 1px solid #ddd;
+    background: #f7f7f7;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .axis-title {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+  }
+  
+  .axis-data {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #666;
+    line-height: 2.5;
+  }
+  .axis-data span { display: block; margin-bottom: 12px; }
+
+  /* 右侧的内容区 */
+  .content-area {
+    margin-left: 300px;
+    padding: 100px 8vw;
+  }
+
+  .grid-title {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 60px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+  }
+
+  /* 整齐划一的网格 */
+  .grid-wall {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .item {
+    background: #fff;
+    padding: 20px; /* 内边距让图看起来像标尺里的刻度 */
+    border: 1px solid #eaeaea;
+    transition: border-color 0.3s;
+  }
+  .item:hover { border-color: #111; }
+
+  .item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%); /* 强制黑白，极致冷峻 */
+    transition: filter 0.5s;
+  }
+  .item:hover img { filter: grayscale(0%); }
+
+  .item-meta {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .item-name { text-transform: uppercase; font-weight: 400; }
+  .item-season { color: #999; font-size: 10px; }
+
+  @media (max-width: 800px) {
+    .coordinate-axis { position: relative; width: 100%; border-right: none; border-bottom: 1px solid #ddd; padding: 40px 20px; }
+    .content-area { margin-left: 0; padding: 40px 20px; }
+    .grid-wall { grid-template-columns: 1fr; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 固定的坐标系 -->
+  <div class="coordinate-axis">
+    <div class="axis-title">为这个领域，<br>划一条金线。</div>
+    <div class="axis-data">
+      <span>阅过 60万+</span>
+      <span>金线之上 500</span>
+      <span>成立率 0.07%</span>
+    </div>
+  </div>
+
+  <!-- 滚动的内容区 -->
+  <div class="content-area">
+    <div class="grid-title">CONFIRMED ARCHIVE / 显影档案</div>
+    
+    <div class="grid-wall">
+      <!-- 第一个 -->
+      <div class="item">
+        <img src="images/avavav/01.webp" alt="">
+        <div class="item-meta">
+          <span class="item-name">AVAVAV</span>
+          <span class="item-season">FALL 2024</span>
+        </div>
+      </div>
+      <!-- 第二个 -->
+      <div class="item">
+        <img src="images/bed-j-w-ford/01.webp" alt="">
+        <div class="item-meta">
+          <span class="item-name">BED J.W. FORD</span>
+          <span class="item-season">FALL 2024</span>
+        </div>
+      </div>
+      <!-- 第三个 -->
+      <div class="item">
+        <img src="images/botter/01.webp" alt="">
+        <div class="item-meta">
+          <span class="item-name">BOTTER</span>
+          <span class="item-season">FALL 2024</span>
+        </div>
+      </div>
+      <!-- 第四个 -->
+      <div class="item">
+        <img src="images/burc-akyol/01.webp" alt="">
+        <div class="item-meta">
+          <span class="item-name">BURC AKYOL</span>
+          <span class="item-season">SPRING 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

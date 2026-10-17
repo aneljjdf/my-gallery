@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>完整档案 / Full Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #ffffff;
+    color: #111;
+    font-family: "EB Garamond", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .header {
+    padding: 60px 10vw;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .header .logo {
+    font-size: 16px;
+    letter-spacing: 0.1em;
+  }
+  .header .back {
+    font-size: 11px;
+    color: #888;
+    text-decoration: none;
+    letter-spacing: 0.2em;
+  }
+  .header .back:hover { color: #000; }
+
+  .archive-grid {
+    padding: 10vh 10vw;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px 40px;
+  }
+  
+  .item img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .item-info {
+    margin-top: 16px;
+  }
+  .item-name {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .item-season {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .archive-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 20px; }
+  }
+  @media (max-width: 600px) {
+    .archive-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">显影档案 / 0.07%</div>
+    <a href="index.html" class="back">← 返回</a>
+  </div>
+
+  <div class="archive-grid">
+    <!-- 这里可以用 JS 循环生成，现在先手写几个示意 -->
+    <div class="item">
+      <img src="images/avavav/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">AVAVAV</div>
+        <div class="item-season">FALL 2024</div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/bed-j-w-ford/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">BED J.W. FORD</div>
+        <div class="item-season">FALL 2024</div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/botter/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">BOTTER</div>
+        <div class="item-season">FALL 2024</div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/burc-akyol/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">BURC AKYOL</div>
+        <div class="item-season">SPRING 2026</div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/charles-jeffrey-loverboy/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">CHARLES JEFFREY LOVERBOY</div>
+        <div class="item-season">SPRING 2025</div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="images/danielle-frankel/01.webp" alt="">
+      <div class="item-info">
+        <div class="item-name">DANIELLE FRANKEL</div>
+        <div class="item-season">FALL 2025</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
