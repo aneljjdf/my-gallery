@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>完整档案 / Full Archive</title>
+<title>完整档案 / Archive</title>
 
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -11,94 +11,103 @@
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
   body {
-    background: #fafaf8; /* 底色 */
+    background: #ffffff; /* 极致纯白 */
     color: #111;
     font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ===== 悬浮导航 ===== */
+  /* ===== 极窄、炭黑、绝对居中的顶栏 ===== */
   .header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    padding: 30px 40px;
+    height: 36px; 
+    background: #111111; /* 炭黑 */
     display: flex;
-    justify-content: space-between;
     align-items: center;
     z-index: 100;
-    pointer-events: none;
-    mix-blend-mode: difference; 
-    transition: color 0.3s ease; 
   }
 
-  .header .logo, .header .back {
-    pointer-events: auto;
-    font-family: "EB Garamond", serif;
-    font-size: 11px;
-    color: #fff; 
-    letter-spacing: 0.3em;
+  /* 正中心：绝对居中 */
+  .header .center-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Helvetica", "Inter", sans-serif; 
+    font-size: 11px; 
+    font-weight: 500; 
+    letter-spacing: 0.25em; /* 拉开字距 */
+    color: #eeeeee; 
     text-transform: uppercase;
+  }
+
+  /* 左侧：透明的退出入口，鼠标悬浮才显形 */
+  .header .hidden-back {
+    position: absolute;
+    left: 20px;
+    font-family: "Helvetica", "Inter", sans-serif;
+    font-size: 9px; 
+    color: transparent; /* 默认完全透明，看不见 */
     text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     transition: color 0.3s;
   }
-  .header .back:hover, .header .logo:hover { color: #aaa; }
+  
+  .header .hidden-back:hover {
+    color: #666; /* 只有鼠标移到左侧边缘时，才会浮现一点点灰 */
+  }
 
-  /* ===== 核心改造：图墙 ===== */
+  /* ===== 瀑布流画廊（去除沉重感） ===== */
   .archive-wall {
-    display: grid;
-    /* 电脑端排 4 列（因为加了间距，5 列可能会太挤） */
-    grid-template-columns: repeat(4, 1fr); 
-    /* 拉大间距，让色彩有呼吸的空间 */
-    gap: 24px; 
-    background: #fafaf8; 
-    padding: 100px 40px 40px; /* 顶部留出导航栏的空间 */
+    column-count: 4; /* 4列瀑布流 */
+    column-gap: 32px; /* 巨大的横向留白 */
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 90px 40px 60px; /* 顶部留出 54px 纯白 + 36px 顶栏 */
   }
 
   .item {
-    background: #ffffff; /* 给每个标本一个白底相框 */
-    position: relative;
+    break-inside: avoid; /* 防止卡片被截断 */
+    page-break-inside: avoid;
+    margin-bottom: 48px; /* 巨大的纵向留白 */
     cursor: crosshair; 
-    overflow: hidden;
-    -webkit-touch-callout: none; 
-    -webkit-user-select: none; 
-    user-select: none;
-    /* 可选的：加一圈极淡的线框，像档案盒的边缘 */
-    border: 1px solid #eaeaea; 
-    /* 加入内边距，让图片不要填满相框，四周留白 */
-    padding: 12px; 
   }
 
   .item img {
     width: 100%;
-    height: 100%;
-    /* 统一相框内的图片比例，形成严密的网格 */
-    aspect-ratio: 3 / 4; 
-    object-fit: cover; 
+    height: auto; /* 保留图片原始比例，不再强制裁切 */
     display: block;
-    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-    -webkit-user-drag: none; 
-    pointer-events: auto;
+    transition: opacity 0.4s ease;
+    -webkit-user-drag: none;
   }
 
-  /* 电脑端 Hover */
+  .item:hover img { opacity: 0.85; }
+
+  /* 文字：极小的画廊展签 */
   .item-info {
-    /* 标签也向内收缩，贴在内边距上 */
-    position: absolute;
-    bottom: 12px; left: 12px; right: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 10px 12px;
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-    pointer-events: none;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
   }
 
-  .item:hover img { transform: scale(1.03); }
-  .item:hover .item-info { opacity: 1; transform: translateY(0); }
-
-  .item-name { font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #111;}
-  .item-season { font-size: 9px; color: #888; margin-top: 2px; text-transform: uppercase; }
+  .item-name { 
+    font-size: 10px; 
+    font-weight: 500; 
+    letter-spacing: 0.1em; 
+    text-transform: uppercase; 
+    color: #111;
+  }
+  
+  .item-season { 
+    font-size: 9px; 
+    color: #888; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em;
+  }
 
   /* ===== 大图预览 ===== */
   .lightbox {
@@ -140,44 +149,28 @@
     font-size: 10px; letter-spacing: 0.4em; cursor: default; text-transform: uppercase;
   }
 
-  /* ===== 平板端 ===== */
-  @media (max-width: 1024px) { 
-    .archive-wall { grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 80px 20px 20px; } 
+  /* ===== 响应式适配 ===== */
+  @media (max-width: 1200px) {
+    .archive-wall { column-count: 3; padding: 80px 24px 40px; column-gap: 24px; }
+    .item { margin-bottom: 32px; }
   }
   
-  /* ===== 手机端：去掉白框，恢复两列紧凑，但保留微小的间距 ===== */
   @media (max-width: 600px) {
-    /* 手机屏幕小，如果再加白框会显得太小，所以手机端去掉白框和 border */
-    .archive-wall { grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 60px 4px 4px; }
-    
-    .header { 
-      mix-blend-mode: normal; 
-      padding: 16px 20px; 
-      background: transparent; 
-      color: #111; 
-    }
-    .header .logo, .header .back { color: inherit; font-size: 11px; font-weight: 500; }
+    .header { height: 36px; }
+    .header .center-text { font-size: 10px; letter-spacing: 0.2em; }
+    .header .hidden-back { left: 16px; }
 
-    .item {
-      padding: 0;
-      border: none;
-      background: #fafaf8;
+    .archive-wall { 
+      column-count: 2; 
+      column-gap: 16px; 
+      padding: 60px 12px 30px; 
     }
-
-    .item img { aspect-ratio: auto; height: auto; } 
     
-    .item-info { display: none; }
+    .item { margin-bottom: 24px; }
+    .item-info { flex-direction: column; margin-top: 8px; }
+    .item-name { font-size: 9px; }
+    .item-season { font-size: 8px; margin-top: 2px; }
     
-    /* 手机端点击弹出的标签，重新贴底 */
-    .item.is-active .item-info {
-      display: block;
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 8px 10px;
-      opacity: 1; transform: translateY(0);
-    }
-
     .lightbox-img { max-width: 95vw; max-height: 75vh; }
     .lightbox-arrow.prev { left: 10px; }
     .lightbox-arrow.next { right: 10px; }
@@ -186,13 +179,16 @@
 </head>
 <body>
 
+  <!-- 极窄居中顶栏 -->
   <div class="header" id="mainHeader">
-    <div class="logo">确认档案 / Archive</div>
-    <a href="index.html" class="back">← 返回</a>
+    <a href="index.html" class="hidden-back">Exit</a>
+    <div class="center-text">0.07%</div>
   </div>
 
+  <!-- 图墙 -->
   <div class="archive-wall" id="archiveWall"></div>
 
+  <!-- 大图预览 -->
   <div class="lightbox" id="lightbox">
     <div class="lightbox-meta" id="lightboxMeta"></div>
     <div class="lightbox-arrow prev" id="prev">‹</div>
@@ -202,7 +198,7 @@
   </div>
 
 <script>
-/* ===== 数据部分保持不变 ===== */
+/* ===== 变音符号降级 ===== */
 const LIGATURE_MAP = { 'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS', 'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H' };
 function toBase(str) {
   let s = (str || '').toString();
@@ -212,6 +208,7 @@ function toBase(str) {
 }
 function getSearchKey(name) { return toBase(name); }
 
+/* ===== 数据填入 ===== */
 const brandsData = [
   { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
   { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
@@ -269,6 +266,7 @@ brandsData.forEach(brand => {
   });
 });
 
+/* ===== 生成图墙 ===== */
 const archiveWall = document.getElementById('archiveWall');
 allItems.forEach((item, index) => {
   const el = document.createElement('div');
@@ -281,79 +279,14 @@ allItems.forEach((item, index) => {
     </div>
   `;
   
-  el.addEventListener('click', (e) => {
-    if (window.innerWidth <= 600) {
-      const currentActive = document.querySelector('.item.is-active');
-      if (currentActive && currentActive !== el) currentActive.classList.remove('is-active');
-      el.classList.toggle('is-active');
-      if (el.classList.contains('is-active')) e.stopPropagation();
-      else openLightbox(allItems, index);
-    } else {
-      openLightbox(allItems, index);
-    }
+  el.addEventListener('click', () => {
+    openLightbox(allItems, index);
   });
+  
   archiveWall.appendChild(el);
 });
 
-document.addEventListener('click', (e) => {
-  if (window.innerWidth <= 600 && !e.target.closest('.item')) {
-    document.querySelectorAll('.item.is-active').forEach(item => item.classList.remove('is-active'));
-  }
-});
-
-/* ===== 动态亮度反色 ===== */
-const mainHeader = document.getElementById('mainHeader');
-function updateHeaderColor() {
-  if (window.innerWidth > 600) {
-    mainHeader.style.color = '';
-    mainHeader.style.textShadow = '';
-    return;
-  }
-  const items = document.querySelectorAll('.item');
-  let activeItem = null;
-  const headerHeight = 60;
-  for (let i = 0; i < items.length; i++) {
-    const rect = items[i].getBoundingClientRect();
-    if (rect.top <= headerHeight && rect.bottom >= 0) {
-      activeItem = items[i];
-      break;
-    }
-  }
-  if (activeItem) {
-    const img = activeItem.querySelector('img');
-    if (img && img.complete && img.naturalWidth > 0) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = 10; canvas.height = 10;
-      try {
-        ctx.drawImage(img, 0, 0, 10, 10, 0, 0, 10, 10);
-        const data = ctx.getImageData(0, 0, 10, 10).data;
-        let colorSum = 0;
-        for (let i = 0; i < data.length; i += 4) {
-          colorSum += (data[i] + data[i+1] + data[i+2]) / 3;
-        }
-        const avgBrightness = colorSum / (data.length / 4);
-        if (avgBrightness > 120) {
-          mainHeader.style.color = '#111';
-          mainHeader.style.textShadow = '0 1px 2px rgba(255,255,255,0.3)';
-        } else {
-          mainHeader.style.color = '#fff';
-          mainHeader.style.textShadow = '0 1px 3px rgba(0,0,0,0.5)';
-        }
-      } catch (e) { mainHeader.style.color = '#111'; }
-    }
-  }
-}
-
-let isScrolling;
-window.addEventListener('scroll', () => {
-  window.clearTimeout(isScrolling);
-  isScrolling = setTimeout(updateHeaderColor, 30);
-}, { passive: true });
-window.addEventListener('resize', updateHeaderColor);
-setTimeout(updateHeaderColor, 1000);
-
-/* ===== 大图预览 ===== */
+/* ===== 大图预览逻辑 ===== */
 let currentImages = [];
 let currentIndex = 0;
 const lightbox = document.getElementById('lightbox');
@@ -378,8 +311,12 @@ function updateLightbox() {
   const img = currentImages[currentIndex];
   lightboxImg.src = img.src;
   lightboxMeta.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+
   if (img.note) {
-    captionBox.innerHTML = `<div class="label">Directive</div><div class="note">${img.note}</div>`;
+    captionBox.innerHTML = `
+      <div class="label">Directive</div>
+      <div class="note">${img.note}</div>
+    `;
   } else {
     captionBox.innerHTML = '';
   }
@@ -415,7 +352,9 @@ let touchStartX = 0;
 lightbox.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
 lightbox.addEventListener('touchend', (e) => {
   const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 50) { if (dx > 0) prevImage(); else nextImage(); }
+  if (Math.abs(dx) > 50) {
+    if (dx > 0) prevImage(); else nextImage();
+  }
 }, { passive: true });
 </script>
 
