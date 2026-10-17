@@ -4,122 +4,333 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>完整档案 / Full Archive</title>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
-    background: #ffffff;
+    background: #fafaf8;
     color: #111;
-    font-family: "EB Garamond", Georgia, serif;
+    font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+
+  /* ===== 方案一：悬浮水印导航 ===== */
   .header {
-    padding: 60px 10vw;
-    border-bottom: 1px solid #eee;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 30px 40px;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    z-index: 100;
+    pointer-events: none;
+    mix-blend-mode: difference; /* 反色魔法 */
   }
-  .header .logo {
-    font-size: 16px;
-    letter-spacing: 0.1em;
-  }
-  .header .back {
-    font-size: 11px;
-    color: #888;
-    text-decoration: none;
-    letter-spacing: 0.2em;
-  }
-  .header .back:hover { color: #000; }
 
-  .archive-grid {
-    padding: 10vh 10vw;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 60px 40px;
+  .header .logo, .header .back {
+    pointer-events: auto;
+    font-family: "EB Garamond", serif;
+    font-size: 11px;
+    color: #fff; /* 基础设白，靠 blend-mode 自动反色 */
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.3s;
   }
-  
+  .header .back:hover, .header .logo:hover { color: #aaa; }
+
+  /* ===== 无缝贴图墙 ===== */
+  .archive-wall {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 2px; 
+    background: #eaeaea; 
+    padding: 2px;
+    /* 加一点上边距，避免第一排图贴着屏幕顶端 */
+    padding-top: 2px; 
+  }
+
+  .item {
+    background: #fafaf8;
+    position: relative;
+    cursor: crosshair; 
+    overflow: hidden;
+  }
+
   .item img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    aspect-ratio: 3 / 4; 
+    object-fit: cover; 
     display: block;
-  }
-  .item-info {
-    margin-top: 16px;
-  }
-  .item-name {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .item-season {
-    font-size: 10px;
-    letter-spacing: 0.05em;
-    color: #888;
-    margin-top: 4px;
-    text-transform: uppercase;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
-  @media (max-width: 900px) {
-    .archive-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 20px; }
+  /* 悬浮信息 */
+  .item-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 12px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+    pointer-events: none;
   }
+
+  .item:hover img { transform: scale(1.03); }
+  .item:hover .item-info { opacity: 1; transform: translateY(0); }
+
+  .item-name { font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+  .item-season { font-size: 9px; color: #888; margin-top: 2px; text-transform: uppercase; }
+
+  /* ===== 大图预览 (Lightbox) ===== */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(10, 10, 10, 0.98);
+    display: none; z-index: 999;
+    cursor: pointer;
+  }
+  .lightbox.active { display: block; }
+  .lightbox-img {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 85vw; max-height: 80vh;
+    object-fit: contain; cursor: default; display: block;
+  }
+  .lightbox-caption {
+    position: absolute; bottom: 4vh; left: 0; right: 0;
+    text-align: center; cursor: default; padding: 0 40px;
+  }
+  .lightbox-caption .label {
+    font-family: "Inter", sans-serif; font-weight: 400;
+    font-size: 9px; letter-spacing: 0.5em; color: #555;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .lightbox-caption .note {
+    font-family: "Noto Sans SC", sans-serif; font-size: 12px;
+    letter-spacing: 0.2em; color: #b8b8b8; font-weight: 300;
+  }
+  .lightbox-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 24px; cursor: pointer; opacity: 0.2; transition: opacity 0.3s;
+  }
+  .lightbox-arrow:hover { opacity: 0.8; }
+  .lightbox-arrow.prev { left: 4vw; }
+  .lightbox-arrow.next { right: 4vw; }
+  .lightbox-meta {
+    position: absolute; top: 40px; left: 6vw; color: #555;
+    font-size: 10px; letter-spacing: 0.4em; cursor: default; text-transform: uppercase;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) { .archive-wall { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px) {
-    .archive-grid { grid-template-columns: 1fr; }
+    .archive-wall { grid-template-columns: repeat(2, 1fr); gap: 1px; padding: 1px; }
+    .header { padding: 20px; mix-blend-mode: normal; }
+    .header .logo, .header .back { color: #111; font-size: 10px; }
+    .item-info { position: relative; opacity: 1; transform: none; background: transparent; padding: 8px 4px; border-bottom: 1px solid #eee; }
+    .item img { aspect-ratio: auto; height: auto; } 
+    .lightbox-img { max-width: 95vw; max-height: 75vh; }
+    .lightbox-arrow.prev { left: 10px; }
+    .lightbox-arrow.next { right: 10px; }
   }
 </style>
 </head>
 <body>
 
+  <!-- 悬浮导航 -->
   <div class="header">
-    <div class="logo">显影档案 / 0.07%</div>
+    <div class="logo">确认档案 / Archive</div>
     <a href="index.html" class="back">← 返回</a>
   </div>
 
-  <div class="archive-grid">
-    <!-- 这里可以用 JS 循环生成，现在先手写几个示意 -->
-    <div class="item">
-      <img src="images/avavav/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">AVAVAV</div>
-        <div class="item-season">FALL 2024</div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="images/bed-j-w-ford/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">BED J.W. FORD</div>
-        <div class="item-season">FALL 2024</div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="images/botter/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">BOTTER</div>
-        <div class="item-season">FALL 2024</div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="images/burc-akyol/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">BURC AKYOL</div>
-        <div class="item-season">SPRING 2026</div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="images/charles-jeffrey-loverboy/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">CHARLES JEFFREY LOVERBOY</div>
-        <div class="item-season">SPRING 2025</div>
-      </div>
-    </div>
-    <div class="item">
-      <img src="images/danielle-frankel/01.webp" alt="">
-      <div class="item-info">
-        <div class="item-name">DANIELLE FRANKEL</div>
-        <div class="item-season">FALL 2025</div>
-      </div>
-    </div>
+  <!-- 由 JS 动态生成的图墙 -->
+  <div class="archive-wall" id="archiveWall">
+    <!-- 这里会自动填入 500 张图 -->
   </div>
+
+  <!-- 大图预览 -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-meta" id="lightboxMeta"></div>
+    <div class="lightbox-arrow prev" id="prev">‹</div>
+    <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
+    <div class="lightbox-arrow next" id="next">›</div>
+    <div class="lightbox-caption" id="captionBox"></div>
+  </div>
+
+<script>
+/* ===== 变音符号降级 ===== */
+const LIGATURE_MAP = { 'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS', 'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H' };
+function toBase(str) {
+  let s = (str || '').toString();
+  s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return s.toUpperCase();
+}
+function getSearchKey(name) { return toBase(name); }
+
+/* ===== 你的所有数据填入这里 ===== */
+const brandsData = [
+  { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'botter', name: 'BOTTER', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'burc-akyol', name: 'BURC AKYOL', images: [{ file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }] },
+  { folder: 'charles-jeffrey-loverboy', name: 'CHARLES JEFFREY LOVERBOY', images: [
+    { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+  ]},
+  { folder: 'danielle-frankel', name: 'DANIELLE FRANKEL', images: [{ file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }] },
+  { folder: 'dries-van-noten', name: 'DRIES VAN NOTEN', images: [{ file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }] },
+  { folder: 'eenk', name: 'EENK', images: [{ file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'feng-chen-wang', name: 'FENG CHEN WANG', images: [{ file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }] },
+  { folder: 'freya-dalsjo', name: 'FREYA DALSJØ', images: [
+    { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+    { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+  ]},
+  { folder: 'harris-reed', name: 'HARRIS REED', images: [{ file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }] },
+  { folder: 'loewe', name: 'LOEWE', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }] },
+  { folder: 'maison-mihara-yasuhiro', name: 'MAISON MIHARA YASUHIRO', images: [{ file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }] },
+  { folder: 'matieres-fecales', name: 'MATIÈRES FÉCALES', images: [{ file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }] },
+  { folder: 'palomo-spain', name: 'PALOMO SPAIN', images: [
+    { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+  ]},
+  { folder: 'robert-wun', name: 'ROBERT WUN', images: [
+    { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+    { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
+  ]},
+  { folder: 'saint-laurent', name: 'SAINT LAURENT', images: [{ file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }] },
+  { folder: 'versace', name: 'VERSACE', images: [
+    { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+    { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+  ]},
+  { folder: 'wooyoungmi', name: 'WOOYOUNGMI', images: [
+    { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+  ]}
+];
+
+// 排序
+brandsData.sort((a, b) => getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en'));
+
+// 拍平所有图片
+const allItems = [];
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    allItems.push({
+      src: `images/${brand.folder}/${img.file}`,
+      brand: brand.name,
+      season: img.season,
+      note: img.note
+    });
+  });
+});
+
+/* ===== 生成图墙 ===== */
+const archiveWall = document.getElementById('archiveWall');
+
+allItems.forEach((item, index) => {
+  const el = document.createElement('div');
+  el.className = 'item';
+  
+  el.innerHTML = `
+    <img src="${item.src}" alt="" draggable="false" loading="lazy">
+    <div class="item-info">
+      <div class="item-name">${item.brand}</div>
+      <div class="item-season">${item.season}</div>
+    </div>
+  `;
+  
+  // 点击打开大图
+  el.addEventListener('click', () => {
+    openLightbox(allItems, index);
+  });
+  
+  archiveWall.appendChild(el);
+});
+
+/* ===== 大图预览逻辑 ===== */
+let currentImages = [];
+let currentIndex = 0;
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxMeta = document.getElementById('lightboxMeta');
+const captionBox = document.getElementById('captionBox');
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img = currentImages[currentIndex];
+  lightboxImg.src = img.src;
+  lightboxMeta.textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+
+  if (img.note) {
+    captionBox.innerHTML = `
+      <div class="label">Directive</div>
+      <div class="note">${img.note}</div>
+    `;
+  } else {
+    captionBox.innerHTML = '';
+  }
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  updateLightbox();
+}
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  updateLightbox();
+}
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target.classList.contains('lightbox-img')) return;
+  if (e.target.closest('.lightbox-arrow')) return;
+  closeLightbox();
+});
+
+document.getElementById('prev').addEventListener('click', (e) => { e.stopPropagation(); prevImage(); });
+document.getElementById('next').addEventListener('click', (e) => { e.stopPropagation(); nextImage(); });
+
+document.addEventListener('keydown', (e) => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
+
+// 触屏滑动
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+lightbox.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx > 0) prevImage(); else nextImage();
+  }
+}, { passive: true });
+</script>
 
 </body>
 </html>
