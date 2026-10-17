@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>0.07%</title>
+
+<!-- 极简标签页图标 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111111'/%3E%3Cline x1='20' y1='50' x2='80' y2='50' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E">
+
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background: #ffffff; 
+    color: #111;
+    font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== 顶栏 ===== */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; height: 36px; 
+    background: #111111; display: flex; align-items: center; z-index: 100;
+  }
+  .header .center-text {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-family: "Helvetica", "Inter", sans-serif; font-size: 11px; font-weight: 500; 
+    letter-spacing: 0.25em; color: #eeeeee; text-transform: uppercase;
+  }
+  .header .hidden-back {
+    position: absolute; left: 20px; font-family: "Helvetica", "Inter", sans-serif;
+    font-size: 9px; color: transparent; text-decoration: none;
+    letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.3s;
+  }
+  .header .hidden-back:hover { color: #666; }
+
+  /* ===== 画廊 ===== */
+  .archive-wall {
+    display: grid; grid-template-columns: repeat(4, 1fr); 
+    grid-auto-rows: 10px; column-gap: 32px; row-gap: 32px; 
+    max-width: 1600px; margin: 0 auto; padding: 90px 40px 60px; 
+  }
+  .item { cursor: crosshair; position: relative; display: flex; flex-direction: column; }
+  .item img { width: 100%; height: auto; display: block; -webkit-user-drag: none; }
+  .item-info { margin-top: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .item-name { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #111; line-height: 1.2; }
+  .item-season { font-size: 8px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* ===== 大图预览（极简解剖台） ===== */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: #0a0a0a; /* 纯黑底色 */
+    display: none; z-index: 999;
+    cursor: pointer;
+  }
+  .lightbox.active { display: block; }
+  
+  .lightbox-img {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 85vw; max-height: 85vh; /* 加大图片占比 */
+    object-fit: contain; cursor: default; display: block;
+    animation: fadeIn 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -48%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  /* 左上角：极简品牌名 */
+  .lightbox-brand {
+    position: absolute; top: 30px; left: 40px;
+    font-family: "Inter", sans-serif; font-size: 9px; 
+    letter-spacing: 0.2em; color: #666; text-transform: uppercase;
+    cursor: default;
+  }
+
+  /* 正下方：只要指令文字，不要背景框 */
+  .lightbox-note {
+    position: absolute; bottom: 5vh; left: 0; right: 0;
+    text-align: center; cursor: default; padding: 0 40px;
+    font-family: "Noto Sans SC", sans-serif; font-size: 11px;
+    letter-spacing: 0.3em; color: #888; font-weight: 300;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1200px) {
+    .archive-wall { grid-template-columns: repeat(3, 1fr); column-gap: 24px; row-gap: 24px; padding: 80px 24px 40px; }
+  }
+  
+  @media (max-width: 600px) {
+    .header { height: 36px; }
+    .header .center-text { font-size: 10px; letter-spacing: 0.2em; }
+    .header .hidden-back { left: 16px; }
+
+    .archive-wall { 
+      grid-template-columns: repeat(2, 1fr); 
+      column-gap: 16px; row-gap: 24px; padding: 60px 12px 30px; 
+    }
+    .item-info { display: none; } 
+    
+    .lightbox-img { max-width: 95vw; max-height: 80vh; }
+    .lightbox-brand { top: 20px; left: 20px; }
+    .lightbox-note { bottom: 3vh; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶栏 -->
+  <div class="header" id="mainHeader">
+    <a href="index.html" class="hidden-back">Exit</a>
+    <div class="center-text">0.07%</div>
+  </div>
+
+  <!-- 图墙 -->
+  <div class="archive-wall" id="archiveWall"></div>
+
+  <!-- 大图预览 -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-brand" id="lightboxBrand"></div>
+    <img src="" alt="" class="lightbox-img" id="lightboxImg" draggable="false">
+    <div class="lightbox-note" id="lightboxNote"></div>
+  </div>
+
+<script>
+/* ===== 变音符号降级 ===== */
+const LIGATURE_MAP = { 'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS', 'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H' };
+function toBase(str) {
+  let s = (str || '').toString();
+  s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return s.toUpperCase();
+}
+function getSearchKey(name) { return toBase(name); }
+
+/* ===== 数据填入 ===== */
+const brandsData = [
+  { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'botter', name: 'BOTTER', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'burc-akyol', name: 'BURC AKYOL', images: [{ file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }] },
+  { folder: 'charles-jeffrey-loverboy', name: 'CHARLES JEFFREY LOVERBOY', images: [
+    { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+  ]},
+  { folder: 'danielle-frankel', name: 'DANIELLE FRANKEL', images: [{ file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }] },
+  { folder: 'dries-van-noten', name: 'DRIES VAN NOTEN', images: [{ file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }] },
+  { folder: 'eenk', name: 'EENK', images: [{ file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'feng-chen-wang', name: 'FENG CHEN WANG', images: [{ file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }] },
+  { folder: 'freya-dalsjo', name: 'FREYA DALSJØ', images: [
+    { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+    { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+  ]},
+  { folder: 'harris-reed', name: 'HARRIS REED', images: [{ file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }] },
+  { folder: 'loewe', name: 'LOEWE', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }] },
+  { folder: 'maison-mihara-yasuhiro', name: 'MAISON MIHARA YASUHIRO', images: [{ file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }] },
+  { folder: 'matieres-fecales', name: 'MATIÈRES FÉCALES', images: [{ file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }] },
+  { folder: 'palomo-spain', name: 'PALOMO SPAIN', images: [
+    { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+  ]},
+  { folder: 'robert-wun', name: 'ROBERT WUN', images: [
+    { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+    { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
+  ]},
+  { folder: 'saint-laurent', name: 'SAINT LAURENT', images: [{ file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }] },
+  { folder: 'versace', name: 'VERSACE', images: [
+    { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+    { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+  ]},
+  { folder: 'wooyoungmi', name: 'WOOYOUNGMI', images: [
+    { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+  ]}
+];
+
+brandsData.sort((a, b) => getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en'));
+const allItems = [];
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    allItems.push({
+      src: `images/${brand.folder}/${img.file}`,
+      brand: brand.name,
+      season: img.season,
+      note: img.note
+    });
+  });
+});
+
+/* ===== 生成图墙 ===== */
+const archiveWall = document.getElementById('archiveWall');
+allItems.forEach((item, index) => {
+  const el = document.createElement('div');
+  el.className = 'item';
+  el.innerHTML = `
+    <img src="${item.src}" alt="" draggable="false" loading="lazy" onload="resizeGridItem(this)">
+    <div class="item-info">
+      <div class="item-name">${item.brand}</div>
+      <div class="item-season">${item.season}</div>
+    </div>
+  `;
+  
+  el.addEventListener('click', () => {
+    openLightbox(allItems, index);
+  });
+  
+  archiveWall.appendChild(el);
+});
+
+function resizeGridItem(item) {
+  const grid = document.querySelector('.archive-wall');
+  const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+  const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('row-gap'));
+  const itemContent = item.parentNode.querySelector('.item-info');
+  
+  const imgHeight = item.getBoundingClientRect().height;
+  const infoHeight = itemContent ? itemContent.getBoundingClientRect().height : 0;
+  const rowSpan = Math.ceil((imgHeight + infoHeight + 12 + rowGap) / (rowHeight + rowGap));
+  
+  item.parentNode.style.gridRowEnd = 'span ' + rowSpan;
+}
+
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.item img').forEach(img => {
+    if (img.complete) resizeGridItem(img);
+  });
+});
+
+/* ===== 大图预览逻辑 ===== */
+let currentImages = [];
+let currentIndex = 0;
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxBrand = document.getElementById('lightboxBrand');
+const lightboxNote = document.getElementById('lightboxNote');
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  const img = currentImages[currentIndex];
+  lightboxImg.src = img.src;
+  
+  // 左上角只放品牌名
+  lightboxBrand.textContent = img.brand;
+
+  // 底部只放指令，如果没有指令就彻底空着
+  if (img.note) {
+    lightboxNote.textContent = img.note;
+  } else {
+    lightboxNote.textContent = '';
+  }
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  updateLightbox();
+}
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  updateLightbox();
+}
+
+// 点击黑底关闭
+lightbox.addEventListener('click', (e) => {
+  if (e.target.classList.contains('lightbox-img')) return; // 点图片不关
+  closeLightbox();
+});
+
+// 键盘左右键切换
+document.addEventListener('keydown', (e) => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLightbox();
+  }
+});
+
+// 手机滑动切换
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+lightbox.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx > 0) prevImage(); else nextImage();
+  }
+}, { passive: true });
+</script>
+
+</body>
+</html>
