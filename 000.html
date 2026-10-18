@@ -4,50 +4,201 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>0.07%</title>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Cline x1='20' y1='50' x2='80' y2='50' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #ffffff;
-    color: #000000;
-    font-family: "EB Garamond", Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .cube-wrap {
-    padding: 20vh 10vw;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .title {
-    font-family: "EB Garamond", "Noto Sans SC", Georgia, serif;
-    font-size: 42px;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-align: center;
-    line-height: 1.4;
-  }
-  .title .line { display: block; }
-  .title .line1 { margin-bottom: 0.15em; }
-  .subtitle {
-    font-size: 12px;
-    letter-spacing: 0.4em;
-    text-align: center;
-    text-transform: uppercase;
-    color: #999;
-    margin-top: 24px;
+  /* ============================================================
+     基础与令牌
+     ============================================================ */
+  :root {
+    --fs-1: 9px;
+    --fs-2: 11px;
+    --fs-3: 14px;
+    --fs-4: 20px;
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 16px;
+    --sp-4: 24px;
+    --sp-6: 80px;
+    --c-black: #000;
+    --c-grey:  #999;
+    --c-line:  #e5e5e5;
+    --ease: cubic-bezier(.2, 0, 0, 1);
+    --dur: 300ms;
   }
 
-  .data-block {
-    margin-top: 20vh;
-    margin-bottom: 20vh;
-    text-align: center;
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    line-height: 3;
+  * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+    outline: none; 
+  }
+
+  body {
+    background: #fff;
+    color: var(--c-black);
+    font-family: "Inter", "Helvetica", "Noto Sans SC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================================
+     JULIUS 风格双层顶栏 (保持上一版紧凑极简)
+     ============================================================ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    transform: translateY(0);
+    transition: transform 0.3s var(--ease);
+  }
+  .site-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  .header-top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 24px 40px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .header-left {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+
+  .header-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--c-black);
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-meta {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--c-grey);
+    text-transform: uppercase;
+  }
+
+  .header-dot {
+    font-size: 9px;
+    color: var(--c-line);
+  }
+
+  .header-bottom {
+    display: flex;
+    justify-content: center;
+    padding: 18px 40px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .nav-links span {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--c-grey);
+    text-transform: uppercase;
+    transition: color var(--dur) var(--ease);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  
+  .nav-links span:hover {
     color: #333;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    padding: 40px 0;
+  }
+
+  .nav-links span.active {
+    color: var(--c-black);
+  }
+
+  @media (max-width: 768px) {
+    .header-top { padding: 16px 20px; }
+    .header-bottom { padding: 16px 20px; }
+    .header-center { display: none; }
+    .nav-links { gap: 30px; }
+  }
+
+  /* ============================================================
+     页面切换逻辑
+     ============================================================ */
+  .page-section {
+    display: none; 
+    animation: fadeIn var(--dur) var(--ease);
+  }
+  .page-section.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================================
+     ABOUT
+     ============================================================ */
+  .about-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 15vh 24px 15vh;
+  }
+
+  .about-title {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  .about-text-block {
+    margin-bottom: 40px;
+  }
+
+  .about-text-block p {
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    line-height: 2.2;
+    color: #222;
+  }
+
+  /* ============================================================
+     GALLERY
+     ============================================================ */
+  .gallery-container {
+    padding: var(--sp-6) 10vw calc(var(--sp-6) * 2.5);
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .specimen-list {
@@ -56,106 +207,371 @@
     align-items: center;
     gap: 25vh;
   }
+
   .specimen {
     width: 100%;
     max-width: 500px;
     text-align: center;
+    cursor: crosshair;
   }
+
   .specimen img {
     width: 100%;
     height: auto;
     display: block;
+    transition: opacity var(--dur) var(--ease);
   }
-  .specimen-info { margin-top: 24px; }
+  .specimen:hover img { opacity: .9; }
+
+  .specimen-info { margin-top: var(--sp-4); }
   .specimen-name {
-    font-size: 12px;
-    letter-spacing: 0.15em;
+    font-size: var(--fs-2);
+    letter-spacing: .15em;
     text-transform: uppercase;
+    color: var(--c-black);
+    font-weight: 500;
   }
   .specimen-season {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: #888;
-    margin-top: 4px;
+    font-size: var(--fs-1);
+    letter-spacing: .1em;
+    color: var(--c-grey);
+    margin-top: var(--sp-1);
     text-transform: uppercase;
   }
 
-  .archive-entry {
+  /* ============================================================
+     底部分页 (极简冷峻版)
+     ============================================================ */
+  .issue-nav {
     margin-top: 25vh;
-    text-align: center;
+    margin-bottom: 5vh;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .archive-entry a {
-    text-decoration: none;
-    color: #000;
+
+  .nav-btn {
+    background: none;
+    border: none;
+    padding: 10px;
+    font-family: inherit;
     font-size: 12px;
-    letter-spacing: 0.4em;
+    font-weight: 400;
+    letter-spacing: .15em;
+    color: var(--c-black);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-transform: uppercase;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 6px;
-    transition: border-color 0.3s;
   }
-  .archive-entry a:hover {
-    border-color: #000;
+
+  .nav-btn:hover:not(:disabled) {
+    color: var(--c-grey);
+  }
+
+  /* 核心：用微小的箭头和编号替代大圆圈 */
+  .nav-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1px;
+    fill: none;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .nav-btn.prev-btn:hover:not(:disabled) svg {
+    transform: translateX(-4px);
+  }
+  
+  .nav-btn.next-btn:hover:not(:disabled) svg {
+    transform: translateX(4px);
+  }
+
+  /* 中间计数器 */
+  .issue-counter {
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--c-black);
+    font-variant-numeric: tabular-nums; /* 确保数字等宽不跳动 */
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 
   @media (max-width: 600px) {
-    .cube-wrap { padding: 14vh 6vw; }
-    .title { font-size: 26px; letter-spacing: 0.08em; }
-    .subtitle { letter-spacing: 0.3em; }
-    .data-block {
-      margin-top: 14vh;
-      margin-bottom: 14vh;
-      letter-spacing: 0.2em;
-      line-height: 2.6;
-    }
-    .specimen-list { gap: 16vh; }
-    .archive-entry { margin-top: 16vh; }
+    .gallery-container { padding: var(--sp-5) 5vw calc(var(--sp-6) * 2); }
+    .specimen-list { gap: 20vh; }
+    .issue-nav { max-width: 100%; padding: 0 10px; }
   }
 </style>
 </head>
 <body>
-  <div class="cube-wrap">
 
-    <div class="title">
-      <span class="line line1">为这个领域，</span>
-      <span class="line line2">划一条金线。</span>
-    </div>
-    <div class="subtitle">显影室 / 0.07%</div>
-
-    <div class="data-block">
-      <div>阅过造型 600,000+</div>
-      <div>金线之上 500</div>
-      <div>成立率 0.07%</div>
-    </div>
-
-    <div class="specimen-list">
-      <div class="specimen">
-        <img src="images/loewe/01.webp" alt="">
-        <div class="specimen-info">
-          <div class="specimen-name">LOEWE</div>
-          <div class="specimen-season">FALL 2024 READY-TO-WEAR</div>
-        </div>
+  <header class="site-header" id="siteHeader">
+    <div class="header-top">
+      <div class="header-left" onclick="switchPage('about')">
+        0.07%
       </div>
-      <div class="specimen">
-        <img src="images/robert-wun/01.webp" alt="">
-        <div class="specimen-info">
-          <div class="specimen-name">ROBERT WUN</div>
-          <div class="specimen-season">SPRING 2026 COUTURE</div>
-        </div>
+      
+      <div class="header-center" onclick="switchPage('about')">
+        CURATING THE GOLDEN LINE
       </div>
-      <div class="specimen">
-        <img src="images/saint-laurent/01.webp" alt="">
-        <div class="specimen-info">
-          <div class="specimen-name">SAINT LAURENT</div>
-          <div class="specimen-season">SPRING 2018 READY-TO-WEAR</div>
-        </div>
+
+      <div class="header-right">
+        <span class="header-meta">ARCHIVE / EST.</span>
+        <span class="header-dot">·</span>
+        <span class="header-meta">2026</span>
       </div>
     </div>
 
-    <div class="archive-entry">
-      <a href="archive.html">进入完整档案 / Enter Archive</a>
+    <div class="header-bottom">
+      <nav class="nav-links">
+        <span id="nav-about" class="active" onclick="switchPage('about')">ABOUT</span>
+        <span id="nav-gallery" onclick="switchPage('gallery')">COLLECTION</span>
+      </nav>
     </div>
+  </header>
 
-  </div>
+  <section id="page-about" class="page-section active">
+    <div class="about-container">
+      <h1 class="about-title">为这个领域，划一条金线。</h1>
+      <div class="about-text-block">
+        <p>标准不散落于众口。金线不看谁声高，不看多少人附和。不需要批准，无法修改，它自身成立。</p>
+      </div>
+      <div class="about-text-block">
+        <p>金线不是被发明，而是被发现。它本来就在。此刻，它第一次在场。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="page-gallery" class="page-section">
+    <div class="gallery-container">
+      
+      <div class="specimen-list" id="specimenList"></div>
+
+      <!-- 极简翻页组件 -->
+      <div class="issue-nav" id="issueNav">
+        <button class="nav-btn prev-btn" id="prevBtn" aria-label="Previous">
+          <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        
+        <div class="issue-counter" id="issueCounter">01 / 05</div>
+        
+        <button class="nav-btn next-btn" id="nextBtn" aria-label="Next">
+          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+<script>
+/* ===== 页面切换逻辑 ===== */
+function switchPage(pageId) {
+  document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  
+  document.querySelectorAll('.nav-links span').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-' + pageId).classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== 画廊数据与逻辑 ===== */
+const LIGATURE_MAP = { 'Æ': 'AE', 'Œ': 'OE', 'Ø': 'O', 'ß': 'SS', 'Đ': 'D', 'Ł': 'L', 'Þ': 'TH', 'Ð': 'D', 'Ħ': 'H' };
+function toBase(str) {
+  let s = (str || '').toString();
+  s = s.replace(/[ÆŒØßĐŁÞÐĦæœøßđłþðħ]/g, ch => LIGATURE_MAP[ch.toUpperCase()] || ch);
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return s.toUpperCase();
+}
+function getSearchKey(name) { return toBase(name); }
+
+const brandsData = [
+  { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'botter', name: 'BOTTER', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'burc-akyol', name: 'BURC AKYOL', images: [{ file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }] },
+  { folder: 'charles-jeffrey-loverboy', name: 'CHARLES JEFFREY LOVERBOY', images: [
+    { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+  ]},
+  { folder: 'danielle-frankel', name: 'DANIELLE FRANKEL', images: [{ file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }] },
+  { folder: 'dries-van-noten', name: 'DRIES VAN NOTEN', images: [{ file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }] },
+  { folder: 'eenk', name: 'EENK', images: [{ file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'feng-chen-wang', name: 'FENG CHEN WANG', images: [{ file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }] },
+  { folder: 'freya-dalsjo', name: 'FREYA DALSJØ', images: [
+    { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+    { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+  ]},
+  { folder: 'harris-reed', name: 'HARRIS REED', images: [{ file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }] },
+  { folder: 'loewe', name: 'LOEWE', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }] },
+  { folder: 'maison-mihara-yasuhiro', name: 'MAISON MIHARA YASUHIRO', images: [{ file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }] },
+  { folder: 'matieres-fecales', name: 'MATIÈRES FÉCALES', images: [{ file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }] },
+  { folder: 'palomo-spain', name: 'PALOMO SPAIN', images: [
+    { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+  ]},
+  { folder: 'robert-wun', name: 'ROBERT WUN', images: [
+    { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+    { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
+  ]},
+  { folder: 'saint-laurent', name: 'SAINT LAURENT', images: [{ file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }] },
+  { folder: 'versace', name: 'VERSACE', images: [
+    { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+    { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+  ]},
+  { folder: 'wooyoungmi', name: 'WOOYOUNGMI', images: [
+    { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+  ]}
+];
+
+brandsData.sort((a, b) => getSearchKey(a.name).localeCompare(getSearchKey(b.name), 'en'));
+let allItems = [];
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    allItems.push({
+      src: `images/${brand.folder}/${img.file}`,
+      brand: brand.name,
+      season: img.season,
+      note: img.note
+    });
+  });
+});
+
+const ITEMS_PER_ISSUE = 3;
+const issues = [];
+for (let i = 0; i < allItems.length; i += ITEMS_PER_ISSUE) {
+  issues.push(allItems.slice(i, i + ITEMS_PER_ISSUE));
+}
+const totalIssues = issues.length;
+
+let currentIssueIndex = 0;
+const savedIssue = localStorage.getItem('currentIssueIndex');
+if (savedIssue !== null && !isNaN(savedIssue)) {
+  const parsed = parseInt(savedIssue, 10);
+  if (parsed >= 0 && parsed < totalIssues) currentIssueIndex = parsed;
+}
+
+const specimenList = document.getElementById('specimenList');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const issueCounter = document.getElementById('issueCounter');
+
+// 格式化数字，比如 1 变成 01
+function padZero(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function render() {
+  specimenList.innerHTML = '';
+  const currentItems = issues[currentIssueIndex];
+  currentItems.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'specimen';
+    el.innerHTML = `
+      <img src="${item.src}" alt="" draggable="false" loading="lazy">
+      <div class="specimen-info">
+        <div class="specimen-name">${item.brand}</div>
+        <div class="specimen-season">${item.season}</div>
+      </div>
+    `;
+    el.addEventListener('click', () => openLightbox(currentItems, currentItems.indexOf(item)));
+    specimenList.appendChild(el);
+  });
+
+  // 更新按钮状态和计数器
+  prevBtn.disabled = currentIssueIndex === 0;
+  nextBtn.disabled = currentIssueIndex === totalIssues - 1;
+  
+  issueCounter.textContent = `${padZero(currentIssueIndex + 1)} / ${padZero(totalIssues)}`;
+
+  localStorage.setItem('currentIssueIndex', currentIssueIndex);
+}
+
+prevBtn.addEventListener('click', () => {
+  if (currentIssueIndex > 0) {
+    currentIssueIndex--;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentIssueIndex < totalIssues - 1) {
+    currentIssueIndex++;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+render();
+
+/* ===== 顶栏滚动隐藏逻辑 ===== */
+(function () {
+  const header = document.getElementById('siteHeader');
+  const THRESHOLD = 8;
+  const TOP_SAFE  = 80;
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function onScroll() {
+    const y = window.scrollY;
+    const diff = y - lastY;
+    if (y < TOP_SAFE) {
+      header.classList.remove('is-hidden');
+    } else if (diff > THRESHOLD) {
+      header.classList.add('is-hidden');
+    } else if (diff < -THRESHOLD) {
+      header.classList.remove('is-hidden');
+    }
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+/* ===== 大图预览 ===== */
+const lightbox = document.createElement('div');
+lightbox.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.98);display:none;z-index:999;cursor:pointer;outline:none;';
+lightbox.innerHTML = `<img src="" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:90vw;max-height:90vh;object-fit:contain;display:block;">`;
+document.body.appendChild(lightbox);
+
+const lightboxImg = lightbox.querySelector('img');
+let currentImages = [];
+let currentIndex = 0;
+
+function openLightbox(imgList, index) {
+  currentImages = imgList;
+  currentIndex = index;
+  lightboxImg.src = currentImages[currentIndex].src;
+  lightbox.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+lightbox.addEventListener('click', (e) => {
+  if (e.target.tagName === 'IMG') return;
+  lightbox.style.display = 'none';
+  document.body.style.overflow = '';
+});
+</script>
+
 </body>
 </html>
