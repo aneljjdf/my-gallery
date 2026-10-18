@@ -20,13 +20,13 @@
     margin: 0 auto;
   }
   .title {
-    font-size: clamp(20px, 5.2vw, 40px);
+    font-size: 40px;
     font-weight: 400;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-align: center;
     margin-bottom: 25vh; /* 巨大的落差 */
-    white-space: nowrap;
   }
+  .mobile-br { display: none; }
   .subtitle {
     font-size: 12px;
     letter-spacing: 0.3em;
@@ -77,14 +77,15 @@
     color: #333;
   }
 
-  /* 手机端：收紧边距、字距与大段间距，确保标题一行 */
   @media (max-width: 600px) {
     .cube-wrap { padding: 14vh 6vw; }
     .title {
-      font-size: 19px;
-      letter-spacing: 0.04em;
+      font-size: 24px;
+      letter-spacing: 0.05em;
+      line-height: 1.5;
       margin-bottom: 14vh;
     }
+    .mobile-br { display: inline; }
     .subtitle { letter-spacing: 0.24em; }
     .specimen-list { gap: 16vh; }
     .data-block {
@@ -97,7 +98,7 @@
 </head>
 <body>
   <div class="cube-wrap">
-    <div class="title">为这个领域，划一条金线。</div>
+    <div class="title">为这个领域，<br class="mobile-br">划一条金线。</div>
     <div class="subtitle">显影室 / 0.07%</div>
 
     <!-- 极小、极精的陈列 -->
