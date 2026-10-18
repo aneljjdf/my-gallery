@@ -13,20 +13,24 @@
     font-family: "EB Garamond", Georgia, serif;
     -webkit-font-smoothing: antialiased;
   }
-  /* 极致的留白 */
   .cube-wrap {
     padding: 20vh 10vw;
     max-width: 1200px;
     margin: 0 auto;
   }
   .title {
-    font-size: 40px;
+    font-family: "EB Garamond", "Noto Sans SC", Georgia, serif;
+    font-size: 22px;
     font-weight: 400;
-    letter-spacing: 0.1em;
-    text-align: center;
-    margin-bottom: 25vh; /* 巨大的落差 */
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    text-align: justify;
+    max-width: 280px;
+    margin: 0 auto;
+    margin-bottom: 25vh;
   }
-  .mobile-br { display: none; }
+  .title .line { display: block; }
+  .title .line2 { text-align-last: justify; }
   .subtitle {
     font-size: 12px;
     letter-spacing: 0.3em;
@@ -35,7 +39,6 @@
     color: #999;
     margin-top: 16px;
   }
-  /* 标本陈列，单列极小 */
   .specimen-list {
     display: flex;
     flex-direction: column;
@@ -44,14 +47,14 @@
   }
   .specimen {
     width: 100%;
-    max-width: 500px; /* 图很小，四周全是白 */
+    max-width: 500px;
     text-align: center;
   }
   .specimen img {
     width: 100%;
     height: auto;
     display: block;
-    filter: grayscale(10%) contrast(105%); /* 稍微拉一点锐度 */
+    filter: grayscale(10%) contrast(105%);
   }
   .specimen-info {
     margin-top: 24px;
@@ -80,12 +83,11 @@
   @media (max-width: 600px) {
     .cube-wrap { padding: 14vh 6vw; }
     .title {
-      font-size: 24px;
-      letter-spacing: 0.05em;
-      line-height: 1.5;
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      max-width: 280px;
       margin-bottom: 14vh;
     }
-    .mobile-br { display: inline; }
     .subtitle { letter-spacing: 0.24em; }
     .specimen-list { gap: 16vh; }
     .data-block {
@@ -98,10 +100,12 @@
 </head>
 <body>
   <div class="cube-wrap">
-    <div class="title">为这个领域，<br class="mobile-br">划一条金线。</div>
+    <div class="title">
+      <span class="line line1">为这个领域，</span>
+      <span class="line line2">划一条金线。</span>
+    </div>
     <div class="subtitle">显影室 / 0.07%</div>
 
-    <!-- 极小、极精的陈列 -->
     <div class="specimen-list" style="margin-top: 20vh;">
       <div class="specimen">
         <img src="images/loewe/01.webp" alt="">
@@ -119,7 +123,6 @@
       </div>
     </div>
 
-    <!-- 事实的宣告 -->
     <div class="data-block">
       <div>阅过造型 600,000+</div>
       <div>金线之上 500+</div>

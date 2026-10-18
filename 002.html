@@ -22,7 +22,7 @@
 
 body {
   font-family: "Inter", "Noto Sans SC", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
-  background: #fafaf8; /* 冷灰/米白档案底色 */
+  background: #fafaf8;
   color: #1a1a1a;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -42,7 +42,7 @@ img {
   .page { padding: 0 5% 100px; }
 }
 
-/* ===== 第一屏：宣告 ===== */
+/* ===== 第一屏：竖排宣告 ===== */
 .opening {
   min-height: 85vh;
   display: flex;
@@ -54,14 +54,18 @@ img {
 
 .opening .line-main {
   font-family: "EB Garamond", "Noto Sans SC", Georgia, serif;
-  font-size: 34px;
+  font-size: 22px;
   font-weight: 400;
-  letter-spacing: 0.12em;
-  color: #1a1a1a;
-  line-height: 1.8;
+  letter-spacing: 0.3em;
+  line-height: 2;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  height: 50vh;
+  text-align: center;
 }
 
-.mobile-br { display: none; }
+.opening .line-main .line { display: block; }
+.opening .line-main .line1 { margin-bottom: 0.3em; }
 
 .opening .line-sub {
   margin-top: 32px;
@@ -74,8 +78,7 @@ img {
 
 @media (max-width: 600px) {
   .opening { min-height: 75vh; }
-  .opening .line-main { font-size: 22px; letter-spacing: 0.1em; }
-  .mobile-br { display: inline; }
+  .opening .line-main { font-size: 20px; letter-spacing: 0.24em; height: 46vh; }
 }
 
 /* ===== 第二屏：数据 ===== */
@@ -114,7 +117,7 @@ img {
   .stats-container { flex-direction: column; gap: 36px; margin-bottom: 10vh; padding-bottom: 8vh; }
 }
 
-/* ===== 图墙：无缝双列拼图 ===== */
+/* ===== 图墙 ===== */
 .wall {
   max-width: 1600px;
   margin: 0 auto;
@@ -124,13 +127,13 @@ img {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
-  column-gap: 4vw; /* 两列之间的间距稍微缩小 */
+  column-gap: 4vw;
 }
 
 .wall-col {
   display: flex;
   flex-direction: column;
-  gap: 4vw; /* 图片之间的纵向间距 */
+  gap: 4vw;
 }
 
 .wall-item {
@@ -167,7 +170,6 @@ img {
   transform: scale(1.03);
 }
 
-/* 标签：极简、微小 */
 .wall-item .wall-name {
   margin-top: 12px;
   font-size: 10px;
@@ -195,7 +197,7 @@ img {
   .wall-item { width: 100%; margin: 0 0 8vw 0 !important; padding: 0; }
 }
 
-/* ===== 操作区：展开与跳转 ===== */
+/* ===== 操作区 ===== */
 .action-area {
   display: flex;
   flex-direction: column;
@@ -344,13 +346,14 @@ img {
 
 <div class="page">
 
-  <!-- 第一屏 -->
   <div class="opening">
-    <div class="line-main">为这个领域，<br class="mobile-br">划一条金线。</div>
+    <div class="line-main">
+      <span class="line line1">为这个领域，</span>
+      <span class="line line2">划一条金线。</span>
+    </div>
     <div class="line-sub">显影室 / 0.07%</div>
   </div>
 
-  <!-- 第二屏 -->
   <div class="stats-container">
     <div class="stat-item">
       <div class="stat-number">60万+</div>
@@ -366,7 +369,6 @@ img {
     </div>
   </div>
 
-  <!-- 第三屏 -->
   <div class="wall">
     <div class="wall-grid">
       <div class="wall-col col-left" id="colLeft"></div>
@@ -374,14 +376,11 @@ img {
     </div>
   </div>
 
-  <!-- 操作区 -->
   <div class="action-area">
     <div class="action-btn" id="toggleBtn">展开 / Expand</div>
-    <!-- 如果以后有完整的500套图独立页面，把 href="#" 换成那个页面的链接即可 -->
     <a href="#" class="action-link">查看完整档案 / Full Archive</a>
   </div>
 
-  <!-- 页脚 -->
   <div class="footer">
     Archive judgments by [X].<br>
     All runway images © their respective owners.
@@ -389,7 +388,6 @@ img {
 
 </div>
 
-<!-- 大图预览 -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-meta" id="lightboxMeta"></div>
   <div class="lightbox-arrow prev" id="prev">‹</div>
@@ -542,7 +540,6 @@ window.addEventListener('resize', () => {
   });
 });
 
-/* ===== 展开/收起逻辑 ===== */
 toggleBtn.addEventListener('click', () => {
   expanded = !expanded;
   
@@ -562,13 +559,11 @@ toggleBtn.addEventListener('click', () => {
     });
     toggleBtn.textContent = '展开 / Expand';
     
-    // 收起时平滑滚动回图墙顶部，避免页面突然变短导致位置错乱
     const wallTop = document.querySelector('.wall').offsetTop - 40;
     window.scrollTo({ top: wallTop, behavior: 'smooth' });
   }
 });
 
-/* ===== 大图预览 ===== */
 let currentImages = [];
 let currentIndex = 0;
 
