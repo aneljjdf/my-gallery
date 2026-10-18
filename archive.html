@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.07%</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-family: "EB Garamond", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .cube-wrap {
+    padding: 20vh 10vw;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .title {
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+  .subtitle {
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    text-align: center;
+    text-transform: uppercase;
+    color: #999;
+    margin-top: 24px;
+  }
+  
+  /* 事实数据：放在标题和图墙之间 */
+  .data-block {
+    margin-top: 20vh;
+    margin-bottom: 20vh;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    line-height: 3;
+    color: #333;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 40px 0;
+  }
+
+  /* 首页只放三张极有代表性的图 */
+  .specimen-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25vh;
+  }
+  .specimen {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  .specimen img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .specimen-info { margin-top: 24px; }
+  .specimen-name {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .specimen-season {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  /* 入口：极度冷峻的链接 */
+  .archive-entry {
+    margin-top: 25vh;
+    text-align: center;
+  }
+  .archive-entry a {
+    text-decoration: none;
+    color: #000;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 6px;
+    transition: border-color 0.3s;
+  }
+  .archive-entry a:hover {
+    border-color: #000;
+  }
+</style>
+</head>
+<body>
+  <div class="cube-wrap">
+    
+    <div class="title">为这个领域，划一条金线。</div>
+    <div class="subtitle">显影室 / 0.07%</div>
+
+    <div class="data-block">
+      <div>阅过造型 600,000+</div>
+      <div>金线之上 500</div>
+      <div>成立率 0.07%</div>
+    </div>
+
+    <!-- 只展示三张代表作 -->
+    <div class="specimen-list">
+      <div class="specimen">
+        <img src="images/loewe/01.webp" alt="">
+        <div class="specimen-info">
+          <div class="specimen-name">LOEWE</div>
+          <div class="specimen-season">FALL 2024 READY-TO-WEAR</div>
+        </div>
+      </div>
+      <div class="specimen">
+        <img src="images/robert-wun/01.webp" alt="">
+        <div class="specimen-info">
+          <div class="specimen-name">ROBERT WUN</div>
+          <div class="specimen-season">SPRING 2026 COUTURE</div>
+        </div>
+      </div>
+      <div class="specimen">
+        <img src="images/saint-laurent/01.webp" alt="">
+        <div class="specimen-info">
+          <div class="specimen-name">SAINT LAURENT</div>
+          <div class="specimen-season">SPRING 2018 READY-TO-WEAR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 跳转到全部500套的入口 -->
+    <div class="archive-entry">
+      <a href="archive.html">进入完整档案 / Enter Archive</a>
+    </div>
+
+  </div>
+</body>
+</html>
