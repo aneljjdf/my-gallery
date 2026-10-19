@@ -23,7 +23,6 @@
     --sp-2: 8px;
     --sp-3: 16px;
     --sp-4: 24px;
-    --sp-5: 40px;
     --sp-6: 80px;
     --c-black: #000;
     --c-grey:  #999;
@@ -32,7 +31,7 @@
     --dur: 300ms;
   }
 
-  /* 防抖：关掉浏览器原生的平滑滚动和锚定 */
+  /* 核心防抖：关掉浏览器原生的平滑滚动和锚定，防止手机切页时自动回弹 */
   html {
     scroll-behavior: auto !important; 
     overflow-anchor: none;
@@ -54,7 +53,7 @@
   }
 
   /* ============================================================
-     顶栏（保持原样，完全不动）
+     顶栏
      ============================================================ */
   .site-header {
     position: sticky;
@@ -156,14 +155,15 @@
   }
 
   /* ============================================================
-     页面切换逻辑
+     页面切换
      ============================================================ */
   .page-section {
     display: none; 
   }
   .page-section.active {
     display: block;
-    animation: fadeIn var(--dur) var(--ease);
+    /* 用极短的淡入代替原先的位移动画，减少视觉干扰 */
+    animation: fadeIn 200ms var(--ease); 
   }
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -176,7 +176,7 @@
   .about-container {
     max-width: 680px;
     margin: 0 auto;
-    padding: 15vh 24px 15vh;
+    padding: 20vh 10vw;
   }
 
   .about-title {
@@ -200,10 +200,10 @@
   }
 
   /* ============================================================
-     GALLERY —— 严格区分电脑和手机
+     GALLERY
      ============================================================ */
   .gallery-container {
-    /* 电脑端：顶部留白固定 80px，左右 10vw，底部大留白 */
+    /* 此处替换为第二份电脑端的高度 */
     padding: var(--sp-6) 10vw calc(var(--sp-6) * 2.5);
     max-width: 1200px;
     margin: 0 auto;
@@ -218,7 +218,6 @@
 
   .specimen {
     width: 100%;
-    /* 照抄：图片最大宽度 500px */
     max-width: 500px;
     text-align: center;
     cursor: crosshair;
@@ -232,19 +231,18 @@
   }
   .specimen:hover img { opacity: .9; }
 
-  .specimen-info { margin-top: var(--sp-4); }
+  .specimen-info { margin-top: 24px; }
   .specimen-name {
-    font-size: var(--fs-2);
-    letter-spacing: .15em;
+    font-size: 12px;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--c-black);
-    font-weight: 500;
   }
   .specimen-season {
-    font-size: var(--fs-1);
-    letter-spacing: .1em;
-    color: var(--c-grey);
-    margin-top: var(--sp-1);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-top: 4px;
     text-transform: uppercase;
   }
 
@@ -312,11 +310,11 @@
     cursor: default;
   }
 
-  /* 手机端：顶栏照旧，图片宽度完全照抄原版，不加干涉 */
+  /* 手机端格式同步第二份 */
   @media (max-width: 600px) {
-    .gallery-container { padding: var(--sp-5) 5vw calc(var(--sp-6) * 2); }
+    .gallery-container { padding: 40px 5vw calc(var(--sp-6) * 2); }
     .specimen-list { gap: 20vh; }
-    .issue-nav { max-width: 100%; padding: 0 10px; }
+    .issue-nav { max-width: 100%; padding: 0 10vw; }
   }
 </style>
 </head>
@@ -382,8 +380,10 @@
 <script>
 /* ===== 页面切换逻辑 ===== */
 function switchPage(pageId) {
+  // 1. 先强制瞬间回到顶部
   window.scrollTo(0, 0);
   
+  // 2. 再切换显示内容
   document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
   
@@ -481,19 +481,16 @@ function padZero(num) {
   return num.toString().padStart(2, '0');
 }
 
-/* ===== 翻页逻辑：平滑淡入 ===== */
 function render() {
-  // 1. 瞬间透明
-  specimenList.style.opacity = '0';
-  specimenList.style.transition = 'opacity 200ms ease';
-
-  // 2. 清空并置顶
+  // 1. 先把当前内容清空（此时页面高度会坍塌）
   specimenList.innerHTML = '';
+  
+  // 2. 瞬间锁定在顶部
   window.scrollTo(0, 0);
 
   const currentItems = issues[currentIssueIndex];
   
-  // 3. 渲染
+  // 3. 构建新内容
   currentItems.forEach(item => {
     const el = document.createElement('div');
     el.className = 'specimen';
@@ -512,13 +509,6 @@ function render() {
   nextBtn.disabled = currentIssueIndex === totalIssues - 1;
   
   issueCounter.textContent = `${padZero(currentIssueIndex + 1)} / ${padZero(totalIssues)}`;
-
-  // 4. 恢复不透明度（淡入）
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      specimenList.style.opacity = '1';
-    });
-  });
 
   localStorage.setItem('currentIssueIndex', currentIssueIndex);
 }
