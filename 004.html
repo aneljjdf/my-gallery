@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.07%</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffffff'/%3E%3Cline x1='20' y1='50' x2='80' y2='50' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --fs-1: 9px;
+    --fs-2: 10px;
+    --c-black: #000;
+    --c-grey: #999;
+    --c-line: #e5e5e5;
+    --ease: cubic-bezier(.2, 0, 0, 1);
+    --dur: 200ms;
+  }
+
+  html { scroll-behavior: auto !important; overflow-anchor: none; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
+  body {
+    background: #fff; color: var(--c-black);
+    font-family: "Inter", "Helvetica", "Noto Sans SC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶栏 */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #fff;
+    display: flex; align-items: center; padding: 20px 40px;
+  }
+  .header-left { font-size: 14px; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .header-meta { font-size: var(--fs-1); letter-spacing: 0.08em; color: var(--c-grey); text-transform: uppercase; }
+  .header-dot { font-size: var(--fs-1); color: var(--c-line); }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; margin-left: 40px; }
+  .nav-links span {
+    font-size: var(--fs-1); font-weight: 500; letter-spacing: 0.12em; color: var(--c-grey);
+    text-transform: uppercase; cursor: pointer; transition: color var(--dur) var(--ease); padding: 2px 0;
+  }
+  .nav-links span:hover { color: #444; }
+  .nav-links span.active { color: var(--c-black); }
+
+  @media (max-width: 768px) {
+    .site-header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
+    .nav-links { margin-left: 0; gap: 24px; }
+  }
+
+  /* 页面切换 */
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+  
+  /* ABOUT 页面正常滚动 */
+  #page-about { padding-top: 80px; }
+  .about-container { max-width: 560px; margin: 0 auto; padding: 20vh 8vw 30vh; }
+  .about-title { font-size: 26px; font-weight: 300; letter-spacing: 0.12em; margin-bottom: 80px; text-align: center; }
+  .about-text-block { margin-bottom: 48px; }
+  .about-text-block p { font-size: 14px; font-weight: 300; letter-spacing: 0.12em; line-height: 2.4; color: #222; }
+
+  /* INDEX 页面正常滚动 */
+  #page-gallery { padding-top: 80px; }
+  .index-block { max-width: 900px; margin: 0 auto; padding: 10vh 8vw 20vh; }
+  .index-title { font-size: var(--fs-1); letter-spacing: 0.24em; color: var(--c-grey); text-transform: uppercase; margin-bottom: 32px; }
+  .index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+  .index-grid a {
+    display: block; padding: 10px 6px; font-size: var(--fs-2); letter-spacing: 0.08em;
+    color: var(--c-grey); text-decoration: none; font-variant-numeric: tabular-nums;
+    text-align: center; border: 1px solid transparent; transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .index-grid a:hover { color: var(--c-black); border-color: var(--c-line); }
+  .index-grid a.visited { color: var(--c-black); }
+
+  /* ============================================================
+     单条视图：绝对定位于一屏内
+     ============================================================ */
+  .viewer-overlay {
+    position: fixed; inset: 0; background: #fff; z-index: 200;
+    display: none; flex-direction: column;
+    overflow: hidden;
+  }
+  .viewer-overlay.active { display: flex; }
+
+  /* 左右热区 */
+  .hit-prev, .hit-next {
+    position: absolute; top: 0; bottom: 0; width: 25%; z-index: 10;
+    cursor: pointer; display: flex; align-items: center;
+  }
+  .hit-prev { left: 0; justify-content: flex-start; padding-left: 30px; }
+  .hit-next { right: 0; justify-content: flex-end; padding-right: 30px; }
+
+  /* 箭头符号 */
+  .hit-label {
+    font-size: 20px; font-weight: 300; color: var(--c-black);
+    opacity: 0; /* 默认隐藏 */
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+  }
+  /* 鼠标放上去才显示，移开立刻消失 */
+  .hit-prev:hover .hit-label, .hit-next:hover .hit-label { opacity: 0.3; }
+
+  /* 中心内容区 */
+  .viewer-content {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 80px 20px 40px;
+    pointer-events: none; 
+  }
+
+  .specimen { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .specimen-id { font-size: var(--fs-1); letter-spacing: 0.24em; color: var(--c-grey); text-transform: uppercase; margin-bottom: 20px; }
+  
+  .specimen img {
+    max-width: 100%; max-height: 55vh;
+    object-fit: contain; display: block; margin: 0 auto;
+    user-select: none; pointer-events: auto; cursor: pointer;
+  }
+
+  .specimen-meta { margin-top: 32px; }
+  .specimen-note { font-size: var(--fs-2); font-weight: 300; letter-spacing: 0.08em; color: #666; line-height: 1.9; margin-bottom: 8px;}
+  .specimen-brand { font-size: var(--fs-1); letter-spacing: 0.18em; color: var(--c-grey); text-transform: uppercase; }
+  .specimen-season { font-size: var(--fs-1); letter-spacing: 0.12em; color: var(--c-line); text-transform: uppercase; margin-top: 2px; }
+
+  /* 底部控制栏 */
+  .viewer-footer {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+    display: flex; align-items: center; justify-content: center; z-index: 20;
+  }
+  .back-entry {
+    background: none; border: none; font-family: inherit; font-size: var(--fs-1);
+    letter-spacing: 0.24em; color: var(--c-grey); text-transform: uppercase; cursor: pointer; padding: 8px 16px;
+  }
+  .back-entry:hover { color: var(--c-black); }
+
+  @media (max-width: 600px) {
+    .specimen img { max-height: 45vh; }
+    .viewer-content { padding: 60px 10px 20px; }
+    .hit-label { display: none; } /* 手机端不需要显示箭头 */
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-left" onclick="switchPage('about')">0.07%</div>
+    <nav class="nav-links">
+      <span id="nav-about" class="active" onclick="switchPage('about')">ABOUT</span>
+      <span id="nav-gallery" onclick="switchPage('gallery')">COLLECTION</span>
+    </nav>
+    <div class="header-right">
+      <span class="header-meta">ARCHIVE</span>
+      <span class="header-dot">·</span>
+      <span class="header-meta">2026</span>
+    </div>
+  </header>
+
+  <section id="page-about" class="page-section active">
+    <div class="about-container">
+      <h1 class="about-title">为这个领域，划一条金线。</h1>
+      <div class="about-text-block">
+        <p>标准不散落于众口。金线不看谁声高，不看多少人附和。不需要批准，无法修改，它自身成立。</p>
+      </div>
+      <div class="about-text-block">
+        <p>金线不是被发明，而是被发现。它本来就在。此刻，它第一次在场。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="page-gallery" class="page-section">
+    <div class="index-block" id="indexBlock">
+      <div class="index-title">INDEX</div>
+      <div class="index-grid" id="indexGrid"></div>
+    </div>
+  </section>
+
+  <!-- 单条全屏视图层 -->
+  <div class="viewer-overlay" id="viewerOverlay">
+    <div class="hit-prev" id="hitPrev"><span class="hit-label">&lt;</span></div>
+    <div class="hit-next" id="hitNext"><span class="hit-label">&gt;</span></div>
+
+    <div class="viewer-content" id="viewerContent"></div>
+
+    <div class="viewer-footer">
+      <button class="back-entry" id="backIndex">← INDEX</button>
+    </div>
+  </div>
+
+<script>
+/* ===== 数据 ===== */
+const brandsData = [
+  { folder: 'avavav', name: 'AVAVAV', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'bed-j-w-ford', name: 'BED J.W. FORD', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'botter', name: 'BOTTER', images: [{ file: '01.webp', season: 'FALL 2024 MENSWEAR', note: '' }] },
+  { folder: 'burc-akyol', name: 'BURC AKYOL', images: [{ file: '01.webp', season: 'SPRING 2026 READY-TO-WEAR', note: '肩宽缩小点' }] },
+  { folder: 'charles-jeffrey-loverboy', name: 'CHARLES JEFFREY LOVERBOY', images: [
+    { file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 MENSWEAR', note: '' }
+  ]},
+  { folder: 'danielle-frankel', name: 'DANIELLE FRANKEL', images: [{ file: '01.webp', season: 'FALL 2025 READY-TO-WEAR', note: '' }] },
+  { folder: 'dries-van-noten', name: 'DRIES VAN NOTEN', images: [{ file: '01.webp', season: 'FALL 2021 MENSWEAR', note: '' }] },
+  { folder: 'eenk', name: 'EENK', images: [{ file: '01.webp', season: 'SPRING 2024 READY-TO-WEAR', note: '' }] },
+  { folder: 'feng-chen-wang', name: 'FENG CHEN WANG', images: [{ file: '01.webp', season: 'SPRING 2025 MENSWEAR', note: '' }] },
+  { folder: 'freya-dalsjo', name: 'FREYA DALSJØ', images: [
+    { file: '01.webp', season: 'COPENHAGEN SPRING 2026', note: '' },
+    { file: '02.webp', season: 'COPENHAGEN FALL 2026', note: '' }
+  ]},
+  { folder: 'harris-reed', name: 'HARRIS REED', images: [{ file: '01.webp', season: 'FALL 2022 READY-TO-WEAR', note: '头顶上的改掉' }] },
+  { folder: 'loewe', name: 'LOEWE', images: [{ file: '01.webp', season: 'FALL 2024 READY-TO-WEAR', note: '仅上衣' }] },
+  { folder: 'maison-mihara-yasuhiro', name: 'MAISON MIHARA YASUHIRO', images: [{ file: '01.webp', season: 'SPRING 2027 MENSWEAR', note: '去掉项链' }] },
+  { folder: 'matieres-fecales', name: 'MATIÈRES FÉCALES', images: [{ file: '01.webp', season: 'SPRING 2027 READY-TO-WEAR', note: '' }] },
+  { folder: 'palomo-spain', name: 'PALOMO SPAIN', images: [
+    { file: '01.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2023 READY-TO-WEAR', note: '' },
+    { file: '03.webp', season: 'FALL 2023 READY-TO-WEAR', note: '下半身' }
+  ]},
+  { folder: 'robert-wun', name: 'ROBERT WUN', images: [
+    { file: '01.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '02.webp', season: 'SPRING 2026 COUTURE', note: '' },
+    { file: '03.webp', season: 'FALL 2024 COUTURE', note: '' },
+    { file: '04.webp', season: 'SPRING 2024 COUTURE', note: '' }
+  ]},
+  { folder: 'saint-laurent', name: 'SAINT LAURENT', images: [{ file: '01.webp', season: 'SPRING 2018 READY-TO-WEAR', note: '' }] },
+  { folder: 'versace', name: 'VERSACE', images: [
+    { file: '01.webp', season: 'SPRING 2023 READY-TO-WEAR', note: '' },
+    { file: '02.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' },
+    { file: '03.webp', season: 'PRE-FALL 2024 MENSWEAR', note: '' }
+  ]},
+  { folder: 'wooyoungmi', name: 'WOOYOUNGMI', images: [
+    { file: '01.webp', season: 'FALL 2018 MENSWEAR', note: '' },
+    { file: '02.webp', season: 'FALL 2018 MENSWEAR', note: '内搭换掉' }
+  ]}
+];
+
+let allItems = [];
+brandsData.forEach(brand => {
+  brand.images.forEach(img => {
+    allItems.push({
+      src: `images/${brand.folder}/${img.file}`,
+      brand: brand.name,
+      season: img.season,
+      note: img.note
+    });
+  });
+});
+
+/* ===== 状态与元素 ===== */
+let currentIndex = -1;
+const visited = new Set();
+
+const indexGrid = document.getElementById('indexGrid');
+const viewerOverlay = document.getElementById('viewerOverlay');
+const viewerContent = document.getElementById('viewerContent');
+
+function padZero(n, w) { return n.toString().padStart(w, '0'); }
+function idOf(i) { return 'No' + padZero(i + 1, 3); }
+
+function switchPage(pageId) {
+  closeViewer();
+  window.scrollTo(0, 0);
+  document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  document.querySelectorAll('.nav-links span').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-' + pageId).classList.add('active');
+}
+
+function renderIndex() {
+  indexGrid.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  allItems.forEach((_, i) => {
+    const a = document.createElement('a');
+    a.href = 'javascript:void(0)';
+    a.textContent = padZero(i + 1, 3);
+    a.dataset.index = i;
+    if (visited.has(i)) a.classList.add('visited');
+    frag.appendChild(a);
+  });
+  indexGrid.appendChild(frag);
+}
+
+function openViewer(i) {
+  if (i < 0 || i >= allItems.length) return;
+  currentIndex = i;
+  visited.add(i);
+
+  const item = allItems[i];
+  viewerContent.innerHTML = `
+    <div class="specimen">
+      <div class="specimen-id">No.${padZero(i + 1, 3)}</div>
+      <img src="${item.src}" alt="" draggable="false" onclick="goNext()">
+      <div class="specimen-meta">
+        ${item.note ? `<div class="specimen-note">${item.note}</div>` : ''}
+        <div class="specimen-brand">${item.brand}</div>
+        <div class="specimen-season">${item.season}</div>
+      </div>
+    </div>
+  `;
+  
+  viewerOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+  viewerOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+  renderIndex();
+}
+
+function goPrev() { if (currentIndex > 0) openViewer(currentIndex - 1); }
+function goNext() { if (currentIndex < allItems.length - 1) openViewer(currentIndex + 1); }
+
+/* ===== 事件监听 ===== */
+document.addEventListener('click', e => {
+  const a = e.target.closest('.index-grid a');
+  if (a) {
+    e.preventDefault();
+    openViewer(parseInt(a.dataset.index, 10));
+    return;
+  }
+  if (e.target.closest('#hitPrev')) { goPrev(); return; }
+  if (e.target.closest('#hitNext')) { goNext(); return; }
+  if (e.target.closest('#backIndex')) { e.preventDefault(); closeViewer(); return; }
+});
+
+document.addEventListener('keydown', e => {
+  if (!viewerOverlay.classList.contains('active')) return;
+  if (e.key === 'ArrowLeft') goPrev();
+  else if (e.key === 'ArrowRight') goNext();
+  else if (e.key === 'Escape') closeViewer();
+});
+
+/* ===== 鼠标滚轮翻页，防抖 ===== */
+let isWheeling = false;
+document.addEventListener('wheel', e => {
+  if (!viewerOverlay.classList.contains('active')) return;
+  if (isWheeling) return;
+  
+  if (Math.abs(e.deltaY) < 20) return; 
+
+  isWheeling = true;
+  if (e.deltaY > 0) goNext();
+  else goPrev();
+
+  setTimeout(() => { isWheeling = false; }, 500);
+}, { passive: true });
+
+/* ===== 初始化 ===== */
+renderIndex();
+</script>
+
+</body>
+</html>
