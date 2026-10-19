@@ -92,18 +92,26 @@
     position: absolute; top: 0; bottom: 0; width: 25%; z-index: 10;
     cursor: pointer; display: flex; align-items: center;
   }
-  .hit-prev { left: 0; justify-content: flex-start; padding-left: 30px; }
-  .hit-next { right: 0; justify-content: flex-end; padding-right: 30px; }
+  .hit-prev { left: 0; justify-content: flex-start; padding-left: 40px; }
+  .hit-next { right: 0; justify-content: flex-end; padding-right: 40px; }
 
-  /* 箭头符号 */
+  /* 箭头符号：小巧、极细、灰 */
   .hit-label {
-    font-size: 20px; font-weight: 300; color: var(--c-black);
-    opacity: 0; /* 默认隐藏 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 12px; 
+    font-weight: 200; 
+    color: var(--c-grey); /* 用灰色而不是纯黑，显得轻盈 */
+    opacity: 0; 
     transition: opacity var(--dur) var(--ease);
     pointer-events: none;
+    transform: translateY(-0.5px); /* 视觉微调，让字符居中更准 */
   }
-  /* 鼠标放上去才显示，移开立刻消失 */
-  .hit-prev:hover .hit-label, .hit-next:hover .hit-label { opacity: 0.3; }
+  
+  /* 鼠标放上去才慢慢浮现，颜色变成深灰，但绝不纯黑 */
+  .hit-prev:hover .hit-label, .hit-next:hover .hit-label { 
+    opacity: 0.6; 
+    color: #333; 
+  }
 
   /* 中心内容区 */
   .viewer-content {
@@ -140,7 +148,7 @@
   @media (max-width: 600px) {
     .specimen img { max-height: 45vh; }
     .viewer-content { padding: 60px 10px 20px; }
-    .hit-label { display: none; } /* 手机端不需要显示箭头 */
+    .hit-label { display: none; }
   }
 </style>
 </head>
