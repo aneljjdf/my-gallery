@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.07% — TEMPLATE 04</title>
+<style>
+  :root{--c:#000;--g:#999;--e:cubic-bezier(.2,0,0,1)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{background:#fff;color:var(--c);font-family:"Inter","Helvetica","Noto Sans SC",sans-serif;-webkit-font-smoothing:antialiased;position:relative}
+
+  /* 上：编号 / 中：标本 / 下：元信息 */
+  .frame{position:fixed;inset:0;display:flex;flex-direction:column;padding:48px 60px;pointer-events:none}
+  .frame>*{pointer-events:auto}
+
+  .top{display:flex;justify-content:space-between;align-items:flex-start}
+  .serial{font-size:11px;letter-spacing:.25em;font-variant-numeric:tabular-nums;text-transform:uppercase}
+  .serial .state-code{color:var(--g);margin-right:8px}
+  .total{font-size:10px;letter-spacing:.2em;color:var(--g);text-transform:uppercase}
+
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:60px 0}
+  .stage img{max-height:100%;max-width:min(70vw,600px);width:auto;height:auto;display:block;transition:opacity .4s var(--e)}
+  .stage img.loading{opacity:0}
+
+  .bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+  .meta{max-width:60%}
+  .meta-brand{font-size:22px;font-weight:500;letter-spacing:.01em;line-height:1.2}
+  .meta-season{font-size:10px;letter-spacing:.15em;color:var(--g);margin-top:10px;text-transform:uppercase}
+  .meta-note{font-size:10px;letter-spacing:.1em;color:var(--g);margin-top:6px;font-style:italic}
+
+  .state-mark{font-size:64px;font-weight:200;line-height:1;color:var(--c);flex-shrink:0;user-select:none}
+  .state-mark.empty{color:var(--g);font-size:32px;letter-spacing:.2em}
+
+  /* 切换：极细的左右边线，hover 时变黑 */
+  .edge{position:fixed;top:0;bottom:0;width:80px;background:transparent;border:none;cursor:pointer;z-index:5;padding:0}
+  .edge.left{left:0;border-right:1px solid transparent;transition:border-color .3s var(--e)}
+  .edge.right{right:0;border-left:1px solid transparent;transition:border-color .3s var(--e)}
+  .edge:hover{border-color:#ddd}
+  .edge:disabled{cursor:default;pointer-events:none}
+  .edge svg{width:16px;height:16px;stroke:#000;stroke-width:1;fill:none;opacity:0;transition:opacity .3s var(--e)}
+  .edge:hover svg{opacity:.6}
+  .edge.left svg{position:absolute;left:32px;top:50%;transform:translateY(-50%)}
+  .edge.right svg{position:absolute;right:32px;top:50%;transform:translateY(-50%)}
+
+  /* 键盘提示 */
+  .kbd{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.2em;color:#ccc;text-transform:uppercase;pointer-events:none}
+
+  @media(max-width:700px){
+    .frame{padding:24px 20px}
+    .stage{padding:20px 0}
+    .stage img{max-width:100%;max-height:60vh}
+    .meta-brand{font-size:16px}
+    .state-mark{font-size:40px}
+    .meta{max-width:70%}
+    .edge{width:40px}
+    .edge.left svg{left:12px}
+    .edge.right svg{right:12px}
+    .kbd{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="top">
+    <div class="serial" id="serial"></div>
+    <div class="total" id="total"></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <img id="mainImg" class="loading" src="" alt="">
+  </div>
+
+  <div class="bottom">
+    <div class="meta">
+      <div class="meta-brand" id="metaBrand"></div>
+      <div class="meta-season" id="metaSeason"></div>
+      <div class="meta-note" id="metaNote"></div>
+    </div>
+    <div class="state-mark" id="stateMark"></div>
+  </div>
+</div>
+
+<button class="edge left" id="prevEdge" aria-label="Previous">
+  <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+</button>
+<button class="edge right" id="nextEdge" aria-label="Next">
+  <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+</button>
+
+<div class="kbd">← → TO TRAVERSE</div>
+
+<script>
+/* ===== 状态枚举：状态码同时作为编号前缀 ===== */
+const STATE = {
+  FULL:   { prefix: 'ST', mark: '',   label: '全成立' },
+  TOP:    { prefix: 'TP', mark: '↑',  label: '仅上半身' },
+  BOTTOM: { prefix: 'BT', mark: '↓',  label: '仅下半身' },
+  OUTER:  { prefix: 'OT', mark: '▢',  label: '仅外套' },
+  INNER:  { prefix: 'IN', mark: '—',  label: '内衬不成立' },
+  FIX:    { prefix: 'FX', mark: '×',  label: '需修正' }
+};
+
+/* ===== 数据 ===== */
+const DATA = [
+  { b:'ROBERT WUN', season:'SPRING 2026 COUTURE', img:'images/robert-wun/01.webp', st:'FULL', note:'' },
+  { b:'ROBERT WUN', season:'SPRING 2026 COUTURE', img:'images/robert-wun/02.webp', st:'FULL', note:'' },
+  { b:'LOEWE', season:'FALL 2024 READY-TO-WEAR', img:'images/loewe/01.webp', st:'TOP', note:'仅上衣' },
+  { b:'AVAVAV', season:'FALL 2024 READY-TO-WEAR', img:'images/avavav/01.webp', st:'FULL', note:'' },
+  { b:'PALOMO SPAIN', season:'FALL 2023 READY-TO-WEAR', img:'images/palomo-spain/01.webp', st:'FULL', note:'' },
+  { b:'PALOMO SPAIN', season:'FALL 2023 READY-TO-WEAR', img:'images/palomo-spain/02.webp', st:'FULL', note:'' },
+  { b:'PALOMO SPAIN', season:'FALL 2023 READY-TO-WEAR', img:'images/palomo-spain/03.webp', st:'BOTTOM', note:'下半身' },
+  { b:'MAISON MIHARA YASUHIRO', season:'SPRING 2027 MENSWEAR', img:'images/maison-mihara-yasuhiro/01.webp', st:'FIX', note:'去掉项链' }
+];
+
+/* ===== 编号分配：按状态分组，每组独立计数，前缀即分类 ===== */
+const byState = {};
+DATA.forEach(it => { (byState[it.st] = byState[it.st] || []).push(it); });
+
+const STATIC_ORDER = ['FULL','TOP','BOTTOM','OUTER','INNER','FIX'];
+const ordered = [];
+STATIC_ORDER.forEach(st => {
+  (byState[st] || []).forEach((it, i) => {
+    ordered.push({
+      ...it,
+      serial: `${STATE[st].prefix}-${String(i + 1).padStart(3, '0')}`
+    });
+  });
+});
+
+/* ===== 渲染 ===== */
+let idx = 0;
+const saved = localStorage.getItem('template04_idx');
+if (saved !== null && !isNaN(saved)) {
+  const p = parseInt(saved, 10);
+  if (p >= 0 && p < ordered.length) idx = p;
+}
+
+const mainImg = document.getElementById('mainImg');
+const serialEl = document.getElementById('serial');
+const totalEl = document.getElementById('total');
+const metaBrand = document.getElementById('metaBrand');
+const metaSeason = document.getElementById('metaSeason');
+const metaNote = document.getElementById('metaNote');
+const stateMark = document.getElementById('stateMark');
+const prevEdge = document.getElementById('prevEdge');
+const nextEdge = document.getElementById('nextEdge');
+
+function render() {
+  const it = ordered[idx];
+  const st = STATE[it.st];
+
+  // 图片：先淡出、换源、加载完淡入
+  mainImg.classList.add('loading');
+  const newImg = new Image();
+  newImg.onload = () => {
+    mainImg.src = it.img;
+    mainImg.classList.remove('loading');
+  };
+  newImg.src = it.img;
+
+  serialEl.innerHTML = `<span class="state-code">${it.serial.split('-')[0]}</span>${it.serial.split('-')[1]}`;
+  totalEl.textContent = `${String(idx + 1).padStart(3, '0')} / ${String(ordered.length).padStart(3, '0')}`;
+
+  metaBrand.textContent = it.b;
+  metaSeason.textContent = it.season;
+  metaNote.textContent = it.note ? `— ${it.note}` : '';
+
+  if (st.mark) {
+    stateMark.textContent = st.mark;
+    stateMark.classList.remove('empty');
+  } else {
+    stateMark.textContent = '●';
+    stateMark.classList.add('empty');
+  }
+
+  prevEdge.disabled = idx === 0;
+  nextEdge.disabled = idx === ordered.length - 1;
+
+  localStorage.setItem('template04_idx', idx);
+}
+
+function go(delta) {
+  const next = idx + delta;
+  if (next < 0 || next >= ordered.length) return;
+  idx = next;
+  render();
+}
+
+prevEdge.addEventListener('click', () => go(-1));
+nextEdge.addEventListener('click', () => go(1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'ArrowRight') go(1);
+});
+
+render();
+</script>
+</body>
+</html>

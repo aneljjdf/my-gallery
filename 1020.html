@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.07% — TEMPLATE 01</title>
+<style>
+  :root{--c:#000;--g:#999;--l:#e8e8e8;--e:cubic-bezier(.2,0,0,1)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#fff;color:var(--c);font-family:"Inter","Helvetica","Noto Sans SC",sans-serif;-webkit-font-smoothing:antialiased}
+  .axis{padding:120px 8vw 200px;max-width:1000px;margin:0 auto}
+  .season-block{margin-bottom:180px}
+  .season-head{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--g);margin-bottom:80px;border-top:1px solid var(--c);padding-top:12px}
+  .point{display:flex;align-items:baseline;gap:24px;padding:36px 0;border-bottom:1px solid #f4f4f4}
+  .point-mark{font-size:12px;width:20px;flex-shrink:0;color:var(--c)}
+  .point-main{flex:1}
+  .point-brand{font-size:20px;font-weight:500;letter-spacing:.02em}
+  .point.tier-1 .point-brand{font-size:32px;font-weight:600;letter-spacing:-.01em}
+  .point-meta{font-size:10px;color:var(--g);letter-spacing:.1em;margin-top:6px;text-transform:uppercase}
+  .point-img{width:120px;flex-shrink:0;opacity:.9}
+  .point.tier-1 .point-img{width:240px}
+  .point-img img{width:100%;display:block}
+  .state-summary{position:fixed;top:40px;right:40px;font-size:10px;letter-spacing:.1em;color:var(--g);text-align:right;line-height:1.8;z-index:10;background:#fff;padding:8px}
+  @media(max-width:600px){.point-img{width:80px}.point.tier-1 .point-img{width:140px}.point.tier-1 .point-brand{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="state-summary" id="summary"></div>
+<div class="axis" id="axis"></div>
+<script>
+const STATE={FULL:{m:''},TOP:{m:'↑'},BOTTOM:{m:'↓'},OUTER:{m:'▢'},INNER:{m:'—'},FIX:{m:'×'}};
+const DATA=[
+ {s:'SPRING 2026 COUTURE',items:[
+  {b:'ROBERT WUN',img:'images/robert-wun/01.webp',st:'FULL',tier:1},
+  {b:'ROBERT WUN',img:'images/robert-wun/02.webp',st:'FULL',tier:2}]},
+ {s:'FALL 2024 READY-TO-WEAR',items:[
+  {b:'LOEWE',img:'images/loewe/01.webp',st:'TOP',tier:2},
+  {b:'AVAVAV',img:'images/avavav/01.webp',st:'FULL',tier:2}]},
+ {s:'FALL 2023 MENSWEAR',items:[
+  {b:'PALOMO SPAIN',img:'images/palomo-spain/01.webp',st:'FULL',tier:1},
+  {b:'PALOMO SPAIN',img:'images/palomo-spain/02.webp',st:'FULL',tier:2},
+  {b:'PALOMO SPAIN',img:'images/palomo-spain/03.webp',st:'BOTTOM',tier:2}]}
+];
+const axis=document.getElementById('axis');
+DATA.forEach(blk=>{
+  const d=document.createElement('div');d.className='season-block';
+  d.innerHTML=`<div class="season-head">${blk.s}</div>`;
+  blk.items.sort((a,b)=>a.tier-b.tier).forEach(it=>{
+    const p=document.createElement('div');
+    p.className='point tier-'+it.tier;
+    p.innerHTML=`<div class="point-mark">${STATE[it.st].m||'·'}</div>
+      <div class="point-main"><div class="point-brand">${it.b}</div><div class="point-meta">${it.st} · TIER ${it.tier}</div></div>
+      <div class="point-img"><img src="${it.img}" loading="lazy"></div>`;
+    d.appendChild(p);
+  });
+  axis.appendChild(d);
+});
+const counts={};DATA.forEach(b=>b.items.forEach(i=>counts[i.st]=(counts[i.st]||0)+1));
+document.getElementById('summary').innerHTML=Object.entries(counts).map(([k,v])=>`${STATE[k].m||'●'} ${v}`).join('<br>');
+</script>
+</body>
+</html>

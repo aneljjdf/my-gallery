@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0.07% — TEMPLATE 02</title>
+<style>
+  :root{--c:#000;--g:#999;--e:cubic-bezier(.2,0,0,1)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#fff;color:var(--c);font-family:"Inter","Helvetica","Noto Sans SC",sans-serif;-webkit-font-smoothing:antialiased;display:flex}
+  .rail{position:sticky;top:0;height:100vh;width:160px;flex-shrink:0;border-right:1px solid #eee;padding:80px 20px;display:flex;flex-direction:column;gap:0}
+  .rail-item{font-size:10px;letter-spacing:.15em;color:var(--g);padding:18px 0;border-bottom:1px solid #f4f4f4;cursor:pointer;transition:color .3s var(--e)}
+  .rail-item.active{color:var(--c);font-weight:600}
+  .rail-item .mk{display:inline-block;width:16px}
+  .stream{flex:1;padding:80px 6vw 200px}
+  .season-mark{font-size:11px;letter-spacing:.3em;color:var(--g);text-transform:uppercase;margin:100px 0 60px;border-top:1px solid var(--c);padding-top:12px}
+  .season-mark:first-child{margin-top:0}
+  .card{display:flex;gap:40px;align-items:flex-start;margin-bottom:100px;max-width:700px}
+  .card.tier-1{max-width:900px}
+  .card-img{width:220px;flex-shrink:0}
+  .card.tier-1 .card-img{width:320px}
+  .card-img img{width:100%;display:block}
+  .card-body{padding-top:8px}
+  .card-brand{font-size:18px;font-weight:500}
+  .card.tier-1 .card-brand{font-size:28px;font-weight:600}
+  .card-state{font-size:10px;color:var(--g);letter-spacing:.15em;margin-top:10px}
+  @media(max-width:700px){.rail{display:none}.card,.card.tier-1{flex-direction:column;gap:16px;max-width:100%}.card-img,.card.tier-1 .card-img{width:100%;max-width:300px}}
+</style>
+</head>
+<body>
+<div class="rail" id="rail"></div>
+<div class="stream" id="stream"></div>
+<script>
+const STATE=[['FULL','全成立',''],['TOP','仅上半身','↑'],['BOTTOM','仅下半身','↓'],['OUTER','仅外套','▢'],['INNER','内衬不成立','—'],['FIX','需修正','×']];
+const S=Object.fromEntries(STATE.map(([k,n,m])=>[k,{n,m}]));
+const DATA=[
+ {s:'SPRING 2026 COUTURE',items:[{b:'ROBERT WUN',img:'images/robert-wun/01.webp',st:'FULL',tier:1},{b:'ROBERT WUN',img:'images/robert-wun/02.webp',st:'FULL',tier:2}]},
+ {s:'FALL 2024 READY-TO-WEAR',items:[{b:'LOEWE',img:'images/loewe/01.webp',st:'TOP',tier:2},{b:'AVAVAV',img:'images/avavav/01.webp',st:'FULL',tier:2}]},
+ {s:'FALL 2023 MENSWEAR',items:[{b:'PALOMO SPAIN',img:'images/palomo-spain/01.webp',st:'FULL',tier:1},{b:'PALOMO SPAIN',img:'images/palomo-spain/02.webp',st:'FULL',tier:2},{b:'PALOMO SPAIN',img:'images/palomo-spain/03.webp',st:'BOTTOM',tier:2}]}
+];
+const rail=document.getElementById('rail');
+STATE.forEach(([k,n,m])=>{const d=document.createElement('div');d.className='rail-item';d.dataset.k=k;d.innerHTML=`<span class="mk">${m||'·'}</span>${n}`;d.onclick=()=>{document.querySelectorAll('.rail-item').forEach(x=>x.classList.remove('active'));d.classList.add('active');filter(k)};rail.appendChild(d)});
+const stream=document.getElementById('stream');
+function render(filterK){
+  stream.innerHTML='';
+  DATA.forEach(blk=>{
+    const items=blk.items.filter(i=>!filterK||i.st===filterK);
+    if(!items.length)return;
+    const h=document.createElement('div');h.className='season-mark';h.textContent=blk.s;stream.appendChild(h);
+    items.sort((a,b)=>a.tier-b.tier).forEach(it=>{
+      const c=document.createElement('div');c.className='card tier-'+it.tier;
+      c.innerHTML=`<div class="card-img"><img src="${it.img}" loading="lazy"></div>
+        <div class="card-body"><div class="card-brand">${it.b}</div>
+        <div class="card-state">${S[it.st].m||'●'} ${S[it.st].n}</div></div>`;
+      stream.appendChild(c);
+    });
+  });
+}
+function filter(k){render(k)}
+render(null);
+</script>
+</body>
+</html>
