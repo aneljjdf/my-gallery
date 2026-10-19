@@ -31,6 +31,12 @@
     --dur: 300ms;
   }
 
+  /* 核心防抖：关掉浏览器原生的平滑滚动和锚定，防止手机切页时自动回弹 */
+  html {
+    scroll-behavior: auto !important; 
+    overflow-anchor: none;
+  }
+
   * { 
     margin: 0; 
     padding: 0; 
@@ -149,18 +155,19 @@
   }
 
   /* ============================================================
-     页面切换逻辑
+     页面切换
      ============================================================ */
   .page-section {
     display: none; 
-    animation: fadeIn var(--dur) var(--ease);
   }
   .page-section.active {
     display: block;
+    /* 用极短的淡入代替原先的位移动画，减少视觉干扰 */
+    animation: fadeIn 200ms var(--ease); 
   }
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   /* ============================================================
@@ -193,10 +200,9 @@
   }
 
   /* ============================================================
-     GALLERY —— 照抄第二份的排版设定
+     GALLERY
      ============================================================ */
   .gallery-container {
-    /* 照抄：上下 20vh，左右 10vw */
     padding: 20vh 10vw;
     max-width: 1200px;
     margin: 0 auto;
@@ -206,13 +212,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 照抄：间距 25vh */
     gap: 25vh;
   }
 
   .specimen {
     width: 100%;
-    /* 照抄：宽度限制 500px */
     max-width: 500px;
     text-align: center;
     cursor: crosshair;
@@ -226,7 +230,6 @@
   }
   .specimen:hover img { opacity: .9; }
 
-  /* 照抄：图与文字的间距 24px */
   .specimen-info { margin-top: 24px; }
   .specimen-name {
     font-size: 12px;
@@ -306,9 +309,6 @@
     cursor: default;
   }
 
-  /* ============================================================
-     手机端仅处理顶栏，不再篡改画廊距离
-     ============================================================ */
   @media (max-width: 600px) {
     .issue-nav { max-width: 100%; padding: 0 10vw; }
   }
@@ -376,13 +376,15 @@
 <script>
 /* ===== 页面切换逻辑 ===== */
 function switchPage(pageId) {
+  // 1. 先强制瞬间回到顶部
+  window.scrollTo(0, 0);
+  
+  // 2. 再切换显示内容
   document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
   
   document.querySelectorAll('.nav-links span').forEach(el => el.classList.remove('active'));
   document.getElementById('nav-' + pageId).classList.add('active');
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ===== 画廊数据与逻辑 ===== */
@@ -476,8 +478,15 @@ function padZero(num) {
 }
 
 function render() {
+  // 1. 先把当前内容清空（此时页面高度会坍塌）
   specimenList.innerHTML = '';
+  
+  // 2. 瞬间锁定在顶部
+  window.scrollTo(0, 0);
+
   const currentItems = issues[currentIssueIndex];
+  
+  // 3. 构建新内容
   currentItems.forEach(item => {
     const el = document.createElement('div');
     el.className = 'specimen';
@@ -504,7 +513,6 @@ prevBtn.addEventListener('click', () => {
   if (currentIssueIndex > 0) {
     currentIssueIndex--;
     render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
@@ -512,7 +520,6 @@ nextBtn.addEventListener('click', () => {
   if (currentIssueIndex < totalIssues - 1) {
     currentIssueIndex++;
     render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
